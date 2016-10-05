@@ -1,0 +1,36 @@
+.info-panel
+{
+	height: 39%;
+  font-size: 1.4rem;
+}
+
+.info-panel table {
+  height: 100%;
+  width: 100%;
+	border-collapse: collapse;
+}
+
+.info-panel table td
+{
+  padding: 8px;
+	background-color: white;
+	color: gray;
+	font-weight: bold;
+}
+
+.info-panel table, .info-panel td
+{
+  box-sizing: border-box;
+	border: 3px solid lightgray;
+}
+
+.info-panel td:first-child
+{
+  width: 70%;
+}
+
+.info-panel td:nth-child(2)
+{
+	text-align: center;
+  width: 30%;
+}

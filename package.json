@@ -1,0 +1,19 @@
+{
+  "name": "apropos_netkurs",
+  "version": "1.0.0",
+  "description": "Pieces for Apropos Netkurs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jstruthers/apropos_netkurs.git"
+  },
+  "author": "Jackson Struthers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jstruthers/apropos_netkurs/issues"
+  },
+  "homepage": "https://github.com/jstruthers/apropos_netkurs#readme"
+}

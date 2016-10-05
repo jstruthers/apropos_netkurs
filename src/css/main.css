@@ -1,0 +1,293 @@
+@import url('../pages/info-panel/info-panel.css');
+@import url('../pages/results/scorepage.css');
+@import url('../pages/tasks/tasks.css');
+@import url('../pages/theme-list/theme-list.css');
+
+body
+{
+  position: relative;
+  cursor: default;
+  font-size: 1em;
+}
+
+.loading-screen
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  z-index: 20;
+}
+
+.loading-screen div
+{
+  position: relative;
+  width: 8rem;
+  margin: auto;
+  margin-top: 200px;
+  color: steelblue;
+  font-size: 6rem;
+}
+
+.header .toggle-lang
+{
+  position: absolute;
+  left: 20px;
+  top: -40px;
+  height: 40px;
+  font-size: 2rem;
+  padding: 5px;
+  background-color: ghostwhite;
+  border: 2px solid steelblue;
+  border-radius: 5px;
+}
+
+.header .toggle-lang:hover
+{
+  cursor: pointer;
+}
+
+.main-content
+{
+	padding: 5%;
+}
+
+h1, h2, h3, h4, h5, h6, ul, p
+{
+  margin: 0;
+  padding: 0;
+}
+
+.right-panel .row
+{
+  margin: 0;
+}
+
+.header
+{
+	background-color: #EFEFEF;
+  border-bottom: 5px solid lightgray;
+  min-height: 60px;
+	color: #3E5A83;
+  margin: 0;
+}
+
+.header > div
+{
+  height: 100%;
+}
+
+.header .timer
+{
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.header div:nth-child(2)
+{
+  font-size: 1.8rem;
+}
+
+.sub-header
+{
+  text-align: center;
+  background-color: steelblue;
+  border-bottom: 5px solid lightgray;
+  color: white;
+  font-weight: 100;
+  min-height: 60px;
+  padding: 10px 0;
+  letter-spacing: 0.4rem;
+}
+
+[data-toggle="popover"]:focus
+{
+  outline: none;
+}
+
+/*************************************
+    UTILITY
+**************************************/
+
+.no-gutter > [class*='col-']
+{
+    padding-right:0;
+    padding-left:0;
+}
+
+.vcenter-wrapper
+{
+  display: table;
+  padding-top: 10px;
+  height: 100%;
+  width: 100%;
+  float: none;
+}
+
+.vcenter
+{
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/*************************************
+    BUTTONS
+**************************************/
+.custom-btn
+{
+	position: relative;
+  display: inline-block;
+  width: 99%;
+  
+  margin: 0 auto;
+
+  border-radius: 5px;
+  background-color: ghostwhite;
+  border-top: 3px solid lightgray;
+  border-left: 3px solid lightgray;
+  border-right: 3px solid gray;
+  border-bottom: 3px solid gray;
+}
+
+.custom-btn:hover
+{
+  cursor: pointer;
+}
+
+.nav-bar .hint .btn-hint
+{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  padding-top: 3px;
+  top: -60px;
+  left: 10px;
+
+  text-align: center;
+  border-radius: 50%;
+  font-size: 2.5rem;
+  color: midnightblue;
+}
+
+.nav-bar .hint .hint-text
+{
+  position: absolute;
+  width: 0;
+  height: 40px;
+  top: -54px;
+  left: 30px;
+  padding-left: 40px;
+
+  text-align: left;
+  font-size: 1.4rem;
+  opacity: 0;
+  overflow: hidden;
+
+  border-radius: 5px;
+  background-color: ghostwhite;
+  border: 3px solid steelblue;
+}
+
+/*************************************
+    NAV BAR
+**************************************/
+
+.nav-bar
+{
+  position: relative;
+  margin: 0;
+  height: 65px;
+  padding-top: 10px;
+  background-color: #EFEFEF;
+  border-top: solid lightgray 5px;
+}
+
+.nav-bar .nav-btn
+{
+  height: 35px;
+  padding-top: 6px;
+  font-size: 1.4rem;
+  overflow: hidden;
+}
+
+.nav-bar .nav-btn:hover
+{
+  color: steelblue;
+}
+
+/*************************************
+    @MEDIA
+**************************************/
+@media (max-width: 1200px)
+{
+  .task .options div.clearfix
+  {
+    margin: 10px 0;
+  }
+  
+  .task .options div.clearfix
+  {
+    margin: 10px 0;
+  }
+  
+  .task h3
+  {
+    padding: 20px;
+  }
+  
+  .sub-header
+  {
+    padding-top: 15px;
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 990px)
+{
+  .header > *
+  {
+    text-align: center;
+  }
+  
+  .oppgaver
+  {
+    position: relative;
+    margin: auto;
+  }
+  
+  .info-panel td, .theme-list p, .header div
+	{
+		font-size: 1.8rem !important;
+	}
+  
+  .info-panel, .theme-list, .theme-section-body, .bars
+  {
+    height: auto;
+  }
+  
+  .divider
+  {
+    display: none;
+  }
+  
+  .task-container
+  {
+    border-left: 2px solid lightgray;
+  }
+}
+
+
+@media (max-width: 768px)
+{ 
+  .main-content
+  {
+    padding: 5px 5px;
+  }
+  
+  .task-container
+  {
+    height: 450px;
+  }
+}

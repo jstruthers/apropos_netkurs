@@ -1,7 +1,7 @@
-@import url('../pages/info-panel/info-panel.css');
-@import url('../pages/results/scorepage.css');
-@import url('../pages/tasks/tasks.css');
-@import url('../pages/theme-list/theme-list.css');
+@import url('./components/info-panel/info-panel.css');
+@import url('./components/results/scorepage.css');
+@import url('./components/tasks/tasks.css');
+@import url('./components/theme-list/theme-list.css');
 
 body
 {

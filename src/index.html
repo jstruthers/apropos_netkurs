@@ -5,17 +5,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
-          integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-          crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="./libs/jquery-1.12.4.min.js"></script>
+  <script src="js/Velocity.min.js"></script>
+  <script src="./libs/tether.min.js"></script>
+  <script src="./libs/bootstrap.min.js"></script>
   
-  <link rel="stylesheet" href="font-awesome-4.3.0/css/font-awesome.min.css">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  
-  <link href="css/main.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+  <link href="./libs/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="./index.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body onload="init()">
 <div class="loading-screen">
   <div><span class="fa fa-spinner fa-spin"></span></div>
@@ -124,25 +123,22 @@
   </div> <!-- main-content -->
   </div> <!--  container-fluid  -->
 
-
-
-  <script type="text/javascript" src="js/store.js"></script>
-  <script type="text/javascript" src="js/lang.json"></script>
-  <script type="text/javascript" src="js/main.js"></script>
-  <script type="text/javascript" src="js/Velocity.min.js"></script>
-  <script type="text/javascript" src="js/Timer.js"></script>
+  <script type="text/javascript" src="./js/store.js"></script>
+  <script type="text/javascript" src="./js/langData.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
+  <script type="text/javascript" src="./js/Timer.js"></script>
   
   <!--  PAGE SCRIPTS-->
-  <script type="text/javascript" src="pages/results/scorepage.js"></script>
-  <script type="text/javascript" src="pages/info-panel/info-panel.js"></script>
-  <script type="text/javascript" src="pages/theme-list/theme-list.js"></script>
+  <script type="text/javascript" src="./components/results/scorepage.js"></script>
+  <script type="text/javascript" src="./components/info-panel/info-panel.js"></script>
+  <script type="text/javascript" src="./components/theme-list/theme-list.js"></script>
   
   <!--  TASK TYPES-->
-  <script type="text/javascript" src="pages/tasks/taskTypes/Match.js"></script>
-  <script type="text/javascript" src="pages/tasks/taskTypes/Multichoice.js"></script>
-  <script type="text/javascript" src="pages/tasks/taskTypes/Checkbox.js"></script>
-  <script type="text/javascript" src="pages/tasks/taskTypes/Radio.js"></script>
-  <script type="text/javascript" src="pages/tasks/tasks.js"></script>
+  <script type="text/javascript" src="./components/tasks/taskTypes/Match.js"></script>
+  <script type="text/javascript" src="./components/tasks/taskTypes/Multichoice.js"></script>
+  <script type="text/javascript" src="./components/tasks/taskTypes/Checkbox.js"></script>
+  <script type="text/javascript" src="./components/tasks/taskTypes/Radio.js"></script>
+  <script type="text/javascript" src="./components/tasks/tasks.js"></script>
 
 </body>
 

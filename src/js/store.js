@@ -1,4 +1,4 @@
-let store = {
+var store = {
   themes : null,
   // (array) of 'theme'             (object)
   //    'title'                     (string)
@@ -35,6 +35,4 @@ let store = {
     'theme-list/theme-list.html'
   ]
 };
-
-export default store
     

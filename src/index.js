@@ -1,8 +1,6 @@
-import store from './store.ts'
-
 // ***for dummy data
-store.randomJSON = "js/JsonRandomTest.json";
-store.langJSON = "js/lang.json";
+store.randomJSON = "js/JsonRandomTest.js";
+store.langJSON = "js/langData.js";
 
 /******************************
   AJAX CALLS
@@ -14,7 +12,7 @@ store.langJSON = "js/lang.json";
 
 function init()
 {
-	$.getJSON(store.randomJSON).done(JSONLoaded).fail(error);
+  $.getJSON(store.randomJSON).done(JSONLoaded).fail(error);
 }
 
 function error(err)
@@ -26,17 +24,18 @@ function error(err)
 function JSONLoaded(datain)
 {
   store.reset = false;
-  
+  store.randomJSON = datain;
+
   store.stats = {
-    testTitle: datain.Test.testInfo,
-    passRequirement: datain.Test.PassRequirement,
-    numTasks: datain.Test.NoOfTasks,
-    durationTime: datain.Test.DurationTime,
-    currentTime: datain.Test.AlertTime,
+    testTitle: datain.testInfo,
+    passRequirement: datain.PassRequirement,
+    numTasks: datain.NoOfTasks,
+    durationTime: datain.DurationTime,
+    currentTime: datain.AlertTime,
     completedTasks: 0,
   };
   
-  store.themes = datain.Test.TestThemes.map( function( theme )
+  store.themes = datain.TestThemes.map( function( theme )
   {
     return {
       title: theme.AThemes[0].at_title,
@@ -70,7 +69,7 @@ function JSONLoaded(datain)
 
 function getLanguageJSON()
 {
-	$.getJSON(store.langJSON).done(langJSONLoaded).fail(error);
+  $.getScript(store.langJSON).done(langJSONLoaded).fail(error);
 }
 
 function langJSONLoaded(datain)

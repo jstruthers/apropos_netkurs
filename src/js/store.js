@@ -1,3 +1,5 @@
+var langData = require('./langData');
+
 var store = {
   themes : null,
   // (array) of 'theme'             (object)
@@ -26,7 +28,7 @@ var store = {
   //    Check for toggling test reset
   getCurTask: function() { return store.themes[store.currentTheme].tasks[store.currentTask]; },
   randomJSON : "file:///D:/Arbeid/HTML/SmartLearn/Kunnskapstest/js/JsonRandomTest.json",
-  langJSON : "file:///D:/Arbeid/HTML/SmartLearn/Kunnskapstest/js/lang.json",
+  langData: langData,
   saveTemplate : null,
   pages : [
     'modal/hintModal.html',

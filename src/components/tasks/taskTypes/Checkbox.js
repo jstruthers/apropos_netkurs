@@ -1,7 +1,9 @@
+var Multichoice = require('./Multichoice');
+module.exports = Checkbox;
+
 function Checkbox(taskData, taskId)
 {
   Multichoice.apply(this, arguments);
-
   this.iconClass = 'fa fa-check-circle-o';
 }
 

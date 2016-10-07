@@ -1,27 +1,30 @@
+var Timer = require('./js/Timer');
+var TaskUtility = require('./components/tasks/TaskUtility');
+var ThemeUtility = require('./components/theme-list/ThemeUtility');
+var ResultsUtility = require('./components/results/ResultsUtility');
+var buildInfoPanel = require('./components/info-panel/info-panel');
+
 // ***for dummy data
 store.randomJSON = "js/JsonRandomTest.js";
-store.langJSON = "js/langData.js";
 
-/******************************
-  AJAX CALLS
-*******************************/
+function RandomTest() {
+  this.tasks = new TaskUtility();
+  this.themes = new ThemeUtility();
+  this.results = new ResultsUtility();
+}
 
-/******************************
-  BEGIN INIT SEQUENCE
-*******************************/
-
-function init()
+RandomTest.prototype.init = function()
 {
   $.getJSON(store.randomJSON).done(JSONLoaded).fail(error);
 }
 
-function error(err)
+RandomTest.prototype.error = function(err)
 {
   console.log(err.statusText);
 	console.log(err);
 }
 
-function JSONLoaded(datain)
+RandomTest.prototype.JSONLoaded = function(datain)
 {
   store.reset = false;
   store.randomJSON = datain;
@@ -64,25 +67,15 @@ function JSONLoaded(datain)
     };
   });
 
-	getLanguageJSON();
-}
-
-function getLanguageJSON()
-{
-  $.getScript(store.langJSON).done(langJSONLoaded).fail(error);
-}
-
-function langJSONLoaded(datain)
-{
-	store.langData = datain.languages;
-  buildMain();
+	this.buildMain();
 }
 
 /******************************
   END INIT SEQUENCE
 *******************************/
 
-function loadHTML(url) {
+RandomTest.prototype.loadHTML = function(url)
+{
   var result = null;
   $.ajax({
     url: url,
@@ -101,7 +94,7 @@ function loadHTML(url) {
   UPDATE LANGUAGE
 *******************************/
 
-function updateLanguage(langID, langBlock)
+RandomTest.prototype.updateLanguage = function(langID, langBlock)
 {
 	for (var term in store.langData[langID][langBlock])
   {
@@ -118,13 +111,10 @@ function updateLanguage(langID, langBlock)
   BUILD MAIN
 *******************************/
 
-function buildMain()
-{ 
-  if (store.saveTemplate)
-  {
-    $("#random_test .row").html(store.saveTemplate);
-  }
-  
+RandomTest.prototype.buildMain = function()
+{
+var self = this;
+
   // Add templates to DOM
   $.each(store.pages, function(index, page) {
     $('.' + page.slice(page.indexOf('/') + 1, page.indexOf('.html')))
@@ -134,25 +124,27 @@ function buildMain()
   
   $('.infopanel')
 
-	buildInfoPanel();
-  buildTasksInTheme(0);
-  buildThemeSection();
-	buildNavBar();
+	this.buildInfoPanel();
+  this.buildNavBar();
+  this.tasks.buildTasksInTheme(0);
+  this.themes.buildThemeSection();
 
-  togglePopover($('.optText, .match-label'));
-  updateLanguage(store.currentLang, 'main');
+  this.tasks.togglePopover($('.optText, .match-label'));
+  this.updateLanguage(store.currentLang, 'main');
   
   $('.toggle-lang').click( function()
   {
     store.currentLang = store.currentLang > 0 ? 0 : 1;
-    updateLanguage(store.currentLang, 'main');
-    animateClick($(this));
+    self.updateLanguage(store.currentLang, 'main');
+    self.animateClick($(this));
   });
   
   store.timer = new Timer( store.stats.durationTime, store.stats.alertTime );
 }
 
-function buildNavBar()
+RandomTest.prototype.buildInfoPanel = function() { buildInfoPanel(); }
+
+RandomTest.prototype.buildNavBar = function()
 {
   $('.nav-btn').click( function() { animateClick($(this)); });
   
@@ -197,7 +189,7 @@ function buildNavBar()
   UTILITY FUNCTION
 *******************************/
 
-function animateClick($el)
+RandomTest.prototype.animateClick = function($el)
 {
   $el.velocity({
     backgroundColor: '#C0C0C0',
@@ -210,32 +202,5 @@ function animateClick($el)
   }).velocity('reverse');
 }
 
-function fadeTransition(config)
-{
-  // config (object) props = {$parent, colorTo, animateTo, optionsTo, delay, animateFrom, optionsFrom}
-  config.optionsFrom.complete = function() { $('.fade-screen').remove() };
-  config.$parent.append(
-    $('<div class="fade-screen"'
-      + ' style="z-index: 15; background-color: '
-      + config.colorTo + ';"></div>'));
-  
-  config.$parent.find('.fade-screen')
-    .velocity(config.animateTo, config.optionsTo);
-
-  config.$parent.find('.fade-screen')
-    .velocity(config.animateFrom, config.optionsFrom);
-}
-
-function formatDate()
-{
-  //function addZero(i, h = false) {
-//	// if i = hour and language is english, convert 0-24 to 0-12
-//    if (h && params.courseLang == 0 && i > 12) i -=12;
-//
-//    // adds leading zero
-//    if (i < 10) {
-//        i = "0" + i;
-//    }
-//    return i;
-//}
-}
+var RTutil = new RandomTest();
+RTutil.init();

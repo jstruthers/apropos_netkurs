@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <script src="./libs/jquery-1.12.4.min.js"></script>
-  <script src="js/Velocity.min.js"></script>
+  <script src="./libs/Velocity.min.js"></script>
   <script src="./libs/tether.min.js"></script>
   <script src="./libs/bootstrap.min.js"></script>
   
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
   <link href="./libs/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link href="./index.css" rel="stylesheet" type="text/css" />
+  <link href="./index.min.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body onload="init()">
+<body>
 <div class="loading-screen">
   <div><span class="fa fa-spinner fa-spin"></span></div>
 </div>
@@ -123,22 +123,7 @@
   </div> <!-- main-content -->
   </div> <!--  container-fluid  -->
 
-  <script type="text/javascript" src="./js/store.js"></script>
-  <script type="text/javascript" src="./js/langData.js"></script>
-  <script type="text/javascript" src="./index.js"></script>
-  <script type="text/javascript" src="./js/Timer.js"></script>
-  
-  <!--  PAGE SCRIPTS-->
-  <script type="text/javascript" src="./components/results/scorepage.js"></script>
-  <script type="text/javascript" src="./components/info-panel/info-panel.js"></script>
-  <script type="text/javascript" src="./components/theme-list/theme-list.js"></script>
-  
-  <!--  TASK TYPES-->
-  <script type="text/javascript" src="./components/tasks/taskTypes/Match.js"></script>
-  <script type="text/javascript" src="./components/tasks/taskTypes/Multichoice.js"></script>
-  <script type="text/javascript" src="./components/tasks/taskTypes/Checkbox.js"></script>
-  <script type="text/javascript" src="./components/tasks/taskTypes/Radio.js"></script>
-  <script type="text/javascript" src="./components/tasks/tasks.js"></script>
+  <script type="text/javascript" src="./bundle.js"></script>
 
 </body>
 

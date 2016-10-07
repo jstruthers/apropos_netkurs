@@ -1,4 +1,6 @@
-function Timer (startTime, alertTime)
+module.exports = Timer;
+
+function Timer(startTime, alertTime)
 {
   this.startTime = startTime;
   this.total = startTime;
@@ -87,4 +89,18 @@ Timer.prototype.init = function()
   this.timeString = this.formatTime( 'm' );
   $('.timer').text( this.timeString );
   this.interval = setInterval(this.tick.bind(this), 1000);
+};
+
+Timer.prototype.formatDate = function()
+{
+  //function addZero(i, h = false) {
+//  // if i = hour and language is english, convert 0-24 to 0-12
+//    if (h && params.courseLang == 0 && i > 12) i -=12;
+//
+//    // adds leading zero
+//    if (i < 10) {
+//        i = "0" + i;
+//    }
+//    return i;
+//}
 };

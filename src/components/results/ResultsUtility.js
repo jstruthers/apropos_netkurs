@@ -1,6 +1,8 @@
-import
+module.exports = ResultsUtility;
 
-function gotoScorepage()
+function ResultsUtility() {}
+
+ResultsUtility.prototype.goto = function()
 {
 	store.saveTemplate = $("#random_test .row").html();
   $("#random_test .row").html("");
@@ -8,12 +10,12 @@ function gotoScorepage()
 	$("#random_test .row").append(loadHTML("pages/results/scorepage.html"));
 	
 	initScorepage();
-}
+};
 
-function grade()
+ResultsUtility.prototype.grade = function()
 {
-  for( let theme of store.themes ) {
-    for( let task of theme.tasks ) {
+  store.themes.forEach(theme {
+    theme.tasks.forEach(task {
       task.correct = [];
       if (task.isCompleted) {
         task.correct = task.type < 3
@@ -45,16 +47,16 @@ function grade()
       task.correct = task.correct.reduce( function( prev, curr ) { return prev && curr  }, true);
 
       if (task.correct) { theme.totalCorrect += 1; }
-    }
-  }
+    });
+  });
 };
 
-function buildAnswerKey()
+ResultsUtility.prototype.buildAnswerKey = function()
 {
   var $keyWrapper = $('<div class="col-xs-12"></div>'),
       $keyBody = $('<div class="answer-key"></div>');
   
-  grade();
+  this.grade();
 
   store.themes.forEach( function( theme )
   { 
@@ -133,7 +135,7 @@ function buildAnswerKey()
   $('#answerModal .modal-body').append( $keyBody );
 }
 
-function handleProgressBars()
+ResultsUtility.prototype.handleProgressBars = function()
 {
 //***   BUILD THEME BARS   ***//
 
@@ -198,7 +200,7 @@ function handleProgressBars()
     });
 }
 
-function initScorepage()
+ResultsUtility.prototype.initScorepage = function()
 {
   $('.toggle-lang').click( function()
   {

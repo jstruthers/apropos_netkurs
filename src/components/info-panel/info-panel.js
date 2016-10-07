@@ -1,3 +1,5 @@
+module.exports = buildInfoPanel;
+
 function buildInfoPanel()
 {
 	$(".info-panel .title").text(store.stats.testTitle);

@@ -1,9 +1,16 @@
+module.exports = TaskUtility;
+var Checkbox = require('./taskTypes/Checkbox');
+var Radio = require('./taskTypes/Radio');
+var Match = require('./taskTypes/Match');
+
+function TaskUtility() {}
+
  /*
  * @function togglePopover
  * @desc On window resize, check whether popover should display on mouseover
  * @param {jQuery Object Array} Array of popover $(nodes)
  */
-function togglePopover($arr)
+TaskUtility.prototype.togglePopover = function($arr)
 {
   $arr.each( function()
   {
@@ -26,7 +33,7 @@ function togglePopover($arr)
  * @param {number} theme number,
           {number} task number
  */
-function buildTask(themeNum, taskNum)
+TaskUtility.prototype.buildTask = function(themeNum, taskNum)
 {
   var task = store.themes[themeNum].tasks[taskNum];
   
@@ -54,7 +61,7 @@ function buildTask(themeNum, taskNum)
          Attach event handler to window for toggle popovers
  * @param {number} theme number
  */
-function buildTasksInTheme( themeNum )
+TaskUtility.prototype.buildTasksInTheme = function(themeNum)
 {
   var i = store.themes[themeNum].tasks.length - 1;
   $( window ).off('resize');
@@ -81,7 +88,7 @@ function buildTasksInTheme( themeNum )
           {object} Current task object of STORE
           {array}  Passed from match tasks, [string, number]
  */
-function checkCompleted( answerIndex, task, matchAnswer )
+TaskUtility.prototype.checkCompleted = function( answerIndex, task, matchAnswer )
 {
   var $taskMark = $('.task-mark_' + store.currentTask + '_' + store.currentTheme),
       curAnswer = task.answers[answerIndex].isSelected,
@@ -127,7 +134,7 @@ function checkCompleted( answerIndex, task, matchAnswer )
           {boolean} Whether to run the task change animation
                     (Shouldn't animate on theme change)
  */
-function gotoTask(nextTaskNum, noTransition)
+TaskUtility.prototype.gotoTask = function(nextTaskNum, noTransition)
 { 
   var nextTaskNum = parseInt(nextTaskNum),
       tasksInTheme = store.themes[store.currentTheme].tasks.length - 1,

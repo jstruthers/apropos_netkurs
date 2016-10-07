@@ -1,4 +1,6 @@
-var Multichoice = function(storeTask, taskId)
+module.exports Multichoice;
+
+function Multichoice(storeTask, taskId)
 {
   this.taskId = taskId;
   this.storeTask = storeTask;

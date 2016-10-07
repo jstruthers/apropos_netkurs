@@ -1,3 +1,7 @@
+module.exports = ThemeUtility;
+
+function ThemeUtility() {}
+
  /*
  * @function buildTaskRow
  * @desc Check
@@ -10,7 +14,7 @@
         specs.reverse = i % 2 === 1 ? true : false;
     specs.rowNum = i;
  */
-function buildTaskRow(specs)
+ThemeUtility.prototype.buildTaskRow = function(specs)
 {
   var r = specs.reverse,
       cW = specs.cellWidth, cH = cW - 15, tmW = cW - 30,
@@ -55,7 +59,7 @@ function buildTaskRow(specs)
   return $row;
 }
 
-function addTaskLine($section, currentThemeNumber)
+ThemeUtility.prototype.addTaskLine = function($section, currentThemeNumber)
 {
   var cellWidth = 50,
       theme = store.themes[currentThemeNumber],
@@ -87,7 +91,7 @@ function addTaskLine($section, currentThemeNumber)
     .remove();
 }
 
-function themeTransition( themeNum )
+ThemeUtility.prototype.themeTransition = function( themeNum )
 {
   buildTasksInTheme( themeNum );
   store.currentTheme = themeNum;
@@ -98,7 +102,7 @@ function themeTransition( themeNum )
     .velocity('reverse', {delay: 100, duration: 300});
 }
 
-function buildThemeSection()
+ThemeUtility.prototype.buildThemeSection = function()
 {
 	var $sectionTemplate = $(".theme-list .section-template").clone()
                            .removeClass('section-template');

@@ -1,3 +1,5 @@
+module.exports = langData;
+
 var langData = [
 	{
     "main":

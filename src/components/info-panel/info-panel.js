@@ -1,12 +1,18 @@
-module.exports = buildInfoPanel;
-
-function buildInfoPanel()
+(function()
 {
-	$(".info-panel .title").text(store.stats.testTitle);
+	var public = {};
 
-	$(".info-panel .num-tasks").next().text(store.stats.numTasks);
-  
-  	$('.info-panel .tasks-remaining').next().text(store.stats.completedTasks);
+	public.init = function(store) {
+		$(".info-panel .title").text(store.stats.testTitle);
 
-	$(".info-panel .pass-requirement").next().text(store.stats.passRequirement + " %");
-}
+		$(".info-panel .num-tasks").next().text(store.stats.numTasks);
+	  
+	  	$('.info-panel .tasks-remaining').next().text(store.stats.completedTasks);
+
+		$(".info-panel .pass-requirement").next().text(store.stats.passRequirement + " %");
+	};
+
+	return public;
+})();
+
+

@@ -3,48 +3,15 @@ var gulp = require("gulp"),
 	less = require("gulp-less"),
 	cssmin = require("gulp-cssmin"),
 	rename = require("gulp-rename"),
+	LessAutoprefix = require('less-plugin-autoprefix'),
+	autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] }),
 
-	prefix = require("gulp-autoprefixer"),
-	browserify = require("browserify"),
-	watchify = require("watchify"),
-	uglify = require('gulp-uglify'),
-
+	flatten = require("gulp-flatten"),
+	plumber = require("gulp-plumber"),
 	gutil = require("gulp-util"),
 	del = require('del'),
-	plumber = require("gulp-plumber"),
-	assign = require("lodash.assign"),
 
-	browserSync = require("browser-sync"),
-	sourcemaps = require('gulp-sourcemaps'),
-	source = require('vinyl-source-stream'),
-	buffer = require('vinyl-buffer'),
-
-	paths = {
-		pages: ['src/index.html']
-	},
-
-	customOpts = {
-		basedir: '.',
-		debug: true,
-        entries: ['src/index.js'],
-        plugin: [watchify],
-        //	Expose libraries by attatching them to the window object
-        insertGlobalVars: {
-        	$: function(file, dir) {
-        		return require("./src/libs/jquery-1.12.4.min.js");
-        	},
-        	store: function(file, dir) {
-        		return require("./src/js/store.js");
-        	}
-        },
-        cache: {},
-        packageCache: {},
-        ignore: ['./src/libs/**']
-	},
-	opts = assign({}, watchify.args, customOpts),
-	b = watchify(browserify(opts));
-
-b.on("log", gutil.log);
+	browserSync = require("browser-sync");
 
 gulp.task('clean', function()
 {
@@ -58,45 +25,45 @@ gulp.task("libs", ["clean"], function (){
 });
 
 gulp.task("copy-html", ["libs"], function () {
-    return gulp.src(paths.pages)
+    return gulp.src(['./src/**/*.html', '!./src/index.html'])
+    	.pipe(plumber())
+    	.pipe(flatten())
+        .pipe(gulp.dest("dist/html"));
+});
+
+gulp.task("copy-index", ["copy-html"], function () {
+    return gulp.src('./src/index.html')
     	.pipe(plumber())
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task('less', ["copy-html"], function () {
-    return gulp.src('./src/index.css')
+gulp.task('less', ["copy-index"], function () {
+    return gulp.src('./src/**/*.less')
 	    .pipe(plumber())
 	    .pipe(less({
-	      paths: ['./src/**/*.less']
+	      plugins: [autoprefix]
 	    }))
-	    .pipe(prefix('last 2 versions', 'ie 9'))
-	    .pipe(cssmin())
-	    .pipe(rename({suffix: '.min'}))
+	    // .pipe(cssmin())
+	    // .pipe(rename({suffix: '.min'}))
 	    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('bundle', ['less'], function()
+gulp.task('js', ['less'], function()
 {
-	return b.bundle()
-		.on('error', function(err)
-        {
-        	gutil.log(
-        		gutil.colors.red("Browserify compile error:"),
-        		err.stack,
-        		err.message );
-            browserSync.notify(err.message, 3000);
-            this.emit('end');
-		})
+	return gulp.src('./src/js/*.js')
 		.pipe(plumber())
-	    .pipe(source('bundle.js'))
-	    .pipe(buffer())
-    	.pipe(sourcemaps.init({loadMaps: true}))
-    	.pipe(uglify())
-    	.pipe(sourcemaps.write('./'))
-	    .pipe(gulp.dest("dist"));
+	    .pipe(gulp.dest("dist/js"));
 });
 
-gulp.task('watch', ['bundle'], function()
+gulp.task('components', ['js'], function()
+{
+	return gulp.src('./src/components/**/*.js')
+		.pipe(plumber())
+		.pipe(flatten())
+	    .pipe(gulp.dest("dist/js/components"));
+});
+
+gulp.task('watch', ['components'], function()
 {
     var watcher = gulp.watch('./src/**/*', ['refresh']);
     watcher.on('change', function(event)
@@ -118,4 +85,4 @@ gulp.task('default', ['browser-sync']);
 /**
  * Using a dependency ensures that the bundle task is finished before reloading.
  */
-gulp.task('refresh', ['bundle'], browserSync.reload);
+gulp.task('refresh', ['components'], browserSync.reload);

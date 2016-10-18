@@ -1,5 +1,3 @@
-module.exports = ResultsUtility;
-
 function ResultsUtility() {}
 
 ResultsUtility.prototype.goto = function()
@@ -14,8 +12,8 @@ ResultsUtility.prototype.goto = function()
 
 ResultsUtility.prototype.grade = function()
 {
-  store.themes.forEach(theme {
-    theme.tasks.forEach(task {
+  store.themes.forEach( function(theme) {
+    theme.tasks.forEach(function(task) {
       task.correct = [];
       if (task.isCompleted) {
         task.correct = task.type < 3
@@ -219,27 +217,5 @@ ResultsUtility.prototype.initScorepage = function()
   
   handleProgressBars();
   
-  /**********************
-      RESET TEST
-  **********************/
-
-  $('#retryModal').on('hidden.bs.modal', function()
-  {
-    if (store.reset) { init(); }
-  });
-  
-  $('.btn-modal-retry').click( function()
-  {
-    store.themes = null;
-    store.stats = null;
-    store.currentTheme = 0;
-    store.currentTask = 0;
-    store.addTaskLines = [];
-    store.reset = true;
-    $('#retryModal').modal('hide');
-  });
-  
   updateLanguage(store.currentLang, 'results');
-  
-//  NOT IMPLEMENTED $('.btn-close').click( function(){ });
 }

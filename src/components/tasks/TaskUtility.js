@@ -104,7 +104,7 @@
     $('.tasks-remaining').next().text(this.store.stats.completedTasks);
   };
   /*
-   * @function buildTasksInTheme
+   * @function buildTasks
    * @desc For each task in theme: build task,
            Attach event handler to window for toggle popovers
    * @param {number} theme number
@@ -138,8 +138,9 @@
    */
   public.utility.prototype.goto = function( nextTaskNum, noTransition)
   {
+
     var nextTaskNum = parseInt(nextTaskNum),
-        tasksInTheme = this.store.tasks.length - 1,
+        totalTasks = this.store.tasks.length - 1,
 
         dir = (nextTaskNum - this.store.currentTask) > 0 ? 1 : -1,
         offset = ( $('.task-container').width() / 2 ) * dir + 'px',
@@ -163,9 +164,10 @@
 
     if (!noTransition)
     {
-      if (typeof handleBounds(nextTaskNum, tasksInTheme) === 'number')
+      if (typeof handleBounds(nextTaskNum, totalTasks) === 'number')
       {
-        this.store.currentTask = handleBounds(nextTaskNum, tasksInTheme);
+        console.log('handleBounds', nextTaskNum, totalTasks);
+        this.store.currentTask = handleBounds(nextTaskNum, totalTasks);
       }
       else
       {
@@ -194,15 +196,14 @@
         $('.hint-text').velocity(
           { width: 0, opacity: 0 },
           { duration: 200, easing: 'easeOut' });
+
+        this.store.currentTask = nextTaskNum;
+        $('.task .custom-btn').attr('tabindex', -1);
+        $target.find('.custom-btn').attr('tabindex', 0);
+        $('.task-mark.selected').removeClass('selected');
+        $('.task-mark_' + nextTaskNum ).addClass('selected');
       }
     }
-    this.store.currentTask = nextTaskNum;
-
-    $('.task .custom-btn').attr('tabindex', -1);
-    $target.find('.custom-btn').attr('tabindex', 0);
-    $('.task-mark.selected').removeClass('selected');
-    $('.task-mark_' + nextTaskNum ).addClass('selected');
-
     $disable.prop('disabled', true);
     setTimeout(function() { $disable.prop('disabled', false); }, 500 );
   };

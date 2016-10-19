@@ -85,7 +85,7 @@ $( document ).ready( function() {
           public.animateClick,
           public.timer);
 
-        public.taskDots.add(public.store.tasks.length, public.task.goto);
+        public.taskDots.add(public.store.tasks.length, public.task.goto.bind(public.task));
 
         public.info.init( public.store );
 

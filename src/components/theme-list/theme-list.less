@@ -2,22 +2,25 @@
 {
   height: 50%;
   background-color: @bg-header;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
-.theme-list .task-table
+.theme-list .mark-container
 {
   position: relative;
-  margin-top: 10px;
+  width: 80%;
+  height: 80%;
+  margin: 10px auto;
+  padding-top: 10px;
+  overflow-y: scroll;
 }
 
 .theme-list .task-mark
 {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-  z-index: 1;
+  float: left;
+  z-index: 2;
+  height: 20px;
+  width: 20px;
+  margin-left: 15px;
   
   background-color: white;
   border: 1px solid #333;
@@ -36,20 +39,6 @@
 .theme-list .task-mark:hover
 {
   transform: scale(1.4);
-}
-
-.theme-list td.connected
-{
-  position: relative;
-}
-
-.theme-list td.connected:before
-{
-  position: absolute;
-  content: '';
-  width: 50px;
-  top: 15px;
-  border-top: 3px solid #ccc;
 }
 
 .finished

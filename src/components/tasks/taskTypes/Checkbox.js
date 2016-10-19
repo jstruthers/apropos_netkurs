@@ -69,7 +69,7 @@
 
 	public.task.prototype.init = function()
 	{
-	  var $task = $( '<div class="task task_' + this.taskId[1] + '">'),
+	  var $task = $( '<div class="task task_' + this.taskId + '">'),
 	      $row = $('<div></div>'),
 	      $header = $(  '<div class="col-xs-12">'
 	                  + '<h4 class="question">'

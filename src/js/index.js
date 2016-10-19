@@ -1,7 +1,7 @@
 $( document ).ready( function() {
 
     // Module
-    var RandomTest = (function () {
+    (function () {
       var public = {},
           // Private Properties
           loaded = 0,
@@ -23,64 +23,40 @@ $( document ).ready( function() {
 
       public.pages = {
         main: [
-          ['#left_bar', './html/theme.html'],
-          ['#left_bar', './html/info-panel.html'],
-          ['.right-panel', './html/main-nav.html'],
-          ['.nav-bar', './html/hint.html']
+          ['.left-bar', './html/theme.html'],
+          ['.left-bar', './html/info-panel.html'],
+          ['.right-panel', './html/main-nav.html']
         ],
-        score: [
-          ['#randomTest', './html/scorepage.html'],
-          ['#randomTest', './html/score-nav.html'],
+        result: [
+          ['#random_test', './html/scorepage.html'],
+          ['#random_test', './html/score-nav.html'],
           ['.nav-bar', './html/key.html'],
           ['.nav-bar', './html/retry.html']
         ]                                
       };
 
-      function getModule (prop, url) {
-          $.ajax({
-            url: url,
-            success: function(data) { public[prop] = eval(data); loaded += 1;},
-            error: function(err) { console.log(err); },
-            dataType: "text"
-          });
-      }
-
-      function getPages(group) {
+      public.asyncLoop = function(arr, func, endLoop) {
         var i = 0,
-            arr = public.pages[group],
             loop = function() {
               $.ajax({
                 url: arr[i][1],
+                dataType: 'text',
+                error: function(err) { console.log(err); },
                 success: function(data) {
-                  loaded += 1;
-                  if (i < arr.length - 1) {
-                    $(arr[i][0]).append( $(data) );
-                    i += 1;
-                    loop();
-                  }
-                },
-                error: function(err) { console.log(err); }
+                  if ( i < arr.length - 1) { func(i, data); i += 1; loop(); }
+                  else { func(i, data); endLoop(); }
+                }
               });
             };
         loop();
-      }
-
-      scripts.forEach( function(el) { getModule( el[0], el[1] ); });
-      getPages('main');
-
-      $( document ).ajaxComplete(function() {
-        if (loaded === (scripts.length + public.pages.main.length)) { initStore(); }
-      });
-
-      public.updateLanguage = function(langID, langBlock)
-      {
-        for (var term in this.langData[langID][langBlock])
-        {
-          $(term).text(this.langData[langID][langBlock][term]);
-        }
       };
 
-      function animateClick($el)
+      public.updateLanguage = function(langBlock)
+      {
+        for (var term in langBlock) { $(term).text(langBlock[term]); }
+      };
+
+      public.animateClick = function($el)
       {
         $el.velocity({
           backgroundColor: '#C0C0C0',
@@ -91,12 +67,58 @@ $( document ).ready( function() {
         }, {
           duration: 150
         }).velocity('reverse');
-      }
+      };
 
-      function initStore()
+      public.buildMain = function()
       {
+        public.timer = new public.timer.utility( public.store );
+
+        public.task = new public.task.utility(
+          public.store,
+          public.check, public.match, public.radio,
+          public.animateClick);
+
+        public.result = new public.result.utility(
+          public.store,
+          public.asyncLoop,
+          public.updateLanguage,
+          public.animateClick,
+          public.timer);
+
+        public.taskDots.add(public.store.tasks.length, public.task.goto);
+
+        public.info.init( public.store );
+
+        public.task.buildTasks();
+
+        public.mainNav.init(
+          public.store,
+          public.animateClick,
+          public.task.goto.bind(public.task),
+          public.timer,
+          public.result.goto.bind(public.result));
+
+        public.task.togglePopover($('.optText, .match-label'));
+        
+        public.updateLanguage(public.langData[public.store.currentLang].main);
+        $('.toggle-lang').click( function()
+        {
+          public.store.currentLang = public.store.currentLang > 0 ? 0 : 1;
+          public.updateLanguage(public.langData[public.store.currentLang].main);
+          public.animateClick($(this));
+        });
+      };
+
+      public.initStore = function()
+      {
+        $('.loading-screen').velocity({
+          opacity: 0
+        }, { duration: 200, complete: function() { $('.loading-screen').hide() }});
+
         public.store.reset = false;
         public.store.randomJSON = public.feed;
+        public.store.langData = public.langData;
+        public.store.pages = public.pages;
 
         public.store.stats = {
           testTitle: public.feed.testInfo,
@@ -129,26 +151,18 @@ $( document ).ready( function() {
           };
         });
 
-        buildMain();
+        this.buildMain();
       }
 
-      function buildMain()
-      {
-        public.task = new public.task.utility(public.store, public.check, public.match, public.radio, animateClick);
-        public.timer = new public.timer.utility( public.store.stats.durationTime, public.store.stats.alertTime );
-        public.taskDots.add(public.store.tasks.length);
-        public.task.buildTasksInTheme();
-        public.mainNav.init(public.store, animateClick, public.task.goto.bind(public.task));
-        public.task.togglePopover($('.optText, .match-label'));
-        
-        public.updateLanguage(public.store.currentLang, 'main');
-        $('.toggle-lang').click( function()
-        {
-          store.currentLang = store.currentLang > 0 ? 0 : 1;
-          self.updateLanguage(store.currentLang, 'main');
-          self.animateClick($(this));
-        });
-      }
+      public.asyncLoop(
+        scripts,
+        function(i, data) { public[scripts[i][0]] = eval(data); },
+        function() { public.asyncLoop(
+          public.pages['main'],
+          function(i, data) { $(public.pages['main'][i][0]).append( $(data) ); },
+          function() { public.initStore(); }
+        );}
+      );
 
       return public;
     })();

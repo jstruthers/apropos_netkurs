@@ -1,9 +1,4 @@
-@import url('./match.css');
-
-.task-template
-{
-  display: none;
-}
+@import url('./match.less');
 
 .task-container
 {
@@ -11,7 +6,7 @@
   top: 0;
   left: 0;
   overflow: hidden;
-  height: 505px;
+  height: 470px;
   border-right: 2px solid lightgray;
 }
 
@@ -24,7 +19,6 @@
   top: 0;
   overflow-y: scroll;
   background-color: white;
-  
   z-index: -2;
 }
 
@@ -104,19 +98,13 @@
   vertical-align: middle;
   
   opacity: 0;
-  -webkit-transform: scale(0);
   transform: scale(0);
-  -webkit-transition: opacity 0.2s, -webkit-transform 0.3s cubic-bezier(.42, 0, .38, 1.47);
-  transition: opacity 0.2s, -webkit-transform 0.3s cubic-bezier(.42, 0, .38, 1.47);
   transition: opacity 0.2s, transform 0.3s cubic-bezier(.42, 0, .38, 1.47);
-  transition: opacity 0.2s, transform 0.3s cubic-bezier(.42, 0, .38, 1.47), -webkit-transform 0.3s cubic-bezier(.42, 0, .38, 1.47);
-  transition: opacity 0.2s, transform 0.3s cubic-bezier(.42, 0, .38, 1.47), -webkit-transform 0.5s cubic-bezier(.42, 0, .38, 1.47);
 }
 
 .task .options .visible
 {
   opacity: 1 !important;
-  -webkit-transform: scale(1) !important;
   transform: scale(1) !important;
 }
 

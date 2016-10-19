@@ -38,10 +38,11 @@ gulp.task("copy-index", ["copy-html"], function () {
 });
 
 gulp.task('less', ["copy-index"], function () {
-    return gulp.src('./src/**/*.less')
+    return gulp.src('./src/index.less')
 	    .pipe(plumber())
 	    .pipe(less({
-	      plugins: [autoprefix]
+	    	paths: ['./src/**/*.less'],
+	      	plugins: [autoprefix]
 	    }))
 	    // .pipe(cssmin())
 	    // .pipe(rename({suffix: '.min'}))

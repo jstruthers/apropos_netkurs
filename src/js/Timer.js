@@ -1,12 +1,12 @@
 (function () {
   var public = {};
 
-  public.utility = function(store, startTime, alertTime)
+  public.utility = function(store)
     {
       this.store = store;
-      this.startTime = startTime;
-      this.total = startTime;
-      this.alertTime = startTime - alertTime;
+      this.startTime = store.stats.durationTime;
+      this.total = store.stats.durationTime;
+      this.alertTime = store.stats.alertTime;
       this.interval = null;
       this.timeString = "";
       this.init();

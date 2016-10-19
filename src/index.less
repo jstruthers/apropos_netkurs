@@ -1,13 +1,48 @@
-@import url('./components/info-panel/info-panel.css');
-@import url('./components/results/scorepage.css');
-@import url('./components/tasks/tasks.css');
-@import url('./components/theme-list/theme-list.css');
+/*************************************
+    VARIABLES
+**************************************/
+
+@white: white;
+@light-gray: #EFEFEF;
+@mid-gray: #C3C3C3;
+
+@blue_0: #2F344B;
+@blue_1: #191970;
+@blue_2: #4682B4;
+@blue_3: #1E90FF;
+@blue_4: #B0C4DE;
+@blue_5: #87CEEB;
+@blue_6: #F8F8FF;
+
+@bg-main: @white;
+@bg-header: @light-gray;
+@bg-task-body: @blue_4;
+@bg-sub-header: @blue_2;
+@bg-btn: @blue_6;
+
+@border-color: #E0E0E0;
+@btn-border-1: @border-color;
+@btn-border-2: @border-color - 111;
+
+@title-color: @blue_1;
+@sub-title-color: @white;
 
 body
 {
   position: relative;
   cursor: default;
   font-size: 1em;
+}
+
+.main-content
+{
+  padding: 5%;
+}
+
+h1, h2, h3, h4, h5, h6, ul, p
+{
+  margin: 0;
+  padding: 0;
 }
 
 .loading-screen
@@ -17,7 +52,7 @@ body
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: white;
+  background-color: @bg-main;
   z-index: 20;
 }
 
@@ -27,50 +62,16 @@ body
   width: 8rem;
   margin: auto;
   margin-top: 200px;
-  color: steelblue;
+  color: @blue_1;
   font-size: 6rem;
-}
-
-.header .toggle-lang
-{
-  position: absolute;
-  left: 20px;
-  top: -40px;
-  height: 40px;
-  font-size: 2rem;
-  padding: 5px;
-  background-color: ghostwhite;
-  border: 2px solid steelblue;
-  border-radius: 5px;
-}
-
-.header .toggle-lang:hover
-{
-  cursor: pointer;
-}
-
-.main-content
-{
-	padding: 5%;
-}
-
-h1, h2, h3, h4, h5, h6, ul, p
-{
-  margin: 0;
-  padding: 0;
-}
-
-.right-panel .row
-{
-  margin: 0;
 }
 
 .header
 {
-	background-color: #EFEFEF;
-  border-bottom: 5px solid lightgray;
+  background-color: @bg-header;
+  border-bottom: 5px solid @border-color;
   min-height: 60px;
-	color: #3E5A83;
+  color: @title-color;
   margin: 0;
 }
 
@@ -90,12 +91,45 @@ h1, h2, h3, h4, h5, h6, ul, p
   font-size: 1.8rem;
 }
 
+.header .toggle-lang
+{
+  position: absolute;
+  left: 20px;
+  top: -40px;
+  height: 40px;
+  font-size: 2rem;
+  padding: 5px;
+  background-color: @blue_5;
+  border: 2px solid @blue_2;
+  border-radius: 5px;
+}
+
+.header .toggle-lang:hover
+{
+  cursor: pointer;
+}
+
+.right-panel
+{
+  height: 600px;
+}
+
+.right-panel .row
+{
+  margin: 0;
+}
+
+.left-bar
+{
+  height: 600px;
+}
+
 .sub-header
 {
   text-align: center;
-  background-color: steelblue;
-  border-bottom: 5px solid lightgray;
-  color: white;
+  background-color: @bg-sub-header;
+  border-bottom: 5px solid @border-color;
+  color: @sub-title-color;
   font-weight: 100;
   min-height: 60px;
   padding: 10px 0;
@@ -144,11 +178,17 @@ h1, h2, h3, h4, h5, h6, ul, p
   margin: 0 auto;
 
   border-radius: 5px;
-  background-color: ghostwhite;
-  border-top: 3px solid lightgray;
-  border-left: 3px solid lightgray;
-  border-right: 3px solid gray;
-  border-bottom: 3px solid gray;
+  background-color: @bg-btn;
+  border-top: 3px solid @btn-border-1;
+  border-left: 3px solid @btn-border-1;
+  border-right: 3px solid @btn-border-2;
+  border-bottom: 3px solid @btn-border-2;
+}
+
+.custom-btn span.fa
+{
+  width: 20px;
+  height: 20px;
 }
 
 .custom-btn:hover
@@ -168,7 +208,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   text-align: center;
   border-radius: 50%;
   font-size: 2.5rem;
-  color: midnightblue;
+  color: @title-color;
 }
 
 .nav-bar .hint .hint-text
@@ -186,8 +226,8 @@ h1, h2, h3, h4, h5, h6, ul, p
   overflow: hidden;
 
   border-radius: 5px;
-  background-color: ghostwhite;
-  border: 3px solid steelblue;
+  background-color: @bg-btn;
+  border: 3px solid @bg-sub-header;
 }
 
 /*************************************
@@ -200,8 +240,8 @@ h1, h2, h3, h4, h5, h6, ul, p
   margin: 0;
   height: 65px;
   padding-top: 10px;
-  background-color: #EFEFEF;
-  border-top: solid lightgray 5px;
+  background-color: @bg-header;
+  border-top: solid @border-color 5px;
 }
 
 .nav-bar .nav-btn
@@ -214,8 +254,13 @@ h1, h2, h3, h4, h5, h6, ul, p
 
 .nav-bar .nav-btn:hover
 {
-  color: steelblue;
+  color: @bg-sub-header;
 }
+
+@import url('./components/info-panel/info-panel.less');
+@import url('./components/results/scorepage.less');
+@import url('./components/tasks/tasks.less');
+@import url('./components/theme-list/theme-list.less');
 
 /*************************************
     @MEDIA
@@ -274,7 +319,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   
   .task-container
   {
-    border-left: 2px solid lightgray;
+    border-left: 2px solid @border-color;
   }
 }
 

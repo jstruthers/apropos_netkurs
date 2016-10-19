@@ -11,7 +11,7 @@
 	    event.preventDefault();
 	    var $hintText = $('.hint-text'),
 	        maxWidth = $('.task-container').width() * 0.8;
-	    $('.hint-text p').width(maxWidth - 20).text( store.getCurTask().hint );
+	    $('.hint-text p').width(maxWidth - 20).text( store.tasks[store.currentTask].hint );
 	    $hintText.css('opacity') < 1
 	      ? $hintText.velocity({
 	          width: maxWidth,
@@ -37,7 +37,6 @@
 
 	  $('.nav-bar .btn-send').click( function(event)
 	  {
-	  	console.log(store)
 	    event.preventDefault();
 	    timer.stop();
 	    gotoScorepage();

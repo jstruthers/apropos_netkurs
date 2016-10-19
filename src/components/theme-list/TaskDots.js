@@ -21,15 +21,17 @@
                       .css({ width: tmW, height: tmW }),
 
         $row = $('<tr></tr>');
+        console.log(specs);
 
     for (var i = 0; i < specs.numTasks; i += 1)
     {
-      var $newCell = $cell.clone().attr('align', 'center')
-                          .addClass('connected'),
+      var $newCell = $cell.clone().attr('align', 'center'),
 
           $newMark = $taskMark.clone(),
 
           taskNum = specs.fullRow * specs.rowNum + i;
+
+      if (i < specs.numTasks - 1) { $newCell.addClass('connected'); }
       
       $newMark.addClass('task-mark_' + taskNum);
 
@@ -37,7 +39,7 @@
 
       if (taskNum === 0) { $newMark.addClass('selected'); }
 
-      $newMark.click(function(e) { gotoTask( $(this).attr('data-taskNum') ); });
+      $newMark.click(function(e) { specs.goto( $(this).attr('data-taskNum') ); });
 
       $newCell.append($newMark);
 
@@ -47,11 +49,13 @@
     return $row;
   }
 
-  public.add = function(tasks)
+  public.add = function(tasks, goto)
   {
     var cellWidth = 50,
 
-        itemsInRow = Math.floor( $('#left_bar').width() / cellWidth ),
+        $table = $('<table class="task-table"></table>');
+
+        itemsInRow = Math.floor( $('.left-bar').width() / cellWidth ),
 
         rows = Math.ceil(tasks / itemsInRow),
 
@@ -59,7 +63,8 @@
 
         specs = {
           cellWidth: cellWidth,
-          fullRow: itemsInRow
+          fullRow: itemsInRow,
+          goto: goto
         };
 
     for (var i = 0; i < rows; i += 1)
@@ -67,9 +72,13 @@
       remainder && (i === rows - 1)
         ? specs.numTasks = remainder
         : specs.numTasks = itemsInRow;
+      specs.rowNum = i;
+
+
       
-      $(".theme-list").append(buildTaskRow( specs ));
+      $table.append(buildTaskRow( specs ));
     }
+    $(".theme-list").append($table);
   };
 
   return public;

@@ -8,6 +8,37 @@
     this.Radio = Radio.task;
     this.animateClick = animateClick;
   }
+
+  /*
+   * @function buildTask
+   * @desc Add object property to task item in STORE,
+           Initialize task object,
+           Append $(task) node to DOM
+   * @param {number} theme number,
+            {number} task number
+   */
+  buildTask = function (taskNum, utility)
+  {
+    var task = utility.store.tasks[taskNum];
+
+    switch( task.type ) {
+      case 1 :
+        task.obj = new utility.Radio( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+      case 2 :
+        task.obj = new utility.Check( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+      case 3 :
+        task.obj = new utility.Match( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+    }
+
+    var $task = task.obj.init();
+
+    /***   RAISE FIRST TASK TO TOP   ***/
+    if ( taskNum === 0 ) { $task.css('z-index', 0) }
+    $('.task-container').append( $task );
+    // if ( task.type === 3 ) {
+    //   task.obj.componentsInit(task.obj, task.obj.getParent());
+    // }
+  }
    /*
    * @function togglePopover
    * @desc On window resize, check whether popover should display on mouseover
@@ -73,42 +104,12 @@
     $('.tasks-remaining').next().text(this.store.stats.completedTasks);
   };
   /*
-   * @function buildTask
-   * @desc Add object property to task item in STORE,
-           Initialize task object,
-           Append $(task) node to DOM
-   * @param {number} theme number,
-            {number} task number
-   */
-  public.utility.prototype.buildTask = function (taskNum)
-  {
-    var task = this.store.tasks[taskNum];
-
-    switch( task.type ) {
-      case 1 :
-        task.obj = new this.Radio( task, taskNum, this.animateClick, this.checkCompleted ); break;
-      case 2 :
-        task.obj = new this.Check( task, taskNum, this.animateClick, this.checkCompleted ); break;
-      case 3 :
-        task.obj = new this.Match( task, taskNum, this.animateClick, this.checkCompleted ); break;
-    }
-
-    var $task = task.obj.init();
-
-    /***   RAISE FIRST TASK TO TOP   ***/
-    if ( taskNum === 0 ) { $task.css('z-index', 0) }
-    $('.task-container').append( $task );
-    // if ( task.type === 3 ) {
-    //   task.obj.componentsInit(task.obj, task.obj.getParent());
-    // }
-  }
-  /*
    * @function buildTasksInTheme
    * @desc For each task in theme: build task,
            Attach event handler to window for toggle popovers
    * @param {number} theme number
    */
-  public.utility.prototype.buildTasksInTheme = function()
+  public.utility.prototype.buildTasks = function()
   {
     var i = this.store.tasks.length - 1;
     
@@ -116,7 +117,7 @@
 
     for (i; i >= 0; i -= 1)
     {
-      this.buildTask(i);
+      buildTask(i, this);
     }
 
     $( window ).resize( function()

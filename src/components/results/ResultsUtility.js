@@ -44,7 +44,7 @@
               }
               else {
                 if (!answer.isSelected) {
-                  answer.isSelected = this.store.langData[this.store.currentLang].misc.matchIncomplete;
+                  answer.isSelected = this.langData[this.currentLang].misc.matchIncomplete;
                 }
                 answer.markWrong = true; return false;
               }
@@ -53,8 +53,8 @@
 
       task.correct = task.correct.reduce( function( prev, curr ) { return prev && curr  }, true);
 
-      if (task.correct) { theme.totalCorrect += 1; }
-    });
+      if (task.correct) { this.totalCorrect += 1; }
+    }.bind(this.store));
   };
 
   public.utility.prototype.buildAnswerKey = function()
@@ -124,7 +124,7 @@
     });
   }
 
-  public.utility.prototype.handleProgressBars = function()
+  public.utility.prototype.handleTotalBar = function()
   {
 
   //***   BUILD TOTAL BAR   ***//
@@ -135,10 +135,12 @@
         + ' <text class="percent-completed" text-anchor="middle" x="50%" y="55%">0%</text></g></svg>'));
     
   //***   GET TOTAL FILL VALUE   ***//
-    console.log($('.total-bar path:nth-child(2)'))
+
     var len = $('.total-bar path:nth-child(2)')[0].getTotalLength(),
-        totalFactor = totalCorrect ? totalCorrect / this.store.stats.numTasks : 0,
+        totalFactor = this.store.totalCorrect ? this.store.totalCorrect / this.store.stats.numTasks : 0,
         totalFill = len - (len * totalFactor);
+
+        console.log();
 
     $('.total-bar path:nth-child(2)').css(
       {'stroke-dasharray': len + ',' + len, 'stroke-dashoffset': len}
@@ -146,7 +148,7 @@
     
   //***   ANIMATE BARS   ***//
 
-    var trackProgress = function($el, f, el, c) { $el.text( Math.floor(f * c * 100) + '%'); };
+    var trackProgress = function($el, f, el, c) { console.log($el.siblings('path').css('stroke-dashoffset')); $el.text( Math.floor(f * c * 100) + '%'); };
     
     $('.total-bar')
       .velocity({ 'stroke-dashoffset': totalFill },
@@ -170,7 +172,7 @@
       + '<span class="time-result">&nbsp;' + this.timer.timeString + '</span></h4>');
     $timeResult.insertBefore('.theme-scores');
     
-    // this.handleProgressBars();
+    this.handleTotalBar();
     
     this.updateLanguage(this.store.langData[this.store.currentLang].results);
     $('.toggle-lang').click( function()

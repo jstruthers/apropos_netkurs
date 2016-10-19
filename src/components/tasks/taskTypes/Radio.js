@@ -18,7 +18,7 @@
 
   public.task.prototype.handleClick = function (index, event)
   {
-    var $thisIcon = getParent().find('.optIcon span').eq(index);
+    var $thisIcon = this.getParent().find('.optIcon span').eq(index);
     
     this.animateClick($thisIcon.parents('.answer-btn'));
     
@@ -31,7 +31,7 @@
       .children()
         .removeClass( 'visible' );
 
-    this.checkCompleted( index, storeTask );
+    this.checkCompleted( index, this.storeTask );
   }
 
   public.task.prototype.buildOption = function(index, option)

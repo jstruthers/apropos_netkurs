@@ -23,11 +23,11 @@
 
     switch( task.type ) {
       case 1 :
-        task.obj = new utility.Radio( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+        task.obj = new utility.Radio( task, taskNum, utility.animateClick, utility.checkCompleted.bind(utility) ); break;
       case 2 :
-        task.obj = new utility.Check( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+        task.obj = new utility.Check( task, taskNum, utility.animateClick, utility.checkCompleted.bind(utility) ); break;
       case 3 :
-        task.obj = new utility.Match( task, taskNum, utility.animateClick, utility.checkCompleted ); break;
+        task.obj = new utility.Match( task, taskNum, utility.animateClick, utility.checkCompleted.bind(utility) ); break;
     }
 
     var $task = task.obj.init();
@@ -70,7 +70,7 @@
    */
   public.utility.prototype.checkCompleted = function( answerIndex, task, matchAnswer )
   {
-    var $taskMark = $('.task-mark_' + this.store.currentTask + '_' + this.store.currentTheme),
+    var $taskMark = $('.task-mark_' + this.store.currentTask),
         curAnswer = task.answers[answerIndex].isSelected,
         newAnswer = task.type === 3 ? matchAnswer : true;
 

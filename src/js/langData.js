@@ -13,7 +13,7 @@
 
         ".info-panel .sub-header":"STATISTICS",
         ".info-panel .num-tasks":"Total Task Count",
-        ".info-panel .tasks-remaining":"Remaining Tasks",
+        ".info-panel .tasks-remaining":"Completed Tasks",
         ".info-panel .pass-requirement":"Pass Requirement",
         ".info-panel .test-mode":"Test mode"
       },
@@ -70,7 +70,7 @@
 
         ".info-panel .sub-header":"STATISTIKK",
         ".info-panel .num-tasks":"Oppgaver totalt",
-        ".info-panel .tasks-remaining":"Gjenstående oppgaver",
+        ".info-panel .tasks-remaining":"Fullført oppgaver",
         ".info-panel .pass-requirement":"Krav til å bestå",
         ".info-panel .test-mode":"Testmodus"
       },
@@ -79,7 +79,7 @@
         ".scorepage .username-heading":"Brukernavn",
         ".scorepage .time":"Tid :",
         ".scorepage .time-result-heading":"Tid forløpt :",
-        ".scorepage .theme-results-title": "Oppgaver Resultat",
+        ".scorepage .task-stats-title": "Oppgaver Resultat",
         ".scorepage .total-title": "Total",
         ".scorepage .results-title": "Testresultat",
         "#retryModalLabel": "Prøv Igjen",

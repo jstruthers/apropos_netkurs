@@ -13,7 +13,7 @@
 
 	public.task.prototype.getParent = function()
 	{
-	  return $('.task_' + taskId);
+	  return $('.task_' + this.taskId);
 	};
 
 	public.task.prototype.handleClick = function(index, event)

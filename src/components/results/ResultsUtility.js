@@ -59,20 +59,19 @@
 
   public.utility.prototype.buildAnswerKey = function()
   {
-    var $keyWrapper = $('<div class="col-xs-12"></div>'),
-        $keyBody = $('<div class="answer-key"></div>');
+    var $keyWrapper = $('<div class="col-xs-12"></div>');
     
     this.grade();
 
     this.store.tasks.forEach( function( task )
     {
-      $keyBody.children().eq(0).append( $keyWrapper.clone().append($(
-        '<div class="question">'
-        + '<p><span class="first-label">Task ID:</span> ' + task.id + '</p>'
-        + '<p><span class="second-label">Question:</span> ' + task.question + '</p>'
-        + '</div>')));
+      var $qHeader = $keyWrapper.clone().append($(
+                        '<div class="question">'
+                        + '<p><span class="first-label">Task ID:</span> ' + task.id + '</p>'
+                        + '<p><span class="second-label">Question:</span> ' + task.question + '</p>'
+                        + '</div>')),
 
-      var getIcon = function(check)
+          getIcon = function(check)
           {
             if (task.type === 2)
               { if (check) { return 'fa-check-square'; } else { return 'fa-square'; }
@@ -115,14 +114,14 @@
           + 'This question was left incomplete</span></p>'));
       }
 
-      $answerContainer.append(
-        $('<div class="row"></div>').append(
-          $answer, $correct ));
-      $keyBody.children().eq(0).append(
-        $keyWrapper.clone().append( $answerContainer ));
+      var $qBody = $keyWrapper.clone().append(
+          $answerContainer.append(
+              $('<div class="row"></div>').append(
+                  $answer, $correct )));
+      $('#answerModal .modal-body').append(
+          $('<div class="row"></div>').append( $qHeader, $qBody ));
+                  
     });
-    
-    $('#answerModal .modal-body').append( $keyBody );
   }
 
   public.utility.prototype.handleProgressBars = function()

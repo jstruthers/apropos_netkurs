@@ -41,7 +41,6 @@ gulp.task('less', ["copy-index"], function () {
     return gulp.src('./src/index.less')
 	    .pipe(plumber())
 	    .pipe(less({
-	    	paths: ['./src/**/*.less'],
 	      	plugins: [autoprefix]
 	    }))
 	    // .pipe(cssmin())

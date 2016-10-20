@@ -11,11 +11,10 @@
 
   public.utility.prototype.goto = function()
   {
-    $("#random_test .row").html("");
-
+    $("#random_test .row.no-gutter").html("");
     this.asyncLoop(
       this.store.pages.result,
-      function(i, data) { $(this.store.pages.result[i][0]).append( $(data) ); console.log($(this.store.pages.result[i][0])); }.bind(this),
+      function(i, data) { $(this.store.pages.result[i][0]).append( $(data) ); }.bind(this),
       function() { this.initScorepage(); }.bind(this)
     );
   };
@@ -140,17 +139,15 @@
         totalFactor = this.store.totalCorrect ? this.store.totalCorrect / this.store.stats.numTasks : 0,
         totalFill = len - (len * totalFactor);
 
-        console.log();
-
     $('.total-bar path:nth-child(2)').css(
       {'stroke-dasharray': len + ',' + len, 'stroke-dashoffset': len}
     );
     
   //***   ANIMATE BARS   ***//
 
-    var trackProgress = function($el, f, el, c) { console.log($el.siblings('path').css('stroke-dashoffset')); $el.text( Math.floor(f * c * 100) + '%'); };
+    var trackProgress = function($el, f, el, c) { $el.text( Math.floor(f * c * 100) + '%'); };
     
-    $('.total-bar')
+    $('.total-bar path:nth-child(2)')
       .velocity({ 'stroke-dashoffset': totalFill },
       {
         duration: 1000,
@@ -170,16 +167,21 @@
     var $timeResult = $(
       '<h4><span class="time-result-heading">Time taken: </span>'
       + '<span class="time-result">&nbsp;' + this.timer.timeString + '</span></h4>');
-    $timeResult.insertBefore('.theme-scores');
+
+    $('.task-stats').append($timeResult);
     
     this.handleTotalBar();
     
     this.updateLanguage(this.store.langData[this.store.currentLang].results);
+    $('.toggle-lang').remove('click');
     $('.toggle-lang').click( function()
     {
-      self.store.currentLang = self.store.currentLang > 0 ? 0 : 1;
-      this.updateLanguage(this.store.langData[this.store.currentLang].results);
-      $('.time-result').text(' ' + self.store.timer.formatTime('l'));
+      var store = self.store;
+
+      store.currentLang = store.currentLang === 0 ? 1 : 0;
+      console.log(store.currentLang)
+      self.updateLanguage(store.langData[store.currentLang].results);
+      $('.time-result').text(' ' + store.timer.formatTime('l'));
       self.animateClick($(this));
     });
   }

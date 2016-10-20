@@ -6,32 +6,33 @@ $( document ).ready( function() {
           // Private Properties
           loaded = 0,
           scripts = [
-            ['feed', './js/JsonRandomTest.js'],
-            ['store', './js/store.js'],
-            ['langData', './js/langData.js'],
-            ['info', './js/components/info-panel.js'],
-            ['timer', './js/Timer.js'],
-            ['task', './js/components/TaskUtility.js'],
-            ['taskDots', './js/components/TaskDots.js'],
-            ['result', './js/components/ResultsUtility.js'],
-            ['check', './js/components/Checkbox.js'],
-            ['radio', './js/components/Radio.js'],
-            ['match', './js/components/Match.js'],
-            ['mainNav', './js/components/main-nav.js'],
-            ['scoreNav', './js/components/score-nav.js']
+            ['feed',      './js/JsonRandomTest.js'],
+            ['store',     './js/store.js'],
+            ['langData',  './js/langData.js'],
+            ['info',      './js/components/infoPanel.js'],
+            ['timer',     './js/components/Timer.js'],
+            ['task',      './js/components/TaskUtility.js'],
+            ['taskDots',  './js/components/TaskDots.js'],
+            ['result',    './js/components/ResultsUtility.js'],
+            ['check',     './js/components/Checkbox.js'],
+            ['radio',     './js/components/Radio.js'],
+            ['match',     './js/components/Match.js'],
+            ['mainNav',   './js/components/mainNav.js'],
+            ['scoreNav',  './js/components/scoreNav.js']
           ];
 
       public.pages = {
         main: [
-          ['.left-bar', './html/theme.html'],
-          ['.left-bar', './html/info-panel.html'],
-          ['.right-panel', './html/main-nav.html']
+          ['.right-panel .header .row',   './html/timer.html'],
+          ['.left-bar',                   './html/theme.html'],
+          ['.left-bar',                   './html/info-panel.html'],
+          ['.right-panel',                './html/main-nav.html']
         ],
         result: [
-          ['#random_test', './html/scorepage.html'],
-          ['#random_test', './html/score-nav.html'],
-          ['.nav-bar', './html/key.html'],
-          ['.nav-bar', './html/retry.html']
+          ['#random_test .row.no-gutter',  './html/scorepage.html'],
+          ['#random_test .row.no-gutter',  './html/score-nav.html'],
+          ['.nav-bar',                     './html/key.html'],
+          ['.nav-bar',                     './html/retry.html']
         ]                                
       };
 
@@ -71,7 +72,7 @@ $( document ).ready( function() {
 
       public.buildMain = function()
       {
-        public.timer = new public.timer.utility( public.store );
+        public.store.timer = new public.timer.utility( public.store );
 
         public.task = new public.task.utility(
           public.store,
@@ -83,7 +84,7 @@ $( document ).ready( function() {
           public.asyncLoop,
           public.updateLanguage,
           public.animateClick,
-          public.timer);
+          public.store.timer);
 
         public.taskDots.add(
           public.store.tasks.length,
@@ -97,7 +98,7 @@ $( document ).ready( function() {
           public.store,
           public.animateClick,
           public.task.goto.bind(public.task),
-          public.timer,
+          public.store.timer,
           public.result.goto.bind(public.result));
 
         public.task.togglePopover($('.optText, .match-label'));

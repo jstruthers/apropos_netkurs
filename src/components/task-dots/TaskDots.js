@@ -1,22 +1,19 @@
 (function () {
   var public = {};
 
-  /*
-    append negative z-index div as line that extends as long as the row
-    only a problem with a none full row
-  */
-
   public.add = function(tasks, goto)
   {
-    var $markContainer = $('<div class="mark-container"></div>'),
-
-        $taskMark = $('<button class="task-mark unfinished"></button>');
+    var $taskMark = $('<div class="dot-group">'
+      + '<button class="task-mark unfinished"></button>'
+      + '<span class="connecting-line">'
+      +   '<span class="fa fa-arrow-right"></span></span>'
+      + '</div>');
 
     for (var i = 0; i < tasks; i += 1)
     {
-      var $newMark = $taskMark.clone()
+      var $newMark = $taskMark.clone();
       
-      $newMark.addClass('task-mark_' + i)
+      $newMark.find('button').addClass('task-mark_' + i)
               .attr('data-taskNum', i)
               .attr('tabindex', 0)
               .click( function(e) {
@@ -24,11 +21,10 @@
               });
 
       if (i === 0) { $newMark.addClass('selected'); }
+      else if (i === tasks - 1) { $newMark.children('span').remove(); }
 
-      $markContainer.append($newMark);
+      $(".theme-list .mark-container").append( $newMark );
     }
-
-    $(".theme-list").append($markContainer);
   };
 
   return public;

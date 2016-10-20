@@ -27,7 +27,7 @@
       case 2 :
         task.obj = new utility.Check( task, taskNum, utility.animateClick, utility.checkCompleted.bind(utility) ); break;
       case 3 :
-        task.obj = new utility.Match( task, taskNum, utility.animateClick, utility.checkCompleted.bind(utility) ); break;
+        task.obj = new utility.Match( task, taskNum, utility.checkCompleted.bind(utility) ); break;
     }
 
     var $task = task.obj.init();
@@ -35,9 +35,9 @@
     /***   RAISE FIRST TASK TO TOP   ***/
     if ( taskNum === 0 ) { $task.css('z-index', 0) }
     $('.task-container').append( $task );
-    // if ( task.type === 3 ) {
-    //   task.obj.componentsInit(task.obj, task.obj.getParent());
-    // }
+    if ( task.type === 3 ) {
+      task.obj.componentsInit(task.obj, task.obj.getParent());
+    }
   }
    /*
    * @function togglePopover
@@ -166,7 +166,6 @@
     {
       if (typeof handleBounds(nextTaskNum, totalTasks) === 'number')
       {
-        console.log('handleBounds', nextTaskNum, totalTasks);
         this.store.currentTask = handleBounds(nextTaskNum, totalTasks);
       }
       else

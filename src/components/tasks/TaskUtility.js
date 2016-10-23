@@ -136,7 +136,7 @@
             {boolean} Whether to run the task change animation
                       (Shouldn't animate on theme change)
    */
-  public.utility.prototype.goto = function( nextTaskNum, noTransition)
+  public.utility.prototype.goto = function( nextTaskNum )
   {
 
     var nextTaskNum = parseInt(nextTaskNum),
@@ -145,7 +145,7 @@
         dir = (nextTaskNum - this.store.currentTask) > 0 ? 1 : -1,
         offset = ( $('.task-container').width() / 2 ) * dir + 'px',
 
-        $prev = $('.task_' + (nextTaskNum - dir)),
+        $prev = $('.task_' + this.store.currentTask),
         $target = $('.task_' + nextTaskNum),
         $disable = $('#btn_next, #btn_prev, .task-mark'),
         /*
@@ -162,47 +162,45 @@
           return taskNum;
         };
 
-    if (!noTransition)
+    if (typeof handleBounds(nextTaskNum, totalTasks) === 'number')
     {
-      if (typeof handleBounds(nextTaskNum, totalTasks) === 'number')
-      {
-        this.store.currentTask = handleBounds(nextTaskNum, totalTasks);
-      }
-      else
-      {
-        $prev.append('<div class="fade-screen"></div>');
-        $('.task').css('z-index', -2);
-        $prev.css('z-index', - 1);
-        $target.css({
-          zIndex: 0,
-          top: '50px',
-          opacity: 0,
-          left: offset
-        });
-        $prev.find('.fade-screen').velocity({
-          opacity: 0.2,
-          duration: 750
-        });
-        $target.velocity({
-          left: '0px',
-          top: '0px',
-          scale: [1, 0.8],
-          opacity: 1,
-          duration: 750,
-          easing: 'easeInQuad'
-        });
-        setTimeout( function() { $prev.find('.fade-screen').remove(); }, 1000);
-        $('.hint-text').velocity(
-          { width: 0, opacity: 0 },
-          { duration: 200, easing: 'easeOut' });
-
-        this.store.currentTask = nextTaskNum;
-        $('.task .custom-btn').attr('tabindex', -1);
-        $target.find('.custom-btn').attr('tabindex', 0);
-        $('.task-mark.selected').removeClass('selected');
-        $('.task-mark_' + nextTaskNum ).addClass('selected');
-      }
+      this.store.currentTask = handleBounds(nextTaskNum, totalTasks);
     }
+    else
+    {
+      $prev.append('<div class="fade-screen"></div>');
+      $('.task').css('z-index', -2);
+      $prev.css('z-index', - 1);
+      $target.css({
+        zIndex: 0,
+        top: '50px',
+        opacity: 0,
+        left: offset
+      });
+      $prev.find('.fade-screen').velocity({
+        opacity: 0.2,
+        duration: 750
+      });
+      $target.velocity({
+        left: '0px',
+        top: '0px',
+        scale: [1, 0.8],
+        opacity: 1,
+        duration: 750,
+        easing: 'easeInQuad'
+      });
+      setTimeout( function() { $prev.find('.fade-screen').remove(); }, 1000);
+      $('.hint-text').velocity(
+        { width: 0, opacity: 0 },
+        { duration: 200, easing: 'easeOut' });
+
+      this.store.currentTask = nextTaskNum;
+      $('.task .custom-btn').attr('tabindex', -1);
+      $target.find('.custom-btn').attr('tabindex', 0);
+      $('.task-mark.selected').removeClass('selected');
+      $('.task-mark_' + nextTaskNum ).addClass('selected');
+    }
+
     $disable.prop('disabled', true);
     setTimeout(function() { $disable.prop('disabled', false); }, 500 );
   };

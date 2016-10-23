@@ -8,17 +8,16 @@
     this.animateClick = animateClick;
     this.timer = timer;
   }
-
-  public.utility.prototype.goto = function()
+  public.utility.prototype.goto = function( scoreNav, reset )
   {
+    var store = this.store;
     $("#random_test .row.no-gutter").html("");
     this.asyncLoop(
-      this.store.pages.result,
-      function(i, data) { $(this.store.pages.result[i][0]).append( $(data) ); }.bind(this),
-      function() { this.initScorepage(); }.bind(this)
+      store.pages.result,
+      function(i, data) { $(store.pages.result[i][0]).append( $(data) ); }.bind(this),
+      function() { this.initScorepage(); scoreNav.build(store, reset); }.bind(this)
     );
   };
-
   public.utility.prototype.grade = function()
   {
     this.store.tasks.forEach(function(task) {
@@ -55,7 +54,6 @@
       if (task.correct) { this.totalCorrect += 1; }
     }.bind(this.store));
   };
-
   public.utility.prototype.buildAnswerKey = function()
   {
     var $keyWrapper = $('<div class="col-xs-12"></div>');
@@ -122,7 +120,6 @@
                   
     });
   }
-
   public.utility.prototype.handleTotalBar = function()
   {
 
@@ -157,7 +154,6 @@
         )
       });
   }
-
   public.utility.prototype.initScorepage = function()
   {
     var self = this;
@@ -179,7 +175,7 @@
       var store = self.store;
 
       store.currentLang = store.currentLang === 0 ? 1 : 0;
-      console.log(store.currentLang)
+    
       self.updateLanguage(store.langData[store.currentLang].results);
       $('.time-result').text(' ' + store.timer.formatTime('l'));
       self.animateClick($(this));

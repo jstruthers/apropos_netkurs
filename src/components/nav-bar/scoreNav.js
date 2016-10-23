@@ -2,17 +2,21 @@
 
 	var public = {};
 
-	public.init = function(store) {
+	public.build = function(store, reset) {
+
+		// btn-modal-cancel-retry
+
 		$('#retryModal').on('hidden.bs.modal', function()
 		{
-		  if (store.reset) { init(); }
+			console.log('store in reset func', store)
+		  if (store.reset) { reset(); }
 		});
 		
 		$('.btn-modal-retry').click( function()
 		{
-		  store.themes = null;
+		  console.log('before reset func', store)
+		  store.tasks = null;
 		  store.stats = null;
-		  store.currentTheme = 0;
 		  store.currentTask = 0;
 		  store.addTaskLines = [];
 		  store.reset = true;

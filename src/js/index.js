@@ -70,7 +70,7 @@ $( document ).ready( function() {
         }).velocity('reverse');
       };
 
-      public.buildMain = function()
+      public.initUtilities = function()
       {
         public.store.timer = new public.timer.utility( public.store );
 
@@ -85,21 +85,26 @@ $( document ).ready( function() {
           public.updateLanguage,
           public.animateClick,
           public.store.timer);
+      }
 
+      public.buildMain = function()
+      {
         public.taskDots.add(
           public.store.tasks.length,
           public.task.goto.bind(public.task));
 
-        public.info.init( public.store );
+        public.info.build( public.store );
 
         public.task.buildTasks();
 
-        public.mainNav.init(
+        public.mainNav.build(
           public.store,
           public.animateClick,
           public.task.goto.bind(public.task),
           public.store.timer,
-          public.result.goto.bind(public.result));
+          public.result.goto.bind(public.result),
+          public.scoreNav,
+          public.initStore.bind(public));
 
         public.task.togglePopover($('.optText, .match-label'));
         
@@ -118,7 +123,6 @@ $( document ).ready( function() {
           opacity: 0
         }, { duration: 200, complete: function() { $('.loading-screen').hide() }});
 
-        public.store.reset = false;
         public.store.randomJSON = public.feed;
         public.store.langData = public.langData;
         public.store.pages = public.pages;
@@ -154,12 +158,15 @@ $( document ).ready( function() {
           };
         });
 
+        if (!public.store.reset) { public.initUtilities(); }
+        public.store.reset = false;
+
         this.buildMain();
       }
 
       public.asyncLoop(
         scripts,
-        function(i, data) { public[scripts[i][0]] = eval(data); },
+        function(i, data) { public[scripts[i][0]] = window.eval(data); },
         function() { public.asyncLoop(
           public.pages['main'],
           function(i, data) { $(public.pages['main'][i][0]).append( $(data) ); },

@@ -9,7 +9,6 @@
       this.alertTime = store.stats.alertTime;
       this.interval = null;
       this.timeString = "";
-      this.init();
     }
 
     public.utility.prototype.fiveMinuteWarning = function()
@@ -86,7 +85,7 @@
       this.timeString = this.formatTime( 'l' );
     };
 
-    public.utility.prototype.init = function()
+    public.utility.prototype.start = function()
     {
       this.timeString = this.formatTime( 'm' );
       $('.timer').text( this.timeString );

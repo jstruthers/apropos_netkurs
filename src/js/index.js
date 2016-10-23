@@ -30,7 +30,7 @@ $( document ).ready( function() {
         ],
         result: [
           ['#random_test .row.no-gutter',  './html/scorepage.html'],
-          ['#random_test .row.no-gutter',  './html/score-nav.html'],
+          ['#random_test .scorepage',  './html/score-nav.html'],
           ['.nav-bar',                     './html/key.html'],
           ['.nav-bar',                     './html/retry.html']
         ]                                

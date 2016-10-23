@@ -2,7 +2,7 @@
 {
 	var public = {};
 
-	public.init = function(store, animateClick, gotoTask, timer, gotoScorepage) {
+	public.build = function(store, animateClick, gotoTask, timer, gotoScorepage, scoreNav, reset) {
 
 	  $('.nav-btn').click( function() { animateClick($(this)); });
   
@@ -39,7 +39,8 @@
 	  {
 	    event.preventDefault();
 	    timer.stop();
-	    gotoScorepage();
+	    console.log
+	    gotoScorepage(scoreNav, reset);
 	  });
 	}
 

@@ -2,7 +2,7 @@
 {
 	var public = {};
 
-	public.init = function(store) {
+	public.build = function(store) {
 		$(".info-panel .title").text(store.stats.testTitle);
 
 		$(".info-panel .num-tasks").next().text(store.stats.numTasks);

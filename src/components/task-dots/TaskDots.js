@@ -20,7 +20,7 @@
                   goto( $(this).attr('data-taskNum') );
               });
 
-      if (i === 0) { $newMark.addClass('selected'); }
+      if (i === 0) { $newMark.children('button').addClass('selected'); }
       else if (i === tasks - 1) { $newMark.children('span').remove(); }
 
       $(".theme-list .mark-container").append( $newMark );

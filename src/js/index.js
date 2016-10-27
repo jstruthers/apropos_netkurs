@@ -1,27 +1,66 @@
 $( document ).ready( function() {
 
-    // Module
-    (function () {
-      var public = {},
-          // Private Properties
-          loaded = 0,
-          scripts = [
-            ['feed',      './js/JsonRandomTest.js'],
-            ['store',     './js/store.js'],
-            ['langData',  './js/langData.js'],
-            ['info',      './js/components/infoPanel.js'],
-            ['timer',     './js/components/Timer.js'],
-            ['task',      './js/components/TaskUtility.js'],
-            ['taskDots',  './js/components/TaskDots.js'],
-            ['result',    './js/components/ResultsUtility.js'],
-            ['check',     './js/components/Checkbox.js'],
-            ['radio',     './js/components/Radio.js'],
-            ['match',     './js/components/Match.js'],
-            ['mainNav',   './js/components/mainNav.js'],
-            ['scoreNav',  './js/components/scoreNav.js']
-          ];
+/*******************************
+  INFO PANEL
+********************************/
 
-      public.pages = {
+    function infoPanel() {
+      $(".info-panel .title").text(store.stats.testTitle);
+
+      $(".info-panel .num-tasks").next().text(store.stats.numTasks);
+      
+        $('.info-panel .tasks-remaining').next().text(store.stats.completedTasks);
+
+      $(".info-panel .pass-requirement").next().text(store.stats.passRequirement + " %");
+    }
+
+/*******************************
+  MAIN NAV-BAR
+********************************/
+
+  function build(store, animateClick, gotoTask, timer, gotoScorepage, scoreNav, reset) {
+
+    $('.nav-btn').click( function() { animateClick($(this)); });
+  
+    $('.nav-bar .btn-hint').click( function(event)
+    {
+      event.preventDefault();
+      var $hintText = $('.hint-text'),
+          maxWidth = $('.task-container').width() * 0.8;
+      $('.hint-text p').width(maxWidth - 20).text( store.tasks[store.currentTask].hint );
+      $hintText.css('opacity') < 1
+        ? $hintText.velocity({
+            width: maxWidth,
+            opacity: 1
+          }, { duration: 500, easing: 'easeIn' })
+        : $hintText.velocity({
+            width: 0,
+            opacity: 0
+          }, { duration: 500, easing: 'easeOut' })
+    });
+
+    $('.nav-bar .btn-next').click( function(event)
+    {
+      event.preventDefault();
+      gotoTask( store.currentTask + 1 );
+    });
+
+    $('.nav-bar .btn-prev').click( function(event)
+    {
+      event.preventDefault();
+      gotoTask( store.currentTask - 1 );
+    });
+
+    $('.nav-bar .btn-send').click( function(event)
+    {
+      event.preventDefault();
+      timer.stop();
+      console.log
+      gotoScorepage(scoreNav, reset);
+    });
+  }
+
+      var pages = {
         main: [
           ['.right-panel .header .row',   './html/timer.html'],
           ['.left-bar',                   './html/theme.html'],
@@ -36,7 +75,9 @@ $( document ).ready( function() {
         ]                                
       };
 
-      public.asyncLoop = function(arr, func, endLoop) {
+
+
+      function asyncLoop(arr, func, endLoop) {
         var i = 0,
             loop = function() {
               $.ajax({
@@ -52,12 +93,12 @@ $( document ).ready( function() {
         loop();
       };
 
-      public.updateLanguage = function(langBlock)
+      function updateLanguage(langBlock)
       {
         for (var term in langBlock) { $(term).text(langBlock[term]); }
       };
 
-      public.animateClick = function($el)
+      function animateClick($el)
       {
         $el.velocity({
           backgroundColor: '#C0C0C0',
@@ -70,74 +111,74 @@ $( document ).ready( function() {
         }).velocity('reverse');
       };
 
-      public.initUtilities = function()
+      function initUtilities()
       {
-        public.store.timer = new public.timer.utility( public.store );
+        store.timer = new timer.utility( store );
 
-        public.task = new public.task.utility(
-          public.store,
-          public.check, public.match, public.radio,
-          public.animateClick);
+        task = new task.utility(
+          store,
+          check, match, radio,
+          animateClick);
 
-        public.result = new public.result.utility(
-          public.store,
-          public.asyncLoop,
-          public.updateLanguage,
-          public.animateClick,
-          public.store.timer);
+        result = new result.utility(
+          store,
+          asyncLoop,
+          updateLanguage,
+          animateClick,
+          store.timer);
       }
 
-      public.buildMain = function()
+      function buildMain()
       {
-        public.taskDots.add(
-          public.store.tasks.length,
-          public.task.goto.bind(public.task));
+        taskDots.add(
+          store.tasks.length,
+          task.goto.bind(task));
 
-        public.info.build( public.store );
+        info.build( store );
 
-        public.task.buildTasks();
+        task.buildTasks();
 
-        public.mainNav.build(
-          public.store,
-          public.animateClick,
-          public.task.goto.bind(public.task),
-          public.store.timer,
-          public.result.goto.bind(public.result),
-          public.scoreNav,
-          public.initStore.bind(public));
+        mainNav.build(
+          store,
+          animateClick,
+          task.goto.bind(task),
+          store.timer,
+          result.goto.bind(result),
+          scoreNav,
+          initStore.bind();
 
-        public.task.togglePopover($('.optText, .match-label'));
+        task.togglePopover($('.optText, .match-label'));
         
-        public.updateLanguage(public.langData[public.store.currentLang].main);
+        updateLanguage(langData[store.currentLang].main);
         $('.toggle-lang').click( function()
         {
-          public.store.currentLang = public.store.currentLang > 0 ? 0 : 1;
-          public.updateLanguage(public.langData[public.store.currentLang].main);
-          public.animateClick($(this));
+          store.currentLang = store.currentLang > 0 ? 0 : 1;
+          updateLanguage(langData[store.currentLang].main);
+          animateClick($(this));
         });
       };
 
-      public.initStore = function()
+      function initStore()
       {
         $('.loading-screen').velocity({
           opacity: 0
         }, { duration: 200, complete: function() { $('.loading-screen').hide() }});
 
-        public.store.randomJSON = public.feed;
-        public.store.langData = public.langData;
-        public.store.pages = public.pages;
+        store.randomJSON = feed;
+        store.langData = langData;
+        store.pages = pages;
 
-        public.store.stats = {
-          testTitle: public.feed.testInfo,
-          passRequirement: public.feed.PassRequirement,
-          numTasks: public.feed.NoOfTasks,
-          durationTime: public.feed.DurationTime,
-          alertTime: public.feed.AlertTime,
+        store.stats = {
+          testTitle: feed.testInfo,
+          passRequirement: feed.PassRequirement,
+          numTasks: feed.NoOfTasks,
+          durationTime: feed.DurationTime,
+          alertTime: feed.AlertTime,
           completedTasks: 0,
           totalCorrect: 0
         };
 
-        public.store.tasks = public.feed.TestThemes[0].AThemes[0].Tasks.map( function( task )
+        store.tasks = feed.TestThemes[0].AThemes[0].Tasks.map( function( task )
         {
           return {
             id: task.task_id,
@@ -158,24 +199,21 @@ $( document ).ready( function() {
           };
         });
 
-        if (!public.store.reset) { public.initUtilities(); }
-        public.store.reset = false;
+        if (!store.reset) { initUtilities(); }
+        store.reset = false;
 
         this.buildMain();
       }
 
-      public.asyncLoop(
+      asyncLoop(
         scripts,
-        function(i, data) { public[scripts[i][0]] = window.eval(data); },
-        function() { public.asyncLoop(
-          public.pages['main'],
-          function(i, data) { $(public.pages['main'][i][0]).append( $(data) ); },
-          function() { public.initStore(); }
+        function(i, data) { scripts[i][0]] = window.eval(data); },
+        function() { asyncLoop(
+          pages['main'],
+          function(i, data) { $(pages['main'][i][0]).append( $(data) ); },
+          function() { initStore(); }
         );}
       );
-
-      return public;
-    })();
 });
 
 

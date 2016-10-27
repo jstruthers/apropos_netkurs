@@ -25,7 +25,7 @@ gulp.task("libs", ["clean"], function (){
 });
 
 gulp.task("copy-html", ["libs"], function () {
-    return gulp.src(['./src/**/*.html', '!./src/index.html'])
+    return gulp.src('./src/html/*.html')
     	.pipe(plumber())
     	.pipe(flatten())
         .pipe(gulp.dest("dist/html"));
@@ -37,7 +37,19 @@ gulp.task("copy-index", ["copy-html"], function () {
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task('less', ["copy-index"], function () {
+gulp.task("copy-js", ["copy-index"], function () {
+    return gulp.src('./src/index.js')
+    	.pipe(plumber())
+        .pipe(gulp.dest("dist"));
+});
+
+gulp.task("copy-json", ["copy-js"], function () {
+    return gulp.src('./src/json/*.json')
+    	.pipe(plumber())
+        .pipe(gulp.dest("dist/json"));
+});
+
+gulp.task('less', ["copy-json"], function () {
     return gulp.src('./src/index.less')
 	    .pipe(plumber())
 	    .pipe(less({
@@ -48,22 +60,7 @@ gulp.task('less', ["copy-index"], function () {
 	    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('js', ['less'], function()
-{
-	return gulp.src('./src/js/*.js')
-		.pipe(plumber())
-	    .pipe(gulp.dest("dist/js"));
-});
-
-gulp.task('components', ['js'], function()
-{
-	return gulp.src('./src/components/**/*.js')
-		.pipe(plumber())
-		.pipe(flatten())
-	    .pipe(gulp.dest("dist/js/components"));
-});
-
-gulp.task('watch', ['components'], function()
+gulp.task('watch', ['less'], function()
 {
     var watcher = gulp.watch('./src/**/*', ['refresh']);
     watcher.on('change', function(event)
@@ -85,4 +82,4 @@ gulp.task('default', ['browser-sync']);
 /**
  * Using a dependency ensures that the bundle task is finished before reloading.
  */
-gulp.task('refresh', ['components'], browserSync.reload);
+gulp.task('refresh', ['less'], browserSync.reload);

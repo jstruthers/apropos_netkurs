@@ -28,6 +28,11 @@
 @btn-border-2: @border-color - 111;
 @modal-underline-color: @blue_2;
 
+@task-dot-border-1: #333;
+@task-dot-border-2: @blue_4;
+@task-dot-bg-1: @white;
+@task-dot-bg-2: @blue_3;
+
 @title-color: @blue_1;
 @sub-title-color: @white;
 
@@ -293,21 +298,6 @@ h1, h2, h3, h4, h5, h6, ul, p
   font-size: 1.4rem;
 }
 
-#answerModal .theme-title,
-#answerModal .incomplete
-{
-  vertical-align: middle;
-  text-align: center;
-}
-
-#answerModal .theme-title
-{
-  background-color: @bg-sub-header;
-  font-size: 2.8rem;
-  color: @sub-title-color;
-  padding: 10px 0;
-}
-
 #answerModal .question
 {
   background-color: @bg-question;
@@ -468,11 +458,6 @@ h1, h2, h3, h4, h5, h6, ul, p
   text-align: center;
 }
 
-.scorepage .row:nth-child(4)
-{
-  margin: 0;
-}
-
 #retryModal .modal-body
 {
   background-color: @bg-modal;
@@ -549,26 +534,13 @@ h1, h2, h3, h4, h5, h6, ul, p
   float: left;
 }
 
-.theme-list .dot-group span
-{
-  position: relative;
-  display: inline-block;
-  z-index: 1;
-  top: -4px;
-}
-
-.theme-list .dot-group .connecting-line
-{
-  width: 12px;
-  border-top: 3px solid @mid-gray;
-}
-
 .theme-list .dot-group .fa
 {
-  position: absolute;
-  top: -9px;
-  left: 10px;
-  font-size: 1.4rem;
+  float: right;
+  position: relative;
+  left: 5px;
+  font-size: 2.2rem;
+  transform: scale(1.5,1);
   color: @mid-gray;
 }
 
@@ -580,8 +552,8 @@ h1, h2, h3, h4, h5, h6, ul, p
   width: 20px;
   margin-bottom: 10px;
   
-  background-color: white;
-  border: 1px solid #333;
+  background-color: @task-dot-bg-1;
+  border: 2px solid @task-dot-border-1;
   border-radius: 50%;
 
   transition: all 0.5s;
@@ -589,8 +561,7 @@ h1, h2, h3, h4, h5, h6, ul, p
 
 .theme-list .task-mark.selected
 {
-  border-width: 3px;
-  border-color: steelblue;
+  border-color: @task-dot-border-2;
   transform: scale(1.4);
 }
 
@@ -599,9 +570,10 @@ h1, h2, h3, h4, h5, h6, ul, p
   transform: scale(1.4);
 }
 
-.finished
+.task-mark.finished
 {
-  background-color: skyblue !important;
+  border-color: @task-dot-border-1;
+  background-color: @task-dot-bg-2 !important;
 }
 
 /***************************

@@ -12,24 +12,26 @@ $(window).load( function() {
     totalCorrect : 0,
     reset : false,
     timer : null,
-    json : [
-      ["randomJSON", "./json/JsonRandomTest.json"],
-      ["langData", "./json/langData.json"]
-    ],
     pages: {
-      main: [
+      randomTest: [
         ['#random_test .row.no-gutter', './html/right-panel.html'],
         ['#random_test .row.no-gutter', './html/left-bar.html'],
         ['.right-panel .header .row',   './html/timer.html'],
         ['.left-bar',                   './html/info-panel.html'],
-        ['.right-panel',                './html/main-nav.html']
+        ['.right-panel',                './html/randomTest-nav.html']
       ],
       result: [
         ['#random_test .row.no-gutter',  './html/scorepage.html'],
-        ['#random_test .scorepage',  './html/score-nav.html'],
+        ['#random_test .scorepage',      './html/score-nav.html'],
         ['.nav-bar',                     './html/key.html'],
         ['.nav-bar',                     './html/retry.html']
-      ]                                
+      ],
+      taskMaler: [
+        ['#random_test .row.no-gutter', './html/right-panel.html'],
+        ['#random_test .row.no-gutter', './html/left-bar.html'],
+        ['.left-bar',                   './html/task-maler-panel.html'],
+        ['.right-panel',                './html/taskMaler-nav.html']
+      ]
     }
   },
 
@@ -87,10 +89,14 @@ $(window).load( function() {
   },
 
 /************************************************************************************************************************
-  MAIN NAV-BAR
+  BUILD NAV-BARS
 *************************************************************************************************************************/
 
-  mainNav = function()
+/************************************************************************************************************************
+  RANDOM TEST NAV-BAR
+*************************************************************************************************************************/
+
+  randomTestNav = function()
   {
     $('.nav-btn').click( function() { animateClick($(this)); });
   
@@ -142,9 +148,9 @@ $(window).load( function() {
       if (store.reset) {
         $('#random_test .row.no-gutter').html("");
         asyncLoop(
-          store.pages['main'],
-          function(i, data) { $(store.pages['main'][i][0]).append( $(data) ); },
-          function() { initStore(); }
+          store.pages['randomTest'],
+          function(i, data) { $(store.pages['randomTest'][i][0]).append( $(data) ); },
+          function() { initStore('randomTest'); }
         );
       }
     });
@@ -157,6 +163,27 @@ $(window).load( function() {
       store.totalCorrect = 0;
       store.reset = true;
       $('#retryModal').modal('hide');
+    });
+  },
+
+/************************************************************************************************************************
+  TASK MALER NAV-BAR
+*************************************************************************************************************************/
+
+  taskMalerNav = function()
+  {
+    $('.nav-btn').click( function() { animateClick($(this)); });
+
+    $('.nav-bar .btn-next').click( function(event)
+    {
+      event.preventDefault();
+      gotoTask( store.currentTask + 1 );
+    });
+
+    $('.nav-bar .btn-prev').click( function(event)
+    {
+      event.preventDefault();
+      gotoTask( store.currentTask - 1 );
     });
   },
 
@@ -229,9 +256,9 @@ $(window).load( function() {
           getIcon = function(check)
           {
             if (task.type === 2)
-              { if (check) { return 'fa-check-square'; } else { return 'fa-square'; }
+              { if (check) { return 'fa-check-square-o'; } else { return 'fa-square-o'; }
             } else if (task.type === 1)
-              { if (check) { return 'fa-bullseye'; } else { return 'fa-circle'; }
+              { if (check) { return 'fa-circle'; } else { return 'fa-circle-o'; }
             } else { return ''; }
           },
           fillCell = task.type < 3
@@ -361,6 +388,14 @@ $(window).load( function() {
         task.obj = new Checkbox( task, taskNum ); break;
       case 3 :
         task.obj = new Match( task, taskNum ); break;
+      case 4 :
+        task.obj = new Explore( task, taskNum ); break;
+      case 5 :
+        task.obj = new Slideshow( task, taskNum ); break;
+      case 6 :
+        task.obj = new Sorting( task, taskNum ); break;
+      case 7 :
+        task.obj = new Standard( task, taskNum ); break;
     }
 
     var $task = task.obj.init();
@@ -560,27 +595,27 @@ $(window).load( function() {
   },
 
 /************************************************************************************************************************
-  BUILD MAIN
+  BUILD randomTest
 *************************************************************************************************************************/
 
-  buildMain = function()
+  buildRandomTest = function()
   {
-    console.log(store)
     addTaskDots();
 
     infoPanel();
 
     appendTasks();
 
-    mainNav(store.timer);
+    randomTestNav();
 
     togglePopover($('.optText, .match-label'));
     
-    updateLanguage(store.langData[store.currentLang].main);
+    updateLanguage(store.langData[store.currentLang].randomTest);
     $('.toggle-lang').click( function()
     {
       store.currentLang = store.currentLang === 'english' ? 'norwegian' : 'english';
-      updateLanguage(langData[store.currentLang].main);
+      updateLanguage(store.langData[store.currentLang].randomTest);
+      console.log(store.langData[store.currentLang])
       animateClick($(this));
     });
 
@@ -588,7 +623,26 @@ $(window).load( function() {
     store.timer.start();
   },
 
-  initStore = function()
+  buildTaskMaler = function()
+  {
+    addTaskDots();
+
+    appendTasks();
+
+    taskMalerNav();
+// add in hotSpot popover
+    togglePopover($('.optText, .match-label'));
+
+    updateLanguage(store.langData[store.currentLang].randomTest);
+    $('.toggle-lang').click( function()
+    {
+      store.currentLang = store.currentLang === 'english' ? 'norwegian' : 'english';
+      updateLanguage(langData[store.currentLang].randomTest);
+      animateClick($(this));
+    });
+  },
+
+  initStore = function(buildOrder)
   {
     $('.loading-screen').velocity({
       opacity: 0
@@ -608,77 +662,65 @@ $(window).load( function() {
 
     store.tasks = store.randomJSON.TestThemes[0].AThemes[0].Tasks.map( function( task )
     {
-      return {
-        id: task.task_id,
-        question: task.Questions[0].q_text,
-        type: task.Questions[0].qt_id,
-        hint: task.task_hint,
-        isCompleted: false,
-        answers: task.Questions[0].Answers.map( function( answer, i )
-        {
+      switch (buildOrder) {
+        case 'randomTest':
           return {
-            id: i,
-            isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
-            isSelected: false,
-            pos: answer.qa_position,
-            text: answer.qa_text
-          };
-        })
+            id: task.task_id,
+            question: task.Questions[0].q_text,
+            type: task.Questions[0].qt_id,
+            hint: task.task_hint,
+            isCompleted: false,
+            answers: task.Questions[0].Answers.map( function( answer, i )
+                {
+                  return {
+                    id: i,
+                    isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
+                    isSelected: false,
+                    pos: answer.qa_position,
+                    text: answer.qa_text
+                  };
+                })
+          }
+        case 'taskMaler':
+          return {
+            id: task.task_id,
+            type: task.Questions[0].qt_id,
+            hint: task.task_hint,
+            isCompleted: false,
+            options: task.Questions.map( function(q) {
+              return {
+                title: q.q_title,
+                text: q.q_text,
+                attachments: q.Attachments
+              }
+            })
+          }
       };
     });
 
     store.reset = false;
 
-    buildMain();
+    if (buildOrder === 'randomTest') { buildRandomTest(); }
+    else { buildTaskMaler(); }
   }
-
-  asyncLoop(
-    store.json,
-    function(i, data) { store[store.json[i][0]] = JSON.parse(data); },
-    function() {
-      asyncLoop(
-        store.pages['main'],
-        function(i, data) { $(store.pages['main'][i][0]).append( $(data) ); },
-        function() { initStore(); }
-      );
-    }
-  );
 
 /************************************************************************************************************************
   TASK OBJECTS
 *************************************************************************************************************************/
 
-/************************************************************************************************************************
-  TASK: CHECKBOX
-*************************************************************************************************************************/
-
-  function Checkbox(storeTask, taskId)
+  function MultiChoice(storeTask, taskId)
   {
     this.storeTask = storeTask;
     this.taskId = taskId;
-    this.iconClass = 'fa fa-check-circle-o';
+    this.iconClass = null;
   }
 
-  Checkbox.prototype.getParent = function()
+  MultiChoice.prototype.getParent = function()
   {
     return $('.task_' + this.taskId);
   };
 
-  Checkbox.prototype.handleClick = function(index, event)
-  {
-    var $answerBtn = $(event.target).parents('.answer-btn').length
-                       ? $(event.target).parents('.answer-btn')
-                       : $(event.target);
-
-    animateClick($answerBtn);
-    
-    this.getParent().find('.optIcon span').eq(index)
-      .toggleClass( 'visible' );
-
-    checkCompleted( index, this.storeTask);
-  };
-
-  Checkbox.prototype.buildOption = function(index, option)
+  MultiChoice.prototype.buildOption = function(index, option)
   {
     var $newOpt = $('<button class="custom-btn answer-btn" tabindex="-1"></button>'),
         $optIcon = $('<div class="optIcon"><span class="' + this.iconClass + '"></span></div>'),
@@ -692,32 +734,18 @@ $(window).load( function() {
     
     $newOpt.hover(function()
     {
-      $(this).find('.optIcon').velocity(
-        {
-          scaleX: 1.1,
-          scaleY: 1.1,
-          backgroundColor: '#DCDCDC'
-        }, {
-          duration: 300
-        });
+      $(this).find('.optText').css({ textDecoration: 'underline' });
     }, function()
     {
-      $(this).find('.optIcon').velocity(
-        {
-          scaleX: 1,
-          scaleY: 1,
-          backgroundColor: '#fff'
-        }, {
-          duration: 300
-        });
+      $(this).find('.optText').css({ textDecoration: 'none' });
     });
     
     return $newOpt.append($optText, $optIcon);
   };
 
-  Checkbox.prototype.init = function()
+  MultiChoice.prototype.init = function()
   {
-    var $task = $( '<div class="task task_' + this.taskId + '">'),
+    var $task = $( '<div class="task task_' + this.taskId + ' ' + this.type + '">'),
         $row = $('<div></div>'),
         $header = $(  '<div class="col-xs-12">'
                     + '<h4 class="question">'
@@ -737,6 +765,64 @@ $(window).load( function() {
     }.bind(this));
     
     return $task;
+  };
+
+/************************************************************************************************************************
+  TASK: CHECKBOX
+*************************************************************************************************************************/
+
+  function Checkbox(storeTask, taskId)
+  {
+    MultiChoice.call(this, storeTask, taskId);
+    this.iconClass = 'fa fa-check';
+    this.type = 'checkbox';
+  }
+
+  Checkbox.prototype = new MultiChoice;
+
+  Checkbox.prototype.handleClick = function(index, event)
+  {
+    var $answerBtn = $(event.target).parents('.answer-btn').length
+                       ? $(event.target).parents('.answer-btn')
+                       : $(event.target);
+
+    animateClick($answerBtn);
+    
+    this.getParent().find('.optIcon span').eq(index)
+      .toggleClass( 'visible' );
+
+    checkCompleted( index, this.storeTask );
+  };
+
+/************************************************************************************************************************
+  TASK: RADIO
+*************************************************************************************************************************/
+
+  function Radio(storeTask, taskId)
+  {
+    MultiChoice.call(this, storeTask, taskId);
+    this.iconClass = 'fa fa-circle';
+    this.type = 'radio';
+  };
+
+  Radio.prototype = new MultiChoice;
+
+  Radio.prototype.handleClick = function (index, event)
+  {
+    var $thisIcon = this.getParent().find('.optIcon span').eq(index);
+    
+    animateClick($thisIcon.parents('.answer-btn'));
+    
+    $thisIcon.addClass( 'visible' );
+
+    $thisIcon.parent()
+      .parent()
+      .siblings()
+      .children('.optIcon')
+      .children()
+        .removeClass( 'visible' );
+
+    checkCompleted( index, this.storeTask );
   };
 
 /************************************************************************************************************************
@@ -1090,80 +1176,113 @@ $(window).load( function() {
   };
 
 /************************************************************************************************************************
-  TASK: RADIO
+  TASK: STANDARD
 *************************************************************************************************************************/
 
-function Radio(storeTask, taskId)
+  function Standard(storeTask, taskId)
   {
-    this.taskId = taskId;
     this.storeTask = storeTask;
-    this.iconClass = 'fa fa-bullseye';
+    this.taskId = taskId;
+  }
+
+  Standard.prototype.init = function()
+  {
+    console.log(this.storeTask)
+    var $task = $( '<div class="task task_' + this.taskId + '">'),
+        $wrapper = $('<div class="row standard"><div class="col-xs-12"></div></div>'),
+        $header = $wrapper.clone().append(
+          $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
+        $img = $wrapper.clone().append(
+          $('<img src="http://placehold.it/750x450" />')),
+        $text = $wrapper.clone().append(
+          $('<p>' + this.storeTask.options[0].text + '</p>'));
+
+    return $task.append($header, $img, $text);
   };
 
-  Radio.prototype.getParent = function()
+/************************************************************************************************************************
+  TASK: EXPLORE
+*************************************************************************************************************************/
+
+  function Explore(storeTask, taskId)
   {
-    return $('.task_' + this.taskId);
+    this.storeTask = storeTask;
+    this.taskId = taskId;
   }
 
-  Radio.prototype.handleClick = function (index, event)
+  Explore.prototype.buildHotSpot = function()
   {
-    var $thisIcon = this.getParent().find('.optIcon span').eq(index);
-    
-    animateClick($thisIcon.parents('.answer-btn'));
-    
-    $thisIcon.addClass( 'visible' );
-
-    $thisIcon.parent()
-      .parent()
-      .siblings()
-      .children('.optIcon')
-      .children()
-        .removeClass( 'visible' );
-
-    checkCompleted( index, this.storeTask );
-  }
-
-  Radio.prototype.buildOption = function(index, option)
-  {
-    var $newOpt = $('<button class="custom-btn answer-btn" tabindex="-1"></button>'),
-        $optIcon = $('<div class="optIcon"><span class="' + this.iconClass + '"></span></div>'),
-        $optText = $('<span class="optText"'
-        + ' data-toggle="popover" data-placement="auto" data-trigger="hover" data-container="body"'
-        + ' data-content="' + option.text + '">' + option.text + '</span>');
-    
-    if (option.isSelected)
-    {
-      $optIcon.find('span').addClass( 'visible' );
-    }
-
-    $newOpt[0].addEventListener( "click", this.handleClick.bind(this, index), false );
-    
-    $newOpt.hover(function()
-    {
-      $(this).find('.optIcon').velocity(
-        {
-          scaleX: 1.1,
-          scaleY: 1.1,
-          backgroundColor: '#DCDCDC'
-        }, {
-          duration: 300
-        });
-    }, function()
-    {
-      $(this).find('.optIcon').velocity(
-        {
-          scaleX: 1,
-          scaleY: 1,
-          backgroundColor: '#fff'
-        }, {
-          duration: 300
-        });
+    var $els = this.storeTask.map( function(item) {
+      return item.map( function(hotspot) {
+        return $('<div class="hotspot">' + hotspot.text + '</div>')
+                    .css({
+                      'left': hotspot.pos.x + 'px',
+                      'top': hotspot.pos.y + 'px'
+                    });
+      });
     });
-    return $newOpt.append($optText, $optIcon);
+
+    return [].concat.apply([], $els);
+    // on mouse over hightlight
+    // onclick or mouseover display tooltip
   };
 
-  Radio.prototype.init = function()
+  Explore.prototype.handleClick = function()
   {
+    // maybe, maybe not
+  };
+
+  Explore.prototype.init = function()
+  {
+    console.log(this.storeTask);
+    var $task = $( '<div class="task task_' + this.taskId + '">'),
+        $wrapper = $('<div class="row explore"><div class="col-xs-12"></div></div>'),
+        $header = $wrapper.clone().append(
+          $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
+        $img = $wrapper.clone().append(
+          $('<img src="http://placehold.it/750x450" />')),
+        $text = $wrapper.clone().append(
+          $('<div>' + this.storeTask.options[0].text + '</div>'));
+
+    return $task.append($header, $img, $text);
+  };
+
+/************************************************************************************************************************
+  TASK: SLIDESHOW
+*************************************************************************************************************************/
+
+  function Slideshow(storeTask, taskId)
+  {
+    this.storeTask = storeTask;
+    this.taskId = taskId;
+  }
+
+  Slideshow.prototype.init = function()
+  {
+    console.log(this.storeTask);
+    var $task = $( '<div class="task task_' + this.taskId + '">'),
+        $wrapper = $('<div class="row slideshow"><div class="col-xs-12"></div></div>'),
+        $header = $wrapper.clone().append(
+          $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
+        $img = $wrapper.clone().append(
+          $('<img src="http://placehold.it/750x450" />'));
+
+    return $task.append($header, $img);
+  };
+
+/************************************************************************************************************************
+  TASK: SORTING
+*************************************************************************************************************************/
+
+  function Sorting(storeTask, taskId)
+  {
+    this.storeTask = storeTask;
+    this.taskId = taskId;
+  }
+
+  Sorting.prototype.init = function()
+  {
+    console.log(this.storeTask);
     var $task = $( '<div class="task task_' + this.taskId + '">'),
         $row = $('<div></div>'),
         $header = $(  '<div class="col-xs-12">'
@@ -1175,29 +1294,8 @@ function Radio(storeTask, taskId)
                   + '<div class="options col-xs-12 col-lg-7"></div>'
                   + '<img class="task-image col-xs-12 col-lg-5" src="http://placehold.it/750x450" />'
                   + '</div></div></div>');
-    
-    $task.append( $row.append( $header, $body ) );
-    
-    this.storeTask.answers.forEach( function(option, i)
-    {
-      $task.find('.options').append( this.buildOption(i, option) );
-    }.bind(this));
-    
-    return $task;
+    return $task.append($row.append($header, $body));
   };
-
-
-/************************************************************************************************************************
-  TASK: SLIDESHOW
-*************************************************************************************************************************/
-
-/************************************************************************************************************************
-  TASK: SORTING
-*************************************************************************************************************************/
-
-/************************************************************************************************************************
-  TASK: STANDARD
-*************************************************************************************************************************/
 
 /************************************************************************************************************************
   TIMER
@@ -1307,4 +1405,45 @@ function Radio(storeTask, taskId)
   //    return i;
   //}
   };
+
+  /************************************************************************************************************************
+    INITIATE RANDOM TEST
+  *************************************************************************************************************************/
+  var randomTestJson = [
+    ["randomJSON", "./json/JsonRandomTest.json"],
+    ["langData", "./json/langData.json"]
+  ];
+  asyncLoop(
+    randomTestJson,
+    function(i, data) { store[randomTestJson[i][0]] = JSON.parse(data); },
+    function() {
+      asyncLoop(
+        store.pages['randomTest'],
+        function(i, data) { $(store.pages['randomTest'][i][0]).append( $(data) ); },
+        function() { initStore('randomTest'); }
+      );
+    }
+  );
+
+  /************************************************************************************************************************
+    INITIATE TASK MÅLER
+  *************************************************************************************************************************/
+//   var taskMalerJson = [
+//     ["randomJSON", "./json/JsonTaskMaler.json"],
+//     ["langData", "./json/langData.json"]
+//   ];
+//   asyncLoop(
+//     taskMalerJson,
+//     function(i, data) { store[taskMalerJson[i][0]] = JSON.parse(data); },
+//     function() {
+//       asyncLoop(
+//         store.pages['taskMaler'],
+//         function(i, data) { $(store.pages['taskMaler'][i][0]).append( $(data) ); },
+//         function() { initStore('taskMaler'); }
+//       );
+//     }
+//   );
+  
 });
+
+

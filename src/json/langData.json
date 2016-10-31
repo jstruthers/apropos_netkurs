@@ -1,7 +1,7 @@
 {
   "english":
   {
-    "main":
+    "randomTest":
     {
       ".header .timer-heading":"Remaining time",
       ".btn-next .btn-text":"Next",
@@ -59,7 +59,7 @@
   },
   "norwegian":
   {
-    "main":
+    "randomTest":
     {
       ".header .timer-heading":"Tid gjenstår",
       ".btn-next .btn-text":"Neste",

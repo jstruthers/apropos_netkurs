@@ -1,0 +1,182 @@
+{
+	"Id":4586,
+	"NrOfTries":7000,
+	"WeightTo":0,
+		
+	"Exercise":true,
+	"Hint":true,	
+	"PresentationId":2,
+	"AreaId":445,	
+	"PassRequirement":"75",
+	"AlertTime":420000,
+	"DurationTime": 305000,
+	"AcceptUserParams":true,
+	"NoOfTasks":7,
+	"TestTypeID":485,
+	"HideTestresult":false,
+	"HideAnswersKey":false,
+	"status":0,	
+	"statusString":"OK",	
+	"TestThemes":
+	[
+		{
+			"tt_id":0,
+			"tt_nrofquestions":6,
+			"at_id":1063,
+			"test_id":4586,
+			"AThemes":
+			[
+				{
+					"at_id":56,
+					"at_title":"Universet",
+					"at_description":"Opprettet automatisk av Smartlearn",
+					"a_id":1063,
+					"Tasks":
+					[
+						{	
+							"task_id":2788,
+							"task_instruction":"",
+							"task_title":"AstroOpg16",
+							"Questions":
+							[
+								{
+									"q_id":3124,
+									"qt_id":4,
+									"q_title": "Standard Task1",
+									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has. Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"att_typeid":1
+										}
+									]
+								},
+								{
+									"q_id":3124,
+									"qt_id":4,
+									"q_title": "Standard Task2",
+									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has. Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"att_typeid":1
+										}
+									]
+								},
+								{
+									"q_id":3124,
+									"qt_id":4,
+									"q_title": "Standard Task3",
+									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has. Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"att_typeid":1
+										}
+									]
+								}
+							]
+						},
+						{
+							"task_id":2788,
+							"task_instruction":"",
+							"task_title":"AstroOpg16",
+							"Questions":
+							[
+								{
+									"q_id":3124,
+									"qt_id":7,
+									"q_title":"Explore Task",
+									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has. Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"att_typeid":1
+										}
+									]
+								}
+							]
+						},
+						{
+							"task_id":2788,
+							"task_instruction":"",
+							"task_title":"AstroOpg16",
+							"Questions":
+							[
+								{
+									"q_id":3124,
+									"qt_id":5,
+									"q_text": "Click through to view the different tasks",
+									"q_title":"Slideshow Task",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										},
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										},
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										}
+									]
+								}
+							]
+						},
+						{
+							"task_id":2788,
+							"task_instruction":"",
+							"task_title":"AstroOpg16",
+							"Questions":
+							[
+								{
+									"q_id":3124,
+									"qt_id":6,
+									"q_text": "Sorting",
+									"Attachments":
+									[
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										},
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										},
+										{
+											"att_id":1333,
+											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
+											"sub":"Lorem ipsum",
+											"att_typeid":1
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

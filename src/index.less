@@ -36,25 +36,18 @@
 @title-color: @blue_1;
 @sub-title-color: @white;
 
-body
-{
-  position: relative;
-  cursor: default;
-  font-size: 1em;
-}
-
-.main-content
+.random-test-main-content
 {
   padding: 5%;
 }
 
-h1, h2, h3, h4, h5, h6, ul, p
+.random-test-main-content h1, h2, h3, h4, h5, h6, ul, p
 {
   margin: 0;
   padding: 0;
 }
 
-.loading-screen
+.random-test-main-content .loading-screen
 {
   position: absolute;
   top: 0;
@@ -65,7 +58,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   z-index: 20;
 }
 
-.loading-screen div
+.random-test-main-content .loading-screen div
 {
   position: relative;
   width: 8rem;
@@ -75,7 +68,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   font-size: 6rem;
 }
 
-.header
+.random-test-main-content .header
 {
   background-color: @bg-header;
   border-bottom: 5px solid @border-color;
@@ -84,38 +77,38 @@ h1, h2, h3, h4, h5, h6, ul, p
   margin: 0;
 }
 
-.header > div
+.random-test-main-content .header > div
 {
   height: 100%;
 }
 
-.header .timer
+.random-test-main-content .header .timer
 {
   display: inline-block;
   margin-bottom: 20px;
 }
 
-.header div:nth-child(2)
+.random-test-main-content .header div:nth-child(2)
 {
   font-size: 1.8rem;
 }
 
-.right-panel
+.random-test-main-content .right-panel
 {
   height: 600px;
 }
 
-.right-panel .row
+.random-test-main-content .right-panel .row
 {
   margin: 0;
 }
 
-.left-bar
+.random-test-main-content .left-bar
 {
   height: 600px;
 }
 
-.sub-header
+.random-test-main-content .sub-header
 {
   text-align: center;
   background-color: @bg-sub-header;
@@ -127,7 +120,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   letter-spacing: 0.4rem;
 }
 
-[data-toggle="popover"]:focus
+.random-test-main-content [data-toggle="popover"]:focus
 {
   outline: none;
 }
@@ -136,13 +129,13 @@ h1, h2, h3, h4, h5, h6, ul, p
     UTILITY
 **************************************/
 
-.no-gutter > [class*='col-']
+.random-test-main-content .no-gutter > [class*='col-']
 {
     padding-right:0;
     padding-left:0;
 }
 
-.vcenter-wrapper
+.random-test-main-content .vcenter-wrapper
 {
   display: table;
   padding-top: 10px;
@@ -151,7 +144,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   float: none;
 }
 
-.vcenter
+.random-test-main-content .vcenter
 {
   display: table-cell;
   vertical-align: middle;
@@ -161,7 +154,7 @@ h1, h2, h3, h4, h5, h6, ul, p
     NAV BAR
 **************************************/
 
-.nav-bar
+.random-test-main-content .nav-bar
 {
   position: relative;
   margin: 0;
@@ -171,7 +164,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-top: solid @border-color 5px;
 }
 
-.nav-bar .nav-btn
+.random-test-main-content .nav-bar .nav-btn
 {
   height: 35px;
   padding-top: 6px;
@@ -179,7 +172,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   overflow: hidden;
 }
 
-.nav-bar .nav-btn:hover
+.random-test-main-content .nav-bar .nav-btn:hover
 {
   color: @bg-sub-header;
 }
@@ -187,7 +180,7 @@ h1, h2, h3, h4, h5, h6, ul, p
 /*************************************
     BUTTONS
 **************************************/
-.custom-btn
+.random-test-main-content .custom-btn
 {
 	position: relative;
   display: inline-block;
@@ -203,18 +196,18 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-bottom: 3px solid @btn-border-2;
 }
 
-.custom-btn span.fa
+.random-test-main-content .custom-btn span.fa
 {
   width: 20px;
   height: 20px;
 }
 
-.custom-btn:hover
+.random-test-main-content .custom-btn:hover
 {
   cursor: pointer;
 }
 
-.nav-bar .hint .btn-hint
+.random-test-main-content .nav-bar .hint .btn-hint
 {
   position: absolute;
   width: 50px;
@@ -229,7 +222,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   color: @title-color;
 }
 
-.nav-bar .hint .hint-text
+.random-test-main-content .nav-bar .hint .hint-text
 {
   position: absolute;
   width: 0;
@@ -252,37 +245,37 @@ h1, h2, h3, h4, h5, h6, ul, p
     INFO-PANEL
 **************************************/
 
-.info-panel
+.random-test-main-content .info-panel
 {
   height: 39%;
   font-size: 1.4rem;
 }
-
+.random-test-main-content 
 .info-panel table {
   height: 100%;
   width: 100%;
   border-collapse: collapse;
 }
 
-.info-panel table td
+.random-test-main-content .info-panel table td
 {
   padding: 8px;
   background-color: @bg-main;
   font-weight: bold;
 }
 
-.info-panel table, .info-panel td
+.random-test-main-content .info-panel table, .info-panel td
 {
   box-sizing: border-box;
   border: 3px solid @border-color;
 }
 
-.info-panel td:first-child
+.random-test-main-content .info-panel td:first-child
 {
   width: 70%;
 }
 
-.info-panel td:nth-child(2)
+.random-test-main-content .info-panel td:nth-child(2)
 {
   text-align: center;
   width: 30%;
@@ -292,38 +285,38 @@ h1, h2, h3, h4, h5, h6, ul, p
     ANSWER-KEY-MODAL
 **************************************/
 
-#answerModal .modal-body
+.random-test-main-content #answerModal .modal-body
 {
   background-color: @bg-modal;
   font-size: 1.4rem;
 }
 
-#answerModal .question
+.random-test-main-content #answerModal .question
 {
   background-color: @bg-question;
   padding: 5px 20px;
 }
 
 #answerModal .question span,
-#answerModal .answer-heading
+.random-test-main-content #answerModal .answer-heading
 {
   font-weight: bold;
 }
 
-#answerModal .answer-container
+.random-test-main-content #answerModal .answer-container
 {
   padding: 15px;
   background-color: @bg-answer;
 }
 
-#answerModal .answer-heading
+.random-test-main-content #answerModal .answer-heading
 {
   width: 90%;
   margin-bottom: 10px;
   border-bottom: 3px solid @modal-underline-color;
 }
 
-#answerModal .answer-heading ~ p
+.random-test-main-content #answerModal .answer-heading ~ p
 {
   position: relative;
   padding: 5px;
@@ -335,13 +328,13 @@ h1, h2, h3, h4, h5, h6, ul, p
   border: 2px solid @bg-modal;
 }
 
-#answerModal .answer-heading ~ p .fa
+.random-test-main-content #answerModal .answer-heading ~ p .fa
 {
   margin-right: 10px;
 }
 
 #answerModal .answer-heading ~ p span.fa-close,
-#answerModal .answer-heading ~ p span.fa-check
+.random-test-main-content #answerModal .answer-heading ~ p span.fa-check
 {
   display: inline-block;
   position: absolute;
@@ -349,19 +342,19 @@ h1, h2, h3, h4, h5, h6, ul, p
   top: -2px;
 }
 
-#answerModal .answer-heading ~ p span.fa-close
+.random-test-main-content #answerModal .answer-heading ~ p span.fa-close
 {
   color: firebrick;
   left: -24px;
 }
 
-#answerModal .answer-heading ~ p span.fa-check
+.random-test-main-content #answerModal .answer-heading ~ p span.fa-check
 {
   color: olivedrab;
   left: -24px;
 }
 
-#answerModal .answer-heading ~ p span.match-result
+.random-test-main-content #answerModal .answer-heading ~ p span.match-result
 {
   position: relative;
   display: inline-block;
@@ -371,7 +364,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-left: 5px solid @bg-sub-header;
 }
 
-.scorepage 
+.random-test-main-content .scorepage 
 {
   position: relative;
   padding: 0px;
@@ -385,25 +378,25 @@ h1, h2, h3, h4, h5, h6, ul, p
     SCORE-PAGE HEADER
 ***************************/
 
-.scorepage .header h1
+.random-test-main-content .scorepage .header h1
 {
   display: inline-block;
   padding-top: 10px;
 }
 
-.scorepage .sub-header h1
+.random-test-main-content .scorepage .sub-header h1
 {
   font-weight: 100;
 }
   
-.scorepage .sub-header .user-time
+.random-test-main-content .scorepage .sub-header .user-time
 {
   font-size: 1.4rem;
   font-weight: normal;
   letter-spacing: normal;
 }
 
-.scorepage .sub-header
+.random-test-main-content .scorepage .sub-header
 {
   height: auto;
 }
@@ -412,37 +405,37 @@ h1, h2, h3, h4, h5, h6, ul, p
     SCORE-PAGE BODY
 ***************************/
 
-.results
+.random-test-main-content .results
 {
   border-left: 2px solid @border-color;
   border-right: 2px solid @border-color;
 }
 
-.task-stats, .total-results
+.random-test-main-content .task-stats, .total-results
 {
   padding: 30px;
 }
 
-.task-stats h2
+.random-test-main-content .task-stats h2
 {
   padding-bottom: 10px;
 }
 
-.task-stats h4
+.random-test-main-content .task-stats h4
 {
   color: #888;
   padding-top: 10px;
   border-top: 3px solid @border-color;
 }
 
-.task-stats .time-result
+.random-test-main-content .task-stats .time-result
 {
   display: inline-block;
   margin-top: 5px;
   color: #333;
 }
 
-.divider
+.random-test-main-content .divider
 {
   position: relative;
   display: inline-block;
@@ -453,12 +446,12 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-radius: 5px;
 }
 
-.total-results h2
+.random-test-main-content .total-results h2
 {
   text-align: center;
 }
 
-#retryModal .modal-body
+.random-test-main-content #retryModal .modal-body
 {
   background-color: @bg-modal;
   color: @sub-title-color;
@@ -470,19 +463,19 @@ h1, h2, h3, h4, h5, h6, ul, p
     SCORE-PAGE PROGRESS BAR
 ***************************/
 
-.svg-progress-bar
+.random-test-main-content .svg-progress-bar
 {
   fill: none;
 }
 
-.total-bar .percent-completed
+.random-test-main-content .total-bar .percent-completed
 {
   fill: #333;
   font-family: "Verdana";
   font-size: 2rem;
 }
 
-.total-bar
+.random-test-main-content .total-bar
 {
   position: relative;
   margin: auto;
@@ -491,19 +484,19 @@ h1, h2, h3, h4, h5, h6, ul, p
   padding: 30px;
 }
 
-.total-bar .svg-progress-bar
+.random-test-main-content .total-bar .svg-progress-bar
 {
   display: block;
   width: 100%;
 }
 
-.total-bar .svg-progress-bar path:first-child
+.random-test-main-content .total-bar .svg-progress-bar path:first-child
 {
   stroke: #ccc;
   stroke-width: 3;
 }
 
-.total-bar .svg-progress-bar path:nth-child(2)
+.random-test-main-content .total-bar .svg-progress-bar path:nth-child(2)
 {
   stroke: gold;
   stroke-width: 10;
@@ -513,13 +506,13 @@ h1, h2, h3, h4, h5, h6, ul, p
     TASK DOTS
 ***************************/
 
-.theme-list
+.random-test-main-content .theme-list
 {
   height: 50%;
   background-color: @bg-header;
 }
 
-.theme-list .mark-container
+.random-test-main-content .theme-list .mark-container
 {
   position: relative;
   margin: 0 auto;
@@ -529,12 +522,12 @@ h1, h2, h3, h4, h5, h6, ul, p
   overflow-y: scroll;
 }
 
-.theme-list .dot-group
+.random-test-main-content .theme-list .dot-group
 {
   float: left;
 }
 
-.theme-list .dot-group .fa
+.random-test-main-content .theme-list .dot-group .fa
 {
   float: right;
   position: relative;
@@ -544,7 +537,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   color: @mid-gray;
 }
 
-.theme-list .task-mark
+.random-test-main-content .theme-list .task-mark
 {
   position: relative;
   z-index: 3;
@@ -559,18 +552,18 @@ h1, h2, h3, h4, h5, h6, ul, p
   transition: all 0.5s;
 }
 
-.theme-list .task-mark.selected
+.random-test-main-content .theme-list .task-mark.selected
 {
   border-color: @task-dot-border-2;
   transform: scale(1.4);
 }
 
-.theme-list .task-mark:hover
+.random-test-main-content .theme-list .task-mark:hover
 {
   transform: scale(1.4);
 }
 
-.task-mark.finished
+.random-test-main-content .task-mark.finished
 {
   border-color: @task-dot-border-1;
   background-color: @task-dot-bg-2 !important;
@@ -585,14 +578,14 @@ h1, h2, h3, h4, h5, h6, ul, p
 ***************************/
 
 .task .slot-container,
-.task .answer-container
+.random-test-main-content .task .answer-container
 {
   width: 100%;
   height: 410px;
 }
 
 .task .slot-container .row,
-.task .answer-container .row
+.random-test-main-content .task .answer-container .row
 {
   margin: 10px -15px;
 }
@@ -600,7 +593,7 @@ h1, h2, h3, h4, h5, h6, ul, p
 .task .match-container img,
 .task .match-tab,
 .task .tab-slot,
-.task .match-label
+.random-test-main-content .task .match-label
 {
   height: 50px;
   vertical-align: top;
@@ -608,12 +601,12 @@ h1, h2, h3, h4, h5, h6, ul, p
 }
 
 .task .match-container img,
-.task .match-container .tab-slot
+.random-test-main-content .task .match-container .tab-slot
 {
   width: 50px;
 }
 
-.task .answer-container img
+.random-test-main-content .task .answer-container img
 {
   border-top: 3px solid aquamarine;
   border-left: 4px solid aquamarine;
@@ -622,14 +615,14 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-bottom-left-radius: 15px;
 }
 
-.task .tab-slot
+.random-test-main-content .task .tab-slot
 {
   padding-left: 5px;
   padding-top: 5px;
   background-color: #c3c3c3;
 }
 
-.task .tab-slot:before
+.random-test-main-content .task .tab-slot:before
 {
   content: '';
   position: absolute;
@@ -639,7 +632,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   box-shadow: inset -4px 2px 15px 2px #8f8f8f;
 }
 
-.task .match-tab
+.random-test-main-content .task .match-tab
 {
   position: absolute;
   width: 40px;
@@ -656,26 +649,26 @@ h1, h2, h3, h4, h5, h6, ul, p
     ellipse at 45% 45%, #89bbe2 20%,#3e97e0 70%,#0b396d 90%);
 }
 
-.match-tab.grab
+.random-test-main-content .match-tab.grab
 {
     cursor: move;
     cursor: -webkit-grab;
     cursor: grab;
 }
 
-.match-tab.grabbing
+.random-test-main-content .match-tab.grabbing
 { 
     cursor: grabbing; 
     cursor: -webkit-grabbing;
 }
 
-.task .match-popover
+.random-test-main-content .task .match-popover
 {
   position: absolute;
   z-index: 10;
 }
 
-.task .match-label
+.random-test-main-content .task .match-label
 {
   /* need to change width for breakpoints*/
   text-align: center;
@@ -697,7 +690,7 @@ h1, h2, h3, h4, h5, h6, ul, p
     startColorstr='#3b679e', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
 }
 
-.task .answer-container .match-label
+.random-test-main-content .task .answer-container .match-label
 {
   width: 60%;
   padding-top: 0.8rem;
@@ -705,7 +698,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-right: 5px solid cadetblue;
 }
 
-.task .slot-container .match-label
+.random-test-main-content .task .slot-container .match-label
 {
   width: 78%;
   background-color: steelblue;
@@ -714,7 +707,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   color: white;
 }
 
-.match-tab + .line
+.random-test-main-content .match-tab + .line
 {
   position: absolute;
   z-index: 1;
@@ -722,7 +715,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   top: 0;
 }
 
-.unselectable
+.random-test-main-content .unselectable
 {
  -moz-user-select: none;
  -webkit-user-select: none;
@@ -734,7 +727,7 @@ h1, h2, h3, h4, h5, h6, ul, p
     GENERAL TASK
 ***************************/
 
-.task-container
+.random-test-main-content .task-container
 {
   position: relative;
   top: 0;
@@ -744,7 +737,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   border-right: 2px solid lightgray;
 }
 
-.task
+.random-test-main-content .task
 {
   position: absolute;
   width: 100%;
@@ -756,7 +749,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   z-index: -2;
 }
 
-.fade-screen
+.random-test-main-content .fade-screen
 {
   position: absolute;
   left: 0;
@@ -768,14 +761,14 @@ h1, h2, h3, h4, h5, h6, ul, p
   opacity: 0;
 }
 
-.task h4
+.random-test-main-content .task h4
 {
   position: relative;
   padding: 30px;
   text-align: center;
 }
 
-.task .body
+.random-test-main-content .task .body
 {
   position: relative;
   
@@ -784,19 +777,19 @@ h1, h2, h3, h4, h5, h6, ul, p
   background-color: lightsteelblue;
 }
 
-.task canvas:hover
+.random-test-main-content .task canvas:hover
 {
   cursor: -webkit-grab;
   cursor: grab;
 }
 
-.task .options
+.random-test-main-content .task .options
 {
   float: left;
   padding-right: 3%;
 }
 
-.task .options .answer-btn
+.random-test-main-content .task .options .answer-btn
 {
   margin: 10px 0;
   padding: 2px 0;
@@ -805,7 +798,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   font-size: 1.4rem;
 }
 
-.task .options .optIcon
+.random-test-main-content .task .options .optIcon
 {
   position: absolute;
   display: table;
@@ -821,7 +814,7 @@ h1, h2, h3, h4, h5, h6, ul, p
   background-color: white;
 }
 
-.task .options .optIcon span
+.random-test-main-content .task .options .optIcon span
 {
   position: relative;
   display: table-cell;
@@ -835,23 +828,23 @@ h1, h2, h3, h4, h5, h6, ul, p
   transition: opacity 0.2s, transform 0.3s cubic-bezier(.42, 0, .38, 1.47);
 }
 
-.task.radio .options .optIcon
+.random-test-main-content .task.radio .options .optIcon
 {
   border-radius: 50%;
 }
 
-.task.checkbox .options .optIcon
+.random-test-main-content .task.checkbox .options .optIcon
 {
   border-radius: 5px;
 }
 
-.task .options .visible
+.random-test-main-content .task .options .visible
 {
   opacity: 1 !important;
   transform: scale(1) !important;
 }
 
-.task .options .optText
+.random-test-main-content .task .options .optText
 {
   display: inline-block;
   position: relative;
@@ -865,27 +858,56 @@ h1, h2, h3, h4, h5, h6, ul, p
   white-space: nowrap;
 }
 
+.random-test-main-content .task.explore
+{
+  padding: 10px;
+}
+
+.random-test-main-content .task.explore .title
+{
+  padding: 10px;
+}
+
+.random-test-main-content .task.explore .img-wrapper
+{
+  position: relative;
+}
+
+.random-test-main-content .task.explore .img-wrapper img
+{
+  position: relative;
+  display: block;
+  margin: auto;
+}
+
+.random-test-main-content .task.explore p
+{
+  text-align: justify;
+  padding: 0 10px;
+  font-size: 1.3rem;
+}
+
 /*************************************
-    @MEDIA
+  @MEDIA
 **************************************/
 @media (max-width: 1200px)
 {
-  .task .options div.clearfix
+  .random-test-main-content .task .options div.clearfix
   {
     margin: 10px 0;
   }
   
-  .task .options div.clearfix
+  .random-test-main-content .task .options div.clearfix
   {
     margin: 10px 0;
   }
   
-  .task h3
+  .random-test-main-content .task h3
   {
     padding: 20px;
   }
   
-  .sub-header
+  .random-test-main-content .sub-header
   {
     padding-top: 15px;
     font-size: 2.4rem;
@@ -894,32 +916,32 @@ h1, h2, h3, h4, h5, h6, ul, p
 
 @media (max-width: 990px)
 {
-  .header > *
+  .random-test-main-content .header > *
   {
     text-align: center;
   }
   
-  .right-panel, .left-bar
+  .random-test-main-content .right-panel, .left-bar
   {
     height: auto;
   }
   
-  .info-panel td, .theme-list p, .header div
+  .random-test-main-content .info-panel td, .theme-list p, .header div
 	{
 		font-size: 1.8rem !important;
 	}
   
-  .info-panel, .theme-list, .theme-section-body, .results
+  .random-test-main-content .info-panel, .theme-list, .theme-section-body, .results
   {
     height: auto;
   }
   
-  .divider
+  .random-test-main-content .divider
   {
     display: none;
   }
   
-  .task-container
+  .random-test-main-content .task-container
   {
     border-left: 2px solid @border-color;
   }
@@ -928,12 +950,12 @@ h1, h2, h3, h4, h5, h6, ul, p
 
 @media (max-width: 768px)
 { 
-  .main-content
+  .random-test-main-content
   {
     padding: 5px 5px;
   }
   
-  .task-container
+  .random-test-main-content .task-container
   {
     height: 450px;
   }

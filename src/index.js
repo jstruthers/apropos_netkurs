@@ -19,6 +19,13 @@ var store = {
         ['jsonRandomTest', './json/JsonRandomTest.json'],
         ['langData', './json/langData.json']
       ]
+    },
+    taskMaler: {
+      page: './html/taskMaler.html',
+      json: [
+        ["jsonRandomTest", "./json/JsonTaskMaler.json"],
+        ["langData", "./json/langData.json"]
+      ]
     }
   }
 },
@@ -626,9 +633,7 @@ addTaskDots = function()
 
   initStore = function(buildOrder)
   {
-    store.testId = '#randomTest_' + store.jsonRandomTest.Id;
-    $("#random_test").attr('id', store.testId.slice(1));
-
+    console.log(store)
     $(store.testId).parent().siblings('.loading-screen').velocity({
       opacity: 0
     }, { duration: 200, complete: function() { $(store.testId).parent().siblings('.loading-screen').hide() }});
@@ -1225,14 +1230,16 @@ Explore.prototype.handleClick = function()
 Explore.prototype.init = function()
 {
   console.log(this.storeTask);
-  var $task = $( '<div class="task task_' + this.taskId + '">'),
-      $wrapper = $('<div class="row explore"><div class="col-xs-12"></div></div>'),
+  var $task = $( '<div class="task task_' + this.taskId + ' explore">'),
+      $wrapper = $('<div class="row"><div class="col-xs-12"></div></div>'),
       $header = $wrapper.clone().append(
         $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
       $img = $wrapper.clone().append(
-        $('<img src="http://placehold.it/750x450" />')),
+        $('<div class="img-wrapper">'
+          + '<img src="http://placehold.it/750x450" width="750" height="450" /></div>')),
       $text = $wrapper.clone().append(
-        $('<div>' + this.storeTask.options[0].text + '</div>'));
+        $('<p>' + this.storeTask.options[0].text + '</p>'));
+  $img.find('img').css({'width': '750px', 'height': '450px'});
 
   return $task.append($header, $img, $text);
 };
@@ -1403,36 +1410,20 @@ Timer.prototype.formatDate = function()
 $('document').ready( function() {
 
   /************************************************************************************************************************
-    INITIATE RANDOM TEST
+    INITIATE
   *************************************************************************************************************************/
 
-  asyncLoop(
-    store.build.randomTest.json,
-    function(i, data) { store[store.build.randomTest.json[i][0]] = JSON.parse(data); },
-    function() {
-      $('.main-content').load(store.build.randomTest.page, initStore.bind(null, 'randomTest'));
-    }
-  );
-
-  /************************************************************************************************************************
-    INITIATE TASK MÅLER
-  *************************************************************************************************************************/
-//   var taskMalerJson = [
-//     ["randomTest", "./json/JsonTaskMaler.json"],
-//     ["langData", "./json/langData.json"]
-//   ];
-//   jsonLoop(
-//     taskMalerJson,
-//     function(i, data) { store[taskMalerJson[i][0]] = JSON.parse(data); },
-//     function() {
-//       asyncLoop(
-//         store.pages['taskMaler'],
-//         function(i, data) { $(store.pages['taskMaler'][i][0]).append( $(data) ); },
-//         function() { initStore('taskMaler'); }
-//       );
-//     }
-//   );
-  
+  (function(buildOrder) {
+    asyncLoop(
+      store.build[buildOrder].json,
+      function(i, data) { store[store.build[buildOrder].json[i][0]] = JSON.parse(data); },
+      function() {
+        store.testId = '#randomTest_' + store.jsonRandomTest.Id;
+        $("#random_test").attr('id', store.testId.slice(1));
+        $(store.testId + '.random-test-main-content').load(store.build[buildOrder].page, initStore.bind(null, buildOrder));
+      }
+    );
+  })('randomTest');
 });
 
 

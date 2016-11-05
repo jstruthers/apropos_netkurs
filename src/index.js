@@ -12,6 +12,8 @@ var store = {
   totalCorrect : 0,
   reset : false,
   timer : null,
+  $row: function(gutter) { return $('<div class="row ' + (gutter ? 'no-gutter' : '') + '"></div>'); },
+  $col: function(s, col) { return $('<div class="col-' + s + '-' + col + '"></div'); },
   build: {
     randomTest: {
       page: './html/randomTest.html',
@@ -282,10 +284,10 @@ buildAnswerKey = function()
 
     var $qBody = $keyWrapper.clone().append(
         $answerContainer.append(
-            $('<div class="row"></div>').append(
+            store.$row().append(
                 $answer, $correct )));
     $(store.testId + ' #answerModal .modal-body').append(
-        $('<div class="row"></div>').append( $qHeader, $qBody ));
+        store.$row().append( $qHeader, $qBody ));
                 
   });
 },
@@ -633,7 +635,6 @@ addTaskDots = function()
 
   initStore = function(buildOrder)
   {
-    console.log(store)
     $(store.testId).parent().siblings('.loading-screen').velocity({
       opacity: 0
     }, { duration: 200, complete: function() { $(store.testId).parent().siblings('.loading-screen').hide() }});
@@ -740,7 +741,6 @@ MultiChoice.prototype.buildOption = function(index, option)
 MultiChoice.prototype.init = function()
 {
   var $task = $('<div class="task task_' + this.taskId + ' ' + this.type + '">'),
-      $row = $('<div></div>'),
       $header = $(  '<div class="col-xs-12">'
                   + '<h4 class="question">'
                   + this.storeTask.question + '</h4>'
@@ -751,7 +751,7 @@ MultiChoice.prototype.init = function()
                 + '<img class="task-image col-xs-12 col-lg-5" src="http://placehold.it/750x450" />'
                 + '</div></div></div>');
   
-  $task.append( $row.append( $header, $body ) );
+  $task.append( $('<div></div>').append( $header, $body ) );
   
   this.storeTask.answers.forEach( function(option, i)
   {
@@ -1101,27 +1101,21 @@ Match.prototype.init = function()
         + '<div class="answer-container"></div></div>'),
       $sContainer = $( '<div class="col-sm-5 col-xs-12">'
         + '<div class="slot-container"></div></div>'),
-      $row = $('<div class="row"></div>'),
-      $tile = $('<div class="col-xs-12"></div>'),
-      $img = $('<img></img>'),
-      $label = $('<p class="match-label"></p>'),
       $popover = $('<div class="match-popover"'
-        + 'data-toggle="popover" data-placement="auto" data-trigger="hover" data-container="body"></div>'),
-      $tabSlot = $('<div class="tab-slot"></div>'),
-      $tab = $('<div class="match-tab"></div>');
+        + 'data-toggle="popover" data-placement="auto" data-trigger="hover" data-container="body"></div>');
   
   function makeTile(obj, type, id)
   {
-    var $newLabel = $label.clone().text(obj.text).attr('data-id', id),
+    var $newLabel = $('<p class="match-label"></p>').text(obj.text).attr('data-id', id),
         $newPopover = $popover.clone().attr('data-content', obj.text).attr('data-id', id),
-        $newImg = $img.clone(),
-        $newTabSlot = $tabSlot.clone(),
-        $newRow = $row.clone(),
+        $newImg = $('<img></img>'),
+        $newTabSlot = $('<div class="tab-slot"></div>'),
+        $newRow = store.$row().clone(),
         $newTile = type > 0
           ? $newRow.append( $newImg, $newLabel, $newTabSlot )
           : $newRow.append( $newTabSlot, $newLabel );
     obj.$popover = $newPopover;
-    return $tile.clone().append( $newTile );
+    return store.$col('xs', 12).clone().append( $newTile );
   }
   
   this.slots.forEach( function( slot, i )
@@ -1178,21 +1172,32 @@ function Standard(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
+  this.img = {
+    alt: 'A Picture',
+    w: 350,
+    h: 350
+  };
+  this.text = this.storeTask.options[0].text;
 }
 
 Standard.prototype.init = function()
 {
-  console.log(this.storeTask)
-  var $task = $( '<div class="task task_' + this.taskId + '">'),
-      $wrapper = $('<div class="row standard"><div class="col-xs-12"></div></div>'),
-      $header = $wrapper.clone().append(
-        $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
-      $img = $wrapper.clone().append(
-        $('<img src="http://placehold.it/750x450" />')),
-      $text = $wrapper.clone().append(
-        $('<p>' + this.storeTask.options[0].text + '</p>'));
+  var $task = $('<div class="task task_' + this.taskId + ' standard"></div>'),
+      $header = 
+      $content = $;
 
-  return $task.append($header, $img, $text);
+  return $task.append(
+    $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
+    $('<div class="content">'
+        + ' <img'
+          + ' src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
+          + ' width="' + this.img.w + '"'
+          + ' height="' + this.img.h + '"'
+          + ' alt="' + this.img.alt + '" />'
+        + '<p>' + ( typeof this.text === 'string' ? this.text : this.text.map(function(t) {return t + '<br /><br />'} ))
+        + '</p></div></div>'
+      )
+    );
 };
 
 /************************************************************************************************************************
@@ -1203,45 +1208,89 @@ function Explore(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
+  this.img = {
+    alt: 'A Picture',
+    w: 150,
+    h: 150
+  };
 }
 
-Explore.prototype.buildHotSpot = function()
+Explore.prototype.getParent = function()
 {
-  var $els = this.storeTask.map( function(item) {
-    return item.map( function(hotspot) {
-      return $('<div class="hotspot">' + hotspot.text + '</div>')
-                  .css({
-                    'left': hotspot.pos.x + 'px',
-                    'top': hotspot.pos.y + 'px'
-                  });
-    });
-  });
+  return $(store.testId + ' .task_' + this.taskId);
+}
 
-  return [].concat.apply([], $els);
-  // on mouse over hightlight
-  // onclick or mouseover display tooltip
-};
-
-Explore.prototype.handleClick = function()
+Explore.prototype.buildOption = function(o, i)
 {
-  // maybe, maybe not
+  var self = this,
+      modalId = 'exploreTask_' + this.taskId +'_Opt_' + i;
+  return {
+    $li: $('<li class="option"><span class="dot empty"></span>' + o.title + '</li>')
+           .click(function() {
+              var $li = self.getParent().find('.menu li');
+              self.getParent().find('.content').html('')
+                 .append( self.options[i].$content );
+              $li.find('.dot').removeClass('filled');
+              $li.eq(i).find('.dot').addClass('filled');
+           }),
+    $content: $('<h4 class="title sub-header">' + o.title + '</h4>'
+      + '<img src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
+          + ' width="' + this.img.w + '" height="' + this.img.h + '" alt="' + this.img.alt + '"'
+          + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
+      + '<p>' + (typeof o.text === 'string' ? o.text : o.text.map(function(t) {return t + '<br /><br />'} )) + '</p>'),
+    $modal: $('<div id="' + modalId + '"'
+         + ' role="dialog"'
+         + ' tabindex="-1"'
+         + ' class="modal fade"'
+         + ' aria-labelledby="' + modalId + 'Label">'
+      + '<div class="modal-dialog modal-lg">'
+      + '<div class="modal-content">'
+        + '<div class="modal-header">'
+          + '<button type="button"'
+                 + ' class="close"'
+                 + 'data-dismiss="modal"'
+                 + 'aria-hidden="true"><i class="fa fa-close fa-lg"></i></button>'
+          + '<h2 class="modal-title" id="' + modalId + 'Label">' + (this.img.alt + '_' + i) + '</h2>'
+          + '</div>'
+        + '<div class="modal-body">'
+          + '<img src="http://placehold.it/' + (this.img.w * 5) + 'x' + (this.img.h * 5) + '"'
+              + ' width="100%" height="100%" alt="' + this.img.alt + '"'
+              + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
+        + '</div>'
+        + '<div class="modal-footer">'
+          + '<button type="button"'
+                 + ' class="btn btn-default btn-close-modal"'
+                 + ' data-dismiss="modal">'
+            + ' <span class="btn-text">Close</span>'
+          + ' </button>'
+          + '</div>'
+        + '</div>'
+      + '</div>'
+    + '</div>')
+  };
 };
 
 Explore.prototype.init = function()
 {
-  console.log(this.storeTask);
-  var $task = $( '<div class="task task_' + this.taskId + ' explore">'),
-      $wrapper = $('<div class="row"><div class="col-xs-12"></div></div>'),
-      $header = $wrapper.clone().append(
-        $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
-      $img = $wrapper.clone().append(
-        $('<div class="img-wrapper">'
-          + '<img src="http://placehold.it/750x450" width="750" height="450" /></div>')),
-      $text = $wrapper.clone().append(
-        $('<p>' + this.storeTask.options[0].text + '</p>'));
-  $img.find('img').css({'width': '750px', 'height': '450px'});
+  var $task = $('<div class="task task_' + this.taskId + ' explore"><div class="row"></div></div>');
+      $left = $('<div class="col-sm-3 col-xs-12"><ul class="menu"></ul></div>'),
+      $right = $('<div class="col-sm-9 col-xs-12"><div class="content"></div></div>');
 
-  return $task.append($header, $img, $text);
+  this.options = this.storeTask.options.map(function(o, i) {
+    var opt = this.buildOption(o, i);
+    $left.find('.menu').append(opt.$li);
+    opt.$content.find('img').css({'width': this.img.w + 'px', 'height': this.img.h + 'px'});
+    opt.$modal.find('img').css({'width': 100 + '%', 'height': 100 + '%'});
+    $(store.testId).append(opt.$modal);
+    return opt;
+  }.bind(this));
+
+  $right.find('.content').append( this.options[0].$content );
+  $left.find('li').eq(0).find('.dot').addClass('filled');
+
+  $task.find('.row').append($left, $right);
+
+  return $task;
 };
 
 /************************************************************************************************************************
@@ -1252,19 +1301,56 @@ function Slideshow(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
+  this.slides = storeTask.options[0].attachments;
+  this.currentSlide = 0;
+  this.carouselId = 'carousel_task_' + taskId;
 }
+
+Slideshow.prototype.buildCarousel = function() {
+  return $('<div id="' + this.carouselId + '" class="carousel slide" data-ride="carousel" data-interval="false">'
+    + '<ol class="carousel-indicators"></ol>'
+    + '<div class="carousel-inner" role="listbox" style=" width:100%; height: 425px !important;"></div>'
+    + '<a class="left carousel-control" href="#' + this.carouselId + '" role="button" data-slide="prev">'
+      + '<span class="icon-prev" aria-hidden="true"></span>'
+      + '<span class="sr-only">Previous</span>'
+    + '</a>'
+    + '<a class="right carousel-control" href="#' + this.carouselId + '" role="button" data-slide="next">'
+      + '<span class="icon-next" aria-hidden="true"></span>'
+      + '<span class="sr-only">Next</span>'
+    + '</a>'
+  + '</div>');
+}
+
+Slideshow.prototype.makeSlide = function(img, i)
+{
+  var isActive = i === 0 ? 'active' : '',
+      $img = $('<img src="' + img.url + '" alt="' + img.alt + '">')
+        .css({
+          position: 'relative',
+          margin: 'auto',
+          width: 'auto',
+          maxHeight: '425px'
+        }),
+      $caption = $('<div class="carousel-caption"><p>' + img.alt + '</p></div>');
+  return {
+    $item: $('<div class="item" style="width: 100%;"></div>').addClass(isActive).append($img, $caption),
+    $indicator: $('<li data-target="#' + this.carouselId + '" data-slide-to="' + i + '"></li>').addClass(isActive)
+  };
+};
 
 Slideshow.prototype.init = function()
 {
-  console.log(this.storeTask);
-  var $task = $( '<div class="task task_' + this.taskId + '">'),
-      $wrapper = $('<div class="row slideshow"><div class="col-xs-12"></div></div>'),
-      $header = $wrapper.clone().append(
-        $('<h4 class="title">' + this.storeTask.options[0].title + '</h4>')),
-      $img = $wrapper.clone().append(
-        $('<img src="http://placehold.it/750x450" />'));
+  var $task = $('<div class="task task_' + this.taskId + ' slideshow">'),
+      $header = $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
+      $carousel = this.buildCarousel();
+  
+  this.slides.forEach( function(img, i) {
+    var slide = this.makeSlide(img, i);
+    $carousel.find('.carousel-inner').append(slide.$item);
+    $carousel.find('.carousel-indicators').append(slide.$indicator);
+  }.bind(this));
 
-  return $task.append($header, $img);
+  return $task.append($header, $carousel);
 };
 
 /************************************************************************************************************************
@@ -1281,7 +1367,6 @@ Sorting.prototype.init = function()
 {
   console.log(this.storeTask);
   var $task = $( '<div class="task task_' + this.taskId + '">'),
-      $row = $('<div></div>'),
       $header = $(  '<div class="col-xs-12">'
                   + '<h4 class="question">'
                   + this.storeTask.question + '</h4>'
@@ -1291,7 +1376,7 @@ Sorting.prototype.init = function()
                 + '<div class="options col-xs-12 col-lg-7"></div>'
                 + '<img class="task-image col-xs-12 col-lg-5" src="http://placehold.it/750x450" />'
                 + '</div></div></div>');
-  return $task.append($row.append($header, $body));
+  return $task.append(store.$row().append($header, $body));
 };
 
 /************************************************************************************************************************
@@ -1423,7 +1508,7 @@ $('document').ready( function() {
         $(store.testId + '.random-test-main-content').load(store.build[buildOrder].page, initStore.bind(null, buildOrder));
       }
     );
-  })('randomTest');
+  })('taskMaler');
 });
 
 

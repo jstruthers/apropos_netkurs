@@ -5,6 +5,7 @@
 @white: white;
 @light-gray: #EFEFEF;
 @mid-gray: #C3C3C3;
+@black: #111;
 
 @blue_0: #2F344B;
 @blue_1: #191970;
@@ -858,33 +859,127 @@
   white-space: nowrap;
 }
 
-.random-test-main-content .task.explore
+/*************************************
+  TASK MALER
+**************************************/
+
+/*************************************
+  EXPLORE TASK
+**************************************/
+
+.random-test-main-content .task.explore,
+.random-test-main-content .task.standard
 {
   padding: 10px;
 }
 
-.random-test-main-content .task.explore .title
+.random-test-main-content .task.standard .content
 {
-  padding: 10px;
-}
-
-.random-test-main-content .task.explore .img-wrapper
-{
-  position: relative;
-}
-
-.random-test-main-content .task.explore .img-wrapper img
-{
-  position: relative;
-  display: block;
-  margin: auto;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  background-color: @light-gray;
 }
 
 .random-test-main-content .task.explore p
 {
+  background-color: @light-gray;
+}
+
+.random-test-main-content .task.explore .menu
+{
+  list-style: none;
+  background-color: @light-gray;
+}
+
+.random-test-main-content .task.explore .menu .option
+{
+  padding: 5px;
+  background-color: @blue_4;
+  border-bottom: 2px solid @blue_1;
+}
+
+.random-test-main-content .task.explore .menu .option:hover
+{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.random-test-main-content .dot.filled
+{
+  background-color: @blue_6;
+}
+
+.random-test-main-content .dot
+{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid @blue_6;
+  margin-right: 10px;
+  transition: all 0.3s
+}
+
+.random-test-main-content .task.explore .title,
+.random-test-main-content .task.standard .title,
+.random-test-main-content .task.slideshow .title
+{
+  padding: 10px;
+  min-height: auto;
+}
+
+.random-test-main-content .task.explore img,
+.random-test-main-content .task.standard img
+{
+  float: left;
+  overflow: auto;
+  margin: 10px;
+}
+
+.random-test-main-content .task.explore img:hover
+{
+  cursor: pointer;
+}
+
+.random-test-main-content img.center
+{
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.random-test-main-content .task.explore p,
+.random-test-main-content .task.standard p
+{
   text-align: justify;
-  padding: 0 10px;
+  min-height: 250px;
+  padding: 10px;
   font-size: 1.3rem;
+}
+
+/*************************************
+  SLIDE SHOW TASK
+**************************************/
+
+.random-test-main-content .task.slideshow .carousel .carousel-inner
+{
+  background-color: #222;
+}
+
+.random-test-main-content .task.slideshow .carousel .carousel-indicators
+{
+  background-color: fade(@blue_3, 50%);
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.random-test-main-content .task.slideshow .carousel .carousel-indicators li
+{
+  margin: 10px;
 }
 
 /*************************************

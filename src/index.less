@@ -873,28 +873,23 @@
   padding: 10px;
 }
 
-.random-test-main-content .task.explore .row,
-.random-test-main-content .task.standard .row
-{
-  height: 100%;
-}
-
-.random-test-main-content .task.explore .row > div,
-.random-test-main-content .task.standard .row > div
-{
-  height: 100%;
-}
-
-.random-test-main-content .task.explore .content,
 .random-test-main-content .task.standard .content
 {
-  height: 100%;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  background-color: @light-gray;
+}
+
+.random-test-main-content .task.explore p
+{
   background-color: @light-gray;
 }
 
 .random-test-main-content .task.explore .menu
 {
-  height: 100%;
   list-style: none;
   background-color: @light-gray;
 }

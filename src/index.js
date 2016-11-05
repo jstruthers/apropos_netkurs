@@ -1183,17 +1183,21 @@ function Standard(storeTask, taskId)
 Standard.prototype.init = function()
 {
   var $task = $('<div class="task task_' + this.taskId + ' standard"></div>'),
-      $header = $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
-      $content = $('<div class="col-xs-12"><div class="content">'
+      $header = 
+      $content = $;
+
+  return $task.append(
+    $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
+    $('<div class="content">'
         + ' <img'
           + ' src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
           + ' width="' + this.img.w + '"'
           + ' height="' + this.img.h + '"'
           + ' alt="' + this.img.alt + '" />'
-        + '<p>' + ( typeof this.text === 'string'
-            ? this.text : this.text.map(function(t) {return t + '<br /><br />'} )) + '</p></div></div>');
-
-  return $task.append($header, store.$row(1).append( $content ));
+        + '<p>' + ( typeof this.text === 'string' ? this.text : this.text.map(function(t) {return t + '<br /><br />'} ))
+        + '</p></div></div>'
+      )
+    );
 };
 
 /************************************************************************************************************************
@@ -1269,8 +1273,8 @@ Explore.prototype.buildOption = function(o, i)
 Explore.prototype.init = function()
 {
   var $task = $('<div class="task task_' + this.taskId + ' explore"><div class="row"></div></div>');
-      $left = $('<div class="col-xs-3"><ul class="menu"></ul></div>'),
-      $right = $('<div class="col-xs-9"><div class="content"></div></div>');
+      $left = $('<div class="col-sm-3 col-xs-12"><ul class="menu"></ul></div>'),
+      $right = $('<div class="col-sm-9 col-xs-12"><div class="content"></div></div>');
 
   this.options = this.storeTask.options.map(function(o, i) {
     var opt = this.buildOption(o, i);

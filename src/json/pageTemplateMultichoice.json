@@ -1,0 +1,68 @@
+//	Multichoice
+
+{
+	"Test":
+	{
+	"PassRequirement":
+		"50",
+		"Questions":
+		{
+			"0":
+			{
+				"Answers":
+				{
+					"0":
+					{
+						"testanswers_id":26898,
+						"comment":"",
+						"correct":0,
+						"testquestions_id":5970,
+						"position": 1
+					},
+					"1":
+					{
+						"testanswers_id":26899,
+						"comment":"",
+						"correct":0,
+						"testquestions_id":5970,
+						"position":2
+					},
+					"2":
+					{
+						"testanswers_id":26900,
+						"comment":"",
+						"correct":0,
+						"testquestions_id":5970,
+						"position":3
+					}
+				},
+				"Attachments": {},
+				"test_id":4677,
+				"position":1,
+				"testquestions_id":5970
+			}
+		},
+		"Id":4677,
+		"TestTypeId":1,
+		"Instructions":null,
+		"TestName":"_Flash_171_3024_Flervalg 2",
+		"Freetext":null,
+		"TestDescription":"Testen er automatisk opprettet for bruk i Flashmaler."
+	},
+	"Wakeup":null,
+	"PageAttachments": {},
+	"Id":3024,
+	"Exercise":"NULL",
+	"PText":"",
+	"Title":"Flervalg 2",
+	"PresentationTemplates":
+	{
+		"0":
+		{
+			"template_url":"connector.swf",
+			"presentationtemplate_id":11,
+			"template_description":"Flashmal med visning av multiple choice (flervalg) øvelse. Større plass til tekst.",
+			"template_name":"Flash flervalg 2"
+		}
+	}
+}

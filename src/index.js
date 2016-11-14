@@ -1108,12 +1108,14 @@ Match.prototype.init = function()
   {
     var $newLabel = $('<p class="match-label"></p>').text(obj.text).attr('data-id', id),
         $newPopover = $popover.clone().attr('data-content', obj.text).attr('data-id', id),
-        $newImg = $('<img></img>'),
-        $newTabSlot = $('<div class="tab-slot"></div>'),
-        $newRow = store.$row().clone(),
         $newTile = type > 0
-          ? $newRow.append( $newImg, $newLabel, $newTabSlot )
-          : $newRow.append( $newTabSlot, $newLabel );
+          ? store.$row().append(
+              $('<img></img>'),
+              $newLabel,
+              $('<div class="tab-slot"></div>'))
+          : store.$row().append(
+              $('<div class="tab-slot"></div>'),
+              $newLabel);
     obj.$popover = $newPopover;
     return store.$col('xs', 12).clone().append( $newTile );
   }
@@ -1127,10 +1129,10 @@ Match.prototype.init = function()
   $task.append(
     $('<div class="col-xs-12"></div>').append(
       $('<div class="match-container"></div>').append(
-        $row.clone().append(
+        store.$row().append(
           $('<div class="col-xs-12"></div>').append(
             $('<h4>' + this.storeTask.question + '</h4>'))),
-        $row.clone().append(
+        store.$row().append(
           $aContainer, $('<div class="col-sm-1 col-xs-0"></div>'), $sContainer))));
   
   return $task;
@@ -1508,7 +1510,7 @@ $('document').ready( function() {
         $(store.testId + '.random-test-main-content').load(store.build[buildOrder].page, initStore.bind(null, buildOrder));
       }
     );
-  })('taskMaler');
+  })('randomTest');
 });
 
 

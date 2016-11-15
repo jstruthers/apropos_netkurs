@@ -106,6 +106,7 @@
 
 .random-test-main-content .left-bar
 {
+  background-color: @bg-header;
   height: 600px;
 }
 
@@ -159,7 +160,7 @@
 {
   position: relative;
   margin: 0;
-  height: 65px;
+  height: 70px;
   padding-top: 10px;
   background-color: @bg-header;
   border-top: solid @border-color 5px;
@@ -190,9 +191,12 @@
 {
 	position: relative;
   display: inline-block;
+  white-space: nowrap;
   width: 99%;
-  
-  margin: 0 auto;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   border-radius: 5px;
   background-color: @bg-btn;
@@ -588,22 +592,27 @@
     MATCH TASK
 ***************************/
 
-.task .slot-container,
+.random-test-main-content .task .match-container
+{
+  height: 400px;
+}
+
+.random-test-main-content .task .slot-container,
 .random-test-main-content .task .answer-container
 {
   width: 100%;
   height: 410px;
 }
 
-.task .slot-container .row,
+.random-test-main-content .task .slot-container .row,
 .random-test-main-content .task .answer-container .row
 {
   margin: 10px -15px;
 }
 
-.task .match-container img,
-.task .match-tab,
-.task .tab-slot,
+.random-test-main-content .task .match-container img,
+.random-test-main-content .task .match-tab,
+.random-test-main-content .task .tab-slot,
 .random-test-main-content .task .match-label
 {
   height: 50px;
@@ -611,7 +620,7 @@
   display: inline-block;
 }
 
-.task .match-container img,
+.random-test-main-content .task .match-container img,
 .random-test-main-content .task .match-container .tab-slot
 {
   width: 50px;
@@ -645,7 +654,7 @@
 
 .random-test-main-content .task .match-tab
 {
-  position: absolute;
+  position: absolute !important;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -1026,17 +1035,23 @@
     text-align: center;
   }
   
-  .random-test-main-content .right-panel, .left-bar
+  .random-test-main-content .right-panel,
+  .random-test-main-content .left-bar
   {
     height: auto;
   }
   
-  .random-test-main-content .info-panel td, .theme-list p, .header div
+  .random-test-main-content .info-panel td,
+  .random-test-main-content .theme-list p,
+  .random-test-main-content .header div
 	{
 		font-size: 1.8rem !important;
 	}
   
-  .random-test-main-content .info-panel, .theme-list, .theme-section-body, .results
+  .random-test-main-content .info-panel,
+  .random-test-main-content .theme-list,
+  .random-test-main-content .theme-section-body,
+  .random-test-main-content .results
   {
     height: auto;
   }

@@ -51,10 +51,12 @@ asyncLoop = function(arr, func, endLoop) {
       };
   loop();
 },
+
 updateLanguage = function(langBlock)
 {
   for (var term in langBlock) { $(term).text(langBlock[term]); }
 },
+
 animateClick = function($el)
 {
   $el.velocity({
@@ -66,18 +68,6 @@ animateClick = function($el)
   }, {
     duration: 150
   }).velocity('reverse');
-},
-getDimensions = function(obj)
-{
-  var w = obj.$el.width(), h = obj.$el.height(),
-      x = obj.$el.offset().left, y = obj.$el.offset().top;
-
-  // x: left, y: top
-  obj.pos = {x: x, y: y};
-  // w: width, h: height
-  obj.size = {w: w, h: h};
-  // Top, right, bottom, left
-  obj.bounds = [y, x + w, y + h, x];
 },
 
 /************************************************************************************************************************
@@ -400,7 +390,7 @@ createTask = function (taskNum)
   if ( taskNum === 0 ) { $task.css('z-index', 0) }
   $(store.testId + ' .task-container').append( $task );
   if ( task.type === 3 ) {
-    task.obj.componentsInit(task.obj, task.obj.getParent());
+    task.obj.componentsInit();
   }
 },
  /*
@@ -518,8 +508,8 @@ gotoTask = function( nextTaskNum )
       */
       handleBounds = function(taskNum, max)
       {
-        if (taskNum < 0) { taskNum = 0;}
-        else if (taskNum > max) { taskNum = max;}
+        if (taskNum < 0) { taskNum = 0; }
+        else if (taskNum > max) { taskNum = max; }
         else { return false; }
         return taskNum;
       };
@@ -565,19 +555,6 @@ gotoTask = function( nextTaskNum )
 
   $disable.prop('disabled', true);
   setTimeout(function() { $disable.prop('disabled', false); }, 500 );
-
-  var pBtn = $(store.testId + ' .btn-prev'),
-      nBtn = $(store.testId + ' .btn-next');
-  if (store.currentTask >= totalTasks) {
-    nBtn.attr('disabled', true);
-    pBtn.attr('disabled', false);
-  } else if (store.currentTask <= 0) {
-    pBtn.attr('disabled', true);
-    nBtn.attr('disabled', false);
-  } else {
-    if (pBtn.attr('disabled')) { pBtn.attr('disabled', false);}
-    else if (nBtn.attr('disabled')) { nBtn.attr('disabled', false);}
-  }
 },
 
 addTaskDots = function()
@@ -595,9 +572,7 @@ addTaskDots = function()
             .attr('data-taskNum', i)
             .attr('tabindex', 0)
             .click( function(e) {
-              if (store.currentTask !== parseInt($(this).attr('data-taskNum'))) {
                 gotoTask( $(this).attr('data-taskNum') );
-              }
             });
 
     if (i === 0) { $newMark.children('button').addClass('selected'); }
@@ -721,334 +696,6 @@ addTaskDots = function()
   };
 
 /************************************************************************************************************************
-  TASK COMPONENTS
-*************************************************************************************************************************/
-
-/************************************************************************************************************************
-  TASK COMPONENT: LINE OBJECT
-*************************************************************************************************************************/
-
-Line = function(id, $task, parent) {
-  this.parent = parent;
-  this.$task = $task;
-  this.$el = $('<svg class="line line' + id
-    + '" width="' + $task.width()
-    + '" height="' + ($task.height() - 3)
-    + '" viewPort="0 0 ' + $task.width() + ' ' + $task.height()
-    + '" xmlns="http://www.w3.org/2000/svg">'
-    + '<line x1="0" y1="0" x2="0" y2="0"'
-    + ' stroke-width="5" stroke="#555"'
-    + ' stroke-linecap="round"'
-    + ' shape-rendering="optimizeQuality"/>'
-    + '</svg>');
-}
-
-Line.prototype.setOrigin = function()
-{
-  getDimensions(this);
-  console.log(this.parent.origin)
-  this.$el.find('line')
-          .attr('x1', this.parent.origin.x + this.parent.$el.width() / 2)
-          .attr('y1', this.parent.origin.y + this.parent.$el.height() / 2);
-};
-
-Line.prototype.handleResize = function()
-{
-  this.setOrigin()
-  this.$el.attr('viewPort', '0 0 ' + this.$task.width() + ' ' + (this.$task.height() - 3));
-  this.$el
-    .attr('width', this.$task.width())
-    .attr('height', this.$task.height());
-};
-
-Line.prototype.move = function(x2, y2)
-{
-  this.$el.find('line')
-          .attr('x2', x2 + this.parent.size.w / 2)
-          .attr('y2', y2 + this.parent.size.h / 2);
-};
-
-/************************************************************************************************************************
-TASK COMPONENT: POPOVER
-*************************************************************************************************************************/
-
-function Popover(text, id)
-{
-  this.$el = $('<div class="match-popover"'
-                 + ' data-content="' + text + '"'
-                 + ' data-id="' + id + '"'
-                 + ' data-toggle="popover"'
-                 + ' data-placement="auto"'
-                 + ' data-trigger="hover"'
-                 + ' data-container="body"></div>');
-}
-
-Popover.prototype.resize = function(w, h)
-{
-  if (w) {this.$el.width(w);}
-  if (h) {this.$el.height(h);}
-  getDimensions(this);
-};
-
-Popover.prototype.move = function(x, y)
-{
-  if (x) {this.$el.css('left', x + 'px');}
-  if (y) {this.$el.css('top', y + 'px');}
-}
-
-Popover.prototype.toggle = function()
-{
-  if ((this.$el[0].offsetHeight < this.$el[0].scrollHeight
-     || this.$el[0].offsetWidth < this.$el[0].scrollWidth))
-  {
-    this.$el.popover();
-  }
-  else { this.$el.popover('destroy'); }
-};
-
-/************************************************************************************************************************
-TASK COMPONENT: TAB OBJECT
-*************************************************************************************************************************/
-
-function Tab (config)
-{
-  this.info = config.info;
-  this.id = config.id;
-  this.$task = $(store.testId + ' .task-container');
-  this.$row = config.parentObj.getParent().find('.match-label').eq(this.id);
-  this.popover = config.popover;
-  this.line = new Line(config.id, config.parentObj.getParent(), this);
-  this.parentObj = config.parentObj;
-  this.$el = $('<div class="' +  config.class  + '-tab tab' + config.id + '"></div>');
-  getDimensions(this);
-
-  config.parentObj.getParent().append(this.$el, this.line.$el, this.popover.$el);
-};
-
-/***   CHANGE POSITION   ***/
-
-Tab.prototype.setOrigin = function()
-{
-  this.origin = {
-    x: this.$row.offset().left + this.$row.width() - this.$task.offset().left + 23,
-    y: this.$row.offset().top - this.$task.offset().top + 5
-  };
-  this.line.setOrigin();
-  this.popover.$el.css({
-    left: this.$row.offset().left - this.$task.offset().left,
-    top: this.$row.offset().top - this.$task.offset().top,
-    width: this.$row.width() + 20,
-    height: this.$row.parent().height()
-  });
-  getDimensions(this);
-};
-
-Tab.prototype.move = function(x, y)
-{
-  this.$el.css({ left: x, top: y });
-  getDimensions(this);
-  this.line.move(x, y);
-};
-
-Tab.prototype.handleResize = function(foo)
-{
-  this.setOrigin();
-  this.line.handleResize();
-  this.move( this.origin.x, this.origin.y );
-  this.parentObj.slots.forEach( function(s, i) {
-    s.handleResize();
-  });
-};
-
-/***   ANIMATE   ***/
-
-Tab.prototype.raiseEl = function()
-{
-  this.$el.addClass('grab').velocity({
-    scale: 1.2,
-    boxShadowY:'5px'
-  }, {
-    duration: 100
-  });   
-};
-
-Tab.prototype.lowerEl = function()
-{ 
-  this.$el.velocity({
-    scale: 1,
-    boxShadowY: 0
-  }, {
-    duration: 100
-  }).removeClass('grab');
-};
-
-// Move to a Slot Obj
-
-Tab.prototype.highlight = function($slot, color)
-{
-  $slot.next().velocity({ borderLeftColor: color }, { duration: 100 });
-}
-
-Tab.prototype.springBack = function(self)
-{ 
-  this.$el.velocity({
-    left: self.origin.x + 'px',
-    top: self.origin.y + 'px',
-  }, {
-    duration: 1000,
-    easing: [150, 15],
-    progress: function(e) {
-      var x2 = parseFloat($(e).css('left')),
-          y2 = parseFloat($(e).css('top'));
-      self.line.move(x2, y2);
-    },
-    complete: function() { getDimensions(self); }
-  });
-};
-
-/***   EVENT HANDLERS   ***/
-
-Tab.prototype.handleMousedown = function(self, e)
-{
-  if ( e.pageY >= this.bounds[0] && e.pageX <= this.bounds[1]
-    && e.pageY <= this.bounds[2] && e.pageX >= this.bounds[3])
-  {
-    console.log('grabbed');
-    this.draggable = true;
-    this.grabbed = { x: e.pageX - this.pos.x, y: e.pageY - this.pos.y };
-    $(store.testId + ' .match-popover').css('z-index', -1);
-    $(store.testId + ' .match-tab').css('z-index', 1);
-    $(store.testId + ' .match-tab + .line').css('z-index', 0);
-    this.$el.next('.line').css('z-index', 2);
-    this.$el.css('zIndex', 3).off('mouseover mouseout').removeClass('grab').addClass('grabbing');
-    this.$task.find('*').addClass('unselectable').attr('unselectable', 'on');
-    this.$task.mousemove( self.handleMousemove.bind(self) );
-  }
-};
-
-Tab.prototype.handleMousemove = function(e)
-{
-  var x = e.pageX - this.grabbed.x - this.$task.offset().left,
-      y = e.pageY - this.grabbed.y - this.$task.offset().top;
-  this.move(x, y);
-  this.line.move(x, y);
-  console.log(x, this.line.$el.find('line').attr('x2'))
-  this.checkCovering();
-};
-
-Tab.prototype.handleMouseup = function(self)
-{
-  console.log('released');
-  var self = this;
-  this.draggable = false;
-  if ( this.covering )
-  {
-    this.covering.$el.attr('data-covered', self.id);
-    this.move(
-      this.covering.bounds[3] - this.$task.offset().left + 5,
-      this.covering.bounds[0] - this.$task.offset().top - 15
-    );
-    self.highlight(this.covering.$el, '#5F9EA0');
-  }
-  else { this.springBack(this); }
-  checkCompleted(this.id, this.parentObj.storeTask, [this.covering.text, this.covering.id]);
-  
-  this.$task.find('*').removeClass('unselectable').removeAttr('unselectable' );
-  this.$task.off('mousemove');
-  $('.match-popover').css('z-index', 10);
-  $('.match-tab').css('z-index', 2);
-  $('.match-line').css('z-index', 1);
-  this.$el.next('.line').css('z-index', 1);
-  
-  this.$el.removeClass('grabbing').addClass('grab')
-    .mouseover( self.raiseEl.bind(self) ).mouseout( self.lowerEl.bind(self) );
-};
-
-Tab.prototype.bindHandlers = function()
-{
-  var self = this;
-  this.$el.mouseover( self.raiseEl.bind(self) )
-    .mouseout( self.lowerEl.bind(self) )
-    .mousedown( self.handleMousedown.bind(self, self) )
-    .mouseup( self.handleMouseup.bind(self, self) );
-  $( window ).resize( self.handleResize .bind(self, 'foo') );
-}
-
-/***   CHECK IF TAB COVERS SLOT   ***/
-
-Tab.prototype.checkCovering = function()
-{
-  var self = this,
-      overlap = function(tB, sB) {
-        return ( tB[3] < sB[1] && tB[1] > sB[3] && tB[0] < sB[2] && tB[2] > sB[0]);};
-
-  this.parentObj.slots.forEach( function( slot, i )
-  {
-    var covered = slot.$el.attr('data-covered');
-
-    if (overlap( self.bounds, slot.bounds ))
-    {
-      if ( !covered )
-        { if (!self.covering) {
-          self.covering = slot;
-          self.highlight(slot.$el, '#00FFFF');
-        }}
-      else
-        { if (self.covering) {
-          self.covering = false;
-          self.highlight(slot.$el, '#5F9EA0');
-        }}
-    }
-    else {
-      if ( !self.parentObj.tabs.some( function(tab) { return tab.covering.id === parseInt(covered) }))
-        { slot.$el.removeAttr( 'data-covered'); }
-      if ( slot.id === self.covering.id )
-        { self.covering = false; self.highlight(slot.$el, '#5F9EA0'); }
-    }
-  });
-};
-
-Tab.prototype.init = function()
-{
-  this.setOrigin();
-  this.$el.css({ left: this.origin.x, top: this.origin.y });
-  this.bindHandlers();
-  if (this.covering)
-  {
-    this.move(
-        this.covering.bounds[3] - this.$task.offset().left + 5,
-        this.covering.bounds[0] - this.$task.offset().top + 5)
-  } else {
-    this.move(this.origin.x, this.origin.y);
-  }
-};
-
-/************************************************************************************************************************
-  SLOT OBJECT
-*************************************************************************************************************************/
-
-function Slot(config)
-{
-  this.id = config.id;
-  this.popover = config.popover;
-  this.$el = config.$el;
-  this.$row = config.$row;
-  this.$task = config.parentObj.getParent();
-  this.parentObj = config.parentObj;
-}
-
-Slot.prototype.handleResize = function()
-{
-  this.popover.$el.css({
-    left: this.$row.offset().left - this.$task.offset().left,
-    top: this.$row.offset().top - this.$task.offset().top,
-    width: this.$row.width() + 20,
-    height: this.$row.parent().height()
-  });
-  getDimensions(this);
-};
-
-/************************************************************************************************************************
   TASK OBJECTS
 *************************************************************************************************************************/
 
@@ -1125,7 +772,8 @@ function Checkbox(storeTask, taskId)
   this.type = 'checkbox';
 }
 
-Checkbox.prototype = new MultiChoice;
+Checkbox.prototype = Object.create(MultiChoice.prototype);
+Checkbox.prototype.constructor = Checkbox;
 
 Checkbox.prototype.handleClick = function(index, event)
 {
@@ -1152,7 +800,8 @@ function Radio(storeTask, taskId)
   this.type = 'radio';
 };
 
-Radio.prototype = new MultiChoice;
+Radio.prototype = Object.create(MultiChoice.prototype);
+Radio.prototype.constructor = Radio;
 
 Radio.prototype.handleClick = function (index, event)
 {
@@ -1173,8 +822,380 @@ Radio.prototype.handleClick = function (index, event)
 };
 
 /************************************************************************************************************************
-TASK: MATCH
+  TASK COMPONENTS
 *************************************************************************************************************************/
+
+/************************************************************************************************************************
+  TASK COMPONENT: POPOVER
+*************************************************************************************************************************/
+
+/************************************************************************************************************************
+  TASK COMPONENT: LINE
+*************************************************************************************************************************/
+
+function Line(config)
+{
+  this.$tab = config.$tab;
+  this.$task = config.$task;
+  this.$el = $('<svg class="line"'
+    + '" width="' + config.$task.width() + '"'
+    + '" height="' + config.$task.height()
+    + '" viewPort="0 0 ' + config.$task.width() + ' ' + config.$task.height()
+    + '" xmlns="http://www.w3.org/2000/svg">'
+    + '<line x1="0" y1="0" x2="0" y2="0"'
+    + ' stroke-width="' + (config.width ? config.width : '5px') + '"'
+    + ' stroke="' + (config.color ? config.color : '#555') + '"'
+    + ' stroke-linecap="' + (config.capStyle ? config.capStyle : 'round') + '"'
+    + ' shape-rendering="optimizeQuality"/>'
+    + '</svg>');
+}
+
+Line.prototype.set = function(x, y)
+{
+
+  this.$el.find('line')
+    .attr(x[0], x[1] + this.$tab.width() / 2)
+    .attr(y[0], y[1] + this.$tab.height() / 2);
+};
+
+Line.prototype.resize = function()
+{
+  this.$el.attr('viewPort', '0 0 ' + $('.task-container').width() + ' ' + ($('.task-container').height()));
+  this.$el
+    .attr('width', $('.task-container').width())
+    .attr('height', $('.task-container').height());
+};
+  
+/************************************************************************************************************************
+  TASK COMPONENT: DRAGGABLE
+*************************************************************************************************************************/
+
+function Draggable(id, taskId, $el)
+{
+  var self = this;
+  this.id = id;
+  this.$el = $el;
+  this.$task = $(store.testId + ' .task_' + taskId);
+  this.$el.draggable({
+    containment: 'parent',
+    stack: '.ui-draggable'
+  });
+  this.$el.mouseover( self.raiseEl.bind(self) )
+          .mouseout( self.lowerEl.bind(self) )
+          .attr('data-id', this.id);
+}
+
+Draggable.prototype.raiseEl = function()
+{
+  this.$el.addClass('grab').velocity({
+    scale: 1.2,
+    boxShadowY:'5px'
+  }, {
+    duration: 100
+  });   
+};
+
+Draggable.prototype.lowerEl = function()
+{ 
+  this.$el.velocity({
+    scale: 1,
+    boxShadowY: 0
+  }, {
+    duration: 100
+  }).removeClass('grab');
+};
+
+// Tab.prototype.move = function(x, y)
+// {
+//   this.$el.css({ left: x, top: y });
+//   this.match.getDims(this);
+//   this.moveLine(x, y);
+// };
+
+/************************************************************************************************************************
+  TASK COMPONENT: DROP ZONE
+*************************************************************************************************************************/
+
+function DropZone(id, taskId)
+{
+  var self = this;
+  this.id = id;
+  this.$task = $(store.testId + ' .task_' + taskId);
+  this.$el = this.$task.find('.slot-container .tab-slot').eq(id);
+  this.$el.droppable({});
+}
+
+// Tab.prototype.handleSlotResize = function(slot)
+// {
+//   slot.$popover.css({
+//     left: slot.$row.offset().left - this.$task.offset().left,
+//     top: slot.$row.offset().top - this.$task.offset().top,
+//     width: slot.$row.width() + 20,
+//     height: slot.$row.parent().height()
+//   });
+//   this.match.getDims(slot);
+// };
+
+/************************************************************************************************************************
+  TASK: MATCH
+*************************************************************************************************************************/
+
+/************************************************************************************************************************
+  TASK: MATCH::TAB COMPONENT
+*************************************************************************************************************************/
+
+function Tab (config)
+{
+  var self = this;
+  Draggable.call(this,
+    config.id,
+    config.taskId,
+    $('<div class="match-tab"></div>')
+  );
+  this.info = config.info;
+  // this.$popover = config.$popover;
+  this.$task = $(store.testId + ' .task_' + config.taskId);
+  this.$row = this.$task.find('.match-label').eq(config.id);
+  this.match = config.match;
+  this.line = new Line({
+    $tab: this.$el,
+    $task: this.$task,
+  });
+  this.$el.draggable('option', 'revert', function() {this.springBack(); return false;}.bind(this))
+          .on('drag', function(e, ui) {
+            this.line.set(
+              ['x2', parseFloat(e.target.style.left)],
+              ['y2', parseFloat(e.target.style.top)]
+            );
+          }.bind(this));
+};
+
+Tab.prototype = Object.create(Draggable.prototype);
+Tab.prototype.constructor = Tab;
+
+Tab.prototype.setOrigin = function()
+{
+  this.origin = {
+    x: this.$row.offset().left + this.$row.width() - this.$task.offset().left + 23,
+    y: this.$row.offset().top - this.$task.offset().top - this.$task.scrollTop() + 5
+  };
+
+  this.line.set(['x1', this.origin.x], ['y1', this.origin.y]);
+  
+  // this.$popover.css({
+  //   left: this.$row.offset().left - this.$task.offset().left,
+  //   top: this.$row.offset().top - this.$task.offset().top,
+  //   width: this.$row.width() + 20,
+  //   height: this.$row.parent().height()
+  // });
+};
+
+/***   ANIMATE   ***/
+
+Tab.prototype.springBack = function()
+{ 
+  var self = this;
+  this.$el.velocity({
+    left: self.origin.x + 'px',
+    top: self.origin.y + 'px',
+  }, {
+    duration: 1000,
+    easing: [150, 15],
+    progress: function(e) {
+      self.line.set(
+        ['x2', parseFloat($(e).css('left'))],
+        ['y2', parseFloat($(e).css('top'))]
+      );
+    }
+  });
+};
+
+// /***   EVENT HANDLERS   ***/
+
+// Tab.prototype.handleMousedown = function(self, e)
+// {
+//   if ( e.pageY >= this.bounds[0] && e.pageX <= this.bounds[1]
+//     && e.pageY <= this.bounds[2] && e.pageX >= this.bounds[3])
+//   {
+//     this.draggable = true;
+//     this.grabbed = { x: e.pageX - this.pos.x, y: e.pageY - this.pos.y };
+//     $(store.testId + ' .match-popover').css('z-index', -1);
+//     $(store.testId + ' .match-tab').css('z-index', 1);
+//     $(store.testId + ' .match-tab + .line').css('z-index', 0);
+//     this.$el.next('.line').css('z-index', 2);
+//     this.$el.css('zIndex', 3).off('mouseover mouseout').removeClass('grab').addClass('grabbing');
+//     this.$task.find('*').addClass('unselectable').attr('unselectable', 'on');
+//     this.$task.mousemove( self.handleMousemove.bind(self) );
+//   }
+// };
+
+// Tab.prototype.handleMousemove = function(e)
+// {
+//   this.move(
+//     e.pageX - this.grabbed.x - this.$task.offset().left,
+//     e.pageY - this.grabbed.y - this.$task.offset().top);
+//   this.checkCovering();
+// };
+
+// Tab.prototype.handleMouseup = function(self)
+// {
+//   var self = this;
+//   this.draggable = false;
+//   if ( this.covering )
+//   {
+//     this.covering.$el.attr('data-covered', self.id);
+//     this.move(
+//       this.covering.bounds[3] - this.$task.offset().left + 5,
+//       this.covering.bounds[0] - this.$task.offset().top + 5
+//     );
+//     self.highlight(this.covering.$el, '#5F9EA0');
+//   }
+//   else { this.springBack(this); }
+//   checkCompleted(this.id, this.match.storeTask, [this.covering.text, this.covering.id]);
+  
+//   this.$task.find('*').removeClass('unselectable').removeAttr('unselectable' );
+//   this.$task.off('mousemove');
+//   $('.match-popover').css('z-index', 10);
+//   $('.match-tab').css('z-index', 2);
+//   $('.match-line').css('z-index', 1);
+//   this.$el.next('.line').css('z-index', 1);
+  
+//   this.$el.removeClass('grabbing').addClass('grab')
+//     .mouseover( self.raiseEl.bind(self) ).mouseout( self.lowerEl.bind(self) );
+// };
+
+// Tab.prototype.bindHandlers = function()
+// {
+//   var self = this;
+//   this.$el.mouseover( self.raiseEl.bind(self) )
+//     .mouseout( self.lowerEl.bind(self) )
+//     .mousedown( self.handleMousedown.bind(self, self) )
+//     .mouseup( self.handleMouseup.bind(self, self) );
+//   $( window ).resize( self.handleResize.bind(self) );
+// }
+
+/***   CHECK IF TAB COVERS SLOT   ***/
+
+// Tab.prototype.checkCovering = function()
+// {
+//   var self = this,
+//       overlap = function(tB, sB) {
+//         return ( tB[3] < sB[1] && tB[1] > sB[3] && tB[0] < sB[2] && tB[2] > sB[0]);};
+
+//   this.match.slots.forEach( function( slot, i )
+//   {
+//     var covered = slot.$el.attr('data-covered');
+
+//     if (overlap( self.bounds, slot.bounds ))
+//     {
+//       if ( !covered )
+//         { if (!self.covering) {
+//           self.covering = slot;
+//           self.highlight(slot.$el, '#00FFFF');
+//         }}
+//       else
+//         { if (self.covering) {
+//           self.covering = false;
+//           self.highlight(slot.$el, '#5F9EA0');
+//         }}
+//     }
+//     else {
+//       if ( !self.match.tabs.some( function(tab) { return tab.covering.id === parseInt(covered) }))
+//         { slot.$el.removeAttr( 'data-covered'); }
+//       if ( slot.id === self.covering.id )
+//         { self.covering = false; self.highlight(slot.$el, '#5F9EA0'); }
+//     }
+//   });
+// };
+
+Tab.prototype.init = function()
+{
+  var self = this;
+  this.$task.append(this.$el, this.line.$el);
+  this.setOrigin();
+  this.$el.css({ left: this.origin.x, top: this.origin.y });
+  this.line.set(['x2', this.origin.x], ['y2', this.origin.y]);
+  // this.bindHandlers();
+  // if (this.covering)
+  // {
+  //   this.move(
+  //       this.covering.bounds[3] - this.$task.offset().left + 5,
+  //       this.covering.bounds[0] - this.$task.offset().top + 5)
+  // } else {
+  //   this.move(this.origin.x, this.origin.y);
+  // }
+};
+
+/************************************************************************************************************************
+  TASK: MATCH::SLOT COMPONENT
+*************************************************************************************************************************/
+
+function Slot(config)
+{
+  DropZone.call(this,
+    config.id,
+    config.taskId
+  );
+  this.match = config.match;
+  this.covering = false;
+  this.$el
+    .on('drop', this.handleDrop.bind(this))
+    .on('dropout', this.handleOut.bind(this))
+    .on('dropover', this.handleOver.bind(this, '#0FF'));
+}
+
+Slot.prototype = Object.create(DropZone.prototype);
+Slot.prototype.constructor = Slot;
+
+Slot.prototype.handleDrop = function(ev, ui)
+{
+  console.log('outside', this.covering);
+  if (!this.covering) {
+    console.log(this.covering);
+    var left = this.$el.offset().left - this.$task.offset().left + 5,
+        top = this.$el.offset().top - this.$task.offset().top + 5;
+
+      this.covering = this.match.tabs[$(ui.draggable).attr('data-id')];
+
+      this.covering.line.set(['x2', left], ['y2', top]);
+
+      $(ui.draggable).css({ top: top, left: left })
+                     .draggable('option', 'revert', false);
+
+      this.$el.next().velocity('reverse', { duration: 100 });
+  }
+};
+
+Slot.prototype.handleOut = function(ev, ui)
+{
+  console.log('draggable moved off');
+  console.log('outside', this.covering);
+
+  if (this.covering && $(ui.draggable).attr('data-id') === this.covering.$el.attr('data-id'))
+  {
+    $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
+    this.covering = false;
+    console.log(this.covering);
+  }
+  else if (!this.covering)
+  {
+    this.$el.next().velocity('reverse', { duration: 100 });
+  }
+
+};
+
+Slot.prototype.handleOver = function(color, ev, ui)
+{
+  console.log('draggable hovering over');
+
+  if (!this.covering)
+  {
+    this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
+  }
+};
+
+////  MATCH TASK OBJECT
+////-------------------
 
 function Match( storeTask, taskId ) {
   this.taskId = taskId;
@@ -1183,12 +1204,17 @@ function Match( storeTask, taskId ) {
   this.slots = storeTask.answers.map( function( a ) { return {text: a.isCorrect} });
 }
 
-Match.prototype.getParent = function()
+Match.prototype.handleResize = function()
 {
-  return $(store.testId + ' .task_' + this.taskId);
-};
+  var self = this;
+  this.tabs.forEach( function(t, i) {
+    t.setOrigin();
+    t.line.set(['x1', t.origin.x], ['y1', t.origin.y]);
+  });
 
-/*** CREATE ELEMENTS ***/
+  this.move( this.origin.x, this.origin.y );
+  this.match.slots.forEach( self.handleSlotResize.bind(self));
+}
 
 Match.prototype.init = function()
 {
@@ -1197,16 +1223,23 @@ Match.prototype.init = function()
       $aContainer = $( '<div class="col-sm-6 col-xs-12">'
         + '<div class="answer-container"></div></div>'),
       $sContainer = $( '<div class="col-sm-5 col-xs-12">'
-        + '<div class="slot-container"></div></div>');
+        + '<div class="slot-container"></div></div>'),
+      $popover = $('<div class="match-popover"'
+        + 'data-toggle="popover" data-placement="auto" data-trigger="hover" data-container="body"></div>');
   
   function makeTile(obj, type, id)
   {
     var $newLabel = $('<p class="match-label"></p>').text(obj.text).attr('data-id', id),
-        $newImg = $('<img></img>'),
-        $newTabSlot = $('<div class="tab-slot"></div>'),
+        $newPopover = $popover.clone().attr('data-content', obj.text).attr('data-id', id),
         $newTile = type > 0
-          ? store.$row().append( $newImg, $newLabel, $newTabSlot )
-          : store.$row().append( $newTabSlot, $newLabel );
+          ? store.$row().append(
+              $('<img></img>'),
+              $newLabel,
+              $('<div class="tab-slot"></div>'))
+          : store.$row().append(
+              $('<div class="tab-slot"></div>'),
+              $newLabel);
+    obj.$popover = $newPopover;
     return store.$col('xs', 12).clone().append( $newTile );
   }
   
@@ -1230,37 +1263,34 @@ Match.prototype.init = function()
 
 /***   CREATE SLOT AND TAB OBJECTS    ***/
 
-Match.prototype.componentsInit = function(self)
+Match.prototype.componentsInit = function()
 {
-  this.slots = this.slots.map( function(s, i) {
-    return new Slot({
-      id: i,
-      popover: new Popover(s.text, i),
-      parentObj: self,
-      $el: self.getParent().find('.slot-container .tab-slot').eq(i),
-      $row: self.getParent().find('.slot-container .tab-slot').parent()
-    });
-  });
-
-  this.tabs = this.answers.map( function(a, i)
+  this.tabs = this.slots.map( function(slot, i)
   {
-    var tab = new Tab({
+    var a = this.answers[i],
+        tab = new Tab({
           info: a.info,
           id: a.id,
-          parentObj: self,
-          popover: new Popover(a.text, i),
-          class: 'match'
-      });
-    self.slots[i].handleResize();
+          taskId: this.taskId,
+          match: this,
+          $popover: a.$popover
+        });
+
+    this.slots[i] = new Slot({
+      id: i,
+      taskId: this.taskId,
+      match: this
+    });
+
     return tab;
-  });
+  }.bind(this));
   
   this.tabs.forEach( function(tab) {
     tab.covering = tab.info.isSelected
-      ? self.slots[tab.info.isSelected[1]]
+      ? this.slots[tab.info.isSelected[1]]
       : false;
     tab.init();
-  });
+  }.bind(this));
 };
 
 /************************************************************************************************************************
@@ -1321,7 +1351,8 @@ Explore.prototype.getParent = function()
 
 Explore.prototype.buildOption = function(o, i)
 {
-  var self = this;
+  var self = this,
+      modalId = 'exploreTask_' + this.taskId +'_Opt_' + i;
   return {
     $li: $('<li class="option"><span class="dot empty"></span>' + o.title + '</li>')
            .click(function() {
@@ -1332,37 +1363,54 @@ Explore.prototype.buildOption = function(o, i)
               $li.eq(i).find('.dot').addClass('filled');
            }),
     $content: $('<h4 class="title sub-header">' + o.title + '</h4>'
-      + '<img src="http://placehold.it/' + this.img.w * 3 + 'x' + this.img.h * 2 + '"'
-          + ' width="150px"'
-          + ' alt="' + this.img.alt + '"'
-          + ' data-target="#imageModal"'
-          + ' data-src="http://placehold.it/' + this.img.w * 3 + 'x' + this.img.h * 2 + '"'
-          + ' data-title="' + this.img.alt + '"'
-          + ' data-toggle="modal"'
-          + ' tabindex="0"/>'
-      + '<p>' + (typeof o.text === 'string' ? o.text : o.text.map(function(t) {return t + '<br /><br />'} )) + '</p>')
+      + '<img src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
+          + ' width="' + this.img.w + '" height="' + this.img.h + '" alt="' + this.img.alt + '"'
+          + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
+      + '<p>' + (typeof o.text === 'string' ? o.text : o.text.map(function(t) {return t + '<br /><br />'} )) + '</p>'),
+    $modal: $('<div id="' + modalId + '"'
+         + ' role="dialog"'
+         + ' tabindex="-1"'
+         + ' class="modal fade"'
+         + ' aria-labelledby="' + modalId + 'Label">'
+      + '<div class="modal-dialog modal-lg">'
+      + '<div class="modal-content">'
+        + '<div class="modal-header">'
+          + '<button type="button"'
+                 + ' class="close"'
+                 + 'data-dismiss="modal"'
+                 + 'aria-hidden="true"><i class="fa fa-close fa-lg"></i></button>'
+          + '<h2 class="modal-title" id="' + modalId + 'Label">' + (this.img.alt + '_' + i) + '</h2>'
+          + '</div>'
+        + '<div class="modal-body">'
+          + '<img src="http://placehold.it/' + (this.img.w * 5) + 'x' + (this.img.h * 5) + '"'
+              + ' width="100%" height="100%" alt="' + this.img.alt + '"'
+              + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
+        + '</div>'
+        + '<div class="modal-footer">'
+          + '<button type="button"'
+                 + ' class="btn btn-default btn-close-modal"'
+                 + ' data-dismiss="modal">'
+            + ' <span class="btn-text">Close</span>'
+          + ' </button>'
+          + '</div>'
+        + '</div>'
+      + '</div>'
+    + '</div>')
   };
 };
 
 Explore.prototype.init = function()
 {
-  var $task = $('<div class="task task_' + this.taskId + ' explore"><div class="row"></div></div>'),
+  var $task = $('<div class="task task_' + this.taskId + ' explore"><div class="row"></div></div>');
       $left = $('<div class="col-sm-3 col-xs-12"><ul class="menu"></ul></div>'),
       $right = $('<div class="col-sm-9 col-xs-12"><div class="content"></div></div>');
-
-  $('#imageModal').on('show.bs.modal', function(e) {
-    var $img = $(e.relatedTarget).clone(),
-        title = $img.data('title'),
-        src = $img.data('src');
-    $img.attr('width', '100%').attr('height', 'auto');
-    $(this).find('.modal-title').text(title);
-    $(this).find('.modal-body').html('').append($img);
-  });
 
   this.options = this.storeTask.options.map(function(o, i) {
     var opt = this.buildOption(o, i);
     $left.find('.menu').append(opt.$li);
     opt.$content.find('img').css({'width': this.img.w + 'px', 'height': this.img.h + 'px'});
+    opt.$modal.find('img').css({'width': 100 + '%', 'height': 100 + '%'});
+    $(store.testId).append(opt.$modal);
     return opt;
   }.bind(this));
 

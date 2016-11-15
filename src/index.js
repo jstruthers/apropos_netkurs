@@ -497,9 +497,6 @@ gotoTask = function( nextTaskNum )
 
       $prev = $(store.testId + ' .task_' + store.currentTask),
       $target = $(store.testId + ' .task_' + nextTaskNum),
-      $disable = $(store.testId + ' #btn_next, '
-        + store.testId + ' #btn_prev, '
-        + store.testId + ' .task-mark'),
       /*
       * @function handleBounds
       * @desc Check to to see if the next task number is valid
@@ -547,14 +544,25 @@ gotoTask = function( nextTaskNum )
       { duration: 200, easing: 'easeOut' });
 
     store.currentTask = nextTaskNum;
+
+    if (store.currentTask > 0) {
+      $('.btn-prev').attr('disabled', false);
+    } else {
+      $('.btn-prev').attr('disabled', true);
+    }
+
+    if (store.currentTask < totalTasks) {
+      $('.btn-next').attr('disabled', false);
+    } else {
+      $('.btn-next').attr('disabled', true);
+    }
+
     $(store.testId + ' .task .custom-btn').attr('tabindex', -1);
     $target.find('.custom-btn').attr('tabindex', 0);
+
     $(store.testId + ' .task-mark.selected').removeClass('selected');
     $(store.testId + ' .task-mark_' + nextTaskNum ).addClass('selected');
   }
-
-  $disable.prop('disabled', true);
-  setTimeout(function() { $disable.prop('disabled', false); }, 500 );
 },
 
 addTaskDots = function()
@@ -990,8 +998,6 @@ Tab.prototype.setOrigin = function()
   // });
 };
 
-/***   ANIMATE   ***/
-
 Tab.prototype.springBack = function()
 { 
   var self = this;
@@ -1009,104 +1015,6 @@ Tab.prototype.springBack = function()
     }
   });
 };
-
-// /***   EVENT HANDLERS   ***/
-
-// Tab.prototype.handleMousedown = function(self, e)
-// {
-//   if ( e.pageY >= this.bounds[0] && e.pageX <= this.bounds[1]
-//     && e.pageY <= this.bounds[2] && e.pageX >= this.bounds[3])
-//   {
-//     this.draggable = true;
-//     this.grabbed = { x: e.pageX - this.pos.x, y: e.pageY - this.pos.y };
-//     $(store.testId + ' .match-popover').css('z-index', -1);
-//     $(store.testId + ' .match-tab').css('z-index', 1);
-//     $(store.testId + ' .match-tab + .line').css('z-index', 0);
-//     this.$el.next('.line').css('z-index', 2);
-//     this.$el.css('zIndex', 3).off('mouseover mouseout').removeClass('grab').addClass('grabbing');
-//     this.$task.find('*').addClass('unselectable').attr('unselectable', 'on');
-//     this.$task.mousemove( self.handleMousemove.bind(self) );
-//   }
-// };
-
-// Tab.prototype.handleMousemove = function(e)
-// {
-//   this.move(
-//     e.pageX - this.grabbed.x - this.$task.offset().left,
-//     e.pageY - this.grabbed.y - this.$task.offset().top);
-//   this.checkCovering();
-// };
-
-// Tab.prototype.handleMouseup = function(self)
-// {
-//   var self = this;
-//   this.draggable = false;
-//   if ( this.covering )
-//   {
-//     this.covering.$el.attr('data-covered', self.id);
-//     this.move(
-//       this.covering.bounds[3] - this.$task.offset().left + 5,
-//       this.covering.bounds[0] - this.$task.offset().top + 5
-//     );
-//     self.highlight(this.covering.$el, '#5F9EA0');
-//   }
-//   else { this.springBack(this); }
-//   checkCompleted(this.id, this.match.storeTask, [this.covering.text, this.covering.id]);
-  
-//   this.$task.find('*').removeClass('unselectable').removeAttr('unselectable' );
-//   this.$task.off('mousemove');
-//   $('.match-popover').css('z-index', 10);
-//   $('.match-tab').css('z-index', 2);
-//   $('.match-line').css('z-index', 1);
-//   this.$el.next('.line').css('z-index', 1);
-  
-//   this.$el.removeClass('grabbing').addClass('grab')
-//     .mouseover( self.raiseEl.bind(self) ).mouseout( self.lowerEl.bind(self) );
-// };
-
-// Tab.prototype.bindHandlers = function()
-// {
-//   var self = this;
-//   this.$el.mouseover( self.raiseEl.bind(self) )
-//     .mouseout( self.lowerEl.bind(self) )
-//     .mousedown( self.handleMousedown.bind(self, self) )
-//     .mouseup( self.handleMouseup.bind(self, self) );
-//   $( window ).resize( self.handleResize.bind(self) );
-// }
-
-/***   CHECK IF TAB COVERS SLOT   ***/
-
-// Tab.prototype.checkCovering = function()
-// {
-//   var self = this,
-//       overlap = function(tB, sB) {
-//         return ( tB[3] < sB[1] && tB[1] > sB[3] && tB[0] < sB[2] && tB[2] > sB[0]);};
-
-//   this.match.slots.forEach( function( slot, i )
-//   {
-//     var covered = slot.$el.attr('data-covered');
-
-//     if (overlap( self.bounds, slot.bounds ))
-//     {
-//       if ( !covered )
-//         { if (!self.covering) {
-//           self.covering = slot;
-//           self.highlight(slot.$el, '#00FFFF');
-//         }}
-//       else
-//         { if (self.covering) {
-//           self.covering = false;
-//           self.highlight(slot.$el, '#5F9EA0');
-//         }}
-//     }
-//     else {
-//       if ( !self.match.tabs.some( function(tab) { return tab.covering.id === parseInt(covered) }))
-//         { slot.$el.removeAttr( 'data-covered'); }
-//       if ( slot.id === self.covering.id )
-//         { self.covering = false; self.highlight(slot.$el, '#5F9EA0'); }
-//     }
-//   });
-// };
 
 Tab.prototype.init = function()
 {
@@ -1149,9 +1057,8 @@ Slot.prototype.constructor = Slot;
 
 Slot.prototype.handleDrop = function(ev, ui)
 {
-  console.log('outside', this.covering);
-  if (!this.covering) {
-    console.log(this.covering);
+  if (!this.covering)
+  {
     var left = this.$el.offset().left - this.$task.offset().left + 5,
         top = this.$el.offset().top - this.$task.offset().top + 5;
 
@@ -1168,14 +1075,10 @@ Slot.prototype.handleDrop = function(ev, ui)
 
 Slot.prototype.handleOut = function(ev, ui)
 {
-  console.log('draggable moved off');
-  console.log('outside', this.covering);
-
   if (this.covering && $(ui.draggable).attr('data-id') === this.covering.$el.attr('data-id'))
   {
     $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
     this.covering = false;
-    console.log(this.covering);
   }
   else if (!this.covering)
   {
@@ -1186,16 +1089,15 @@ Slot.prototype.handleOut = function(ev, ui)
 
 Slot.prototype.handleOver = function(color, ev, ui)
 {
-  console.log('draggable hovering over');
-
   if (!this.covering)
   {
     this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
   }
 };
 
-////  MATCH TASK OBJECT
-////-------------------
+/************************************************************************************************************************
+  TASK: MATCH OBJECT
+*************************************************************************************************************************/
 
 function Match( storeTask, taskId ) {
   this.taskId = taskId;

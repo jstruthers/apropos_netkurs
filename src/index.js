@@ -837,7 +837,7 @@ function Line(config)
 {
   this.$tab = config.$tab;
   this.$task = config.$task;
-  this.$el = $('<svg class="line line' + config.id
+  this.$el = $('<svg class="line"'
     + '" width="' + config.$task.width() + '"'
     + '" height="' + config.$task.height()
     + '" viewPort="0 0 ' + config.$task.width() + ' ' + config.$task.height()
@@ -856,8 +856,6 @@ Line.prototype.set = function(x, y)
   this.$el.find('line')
     .attr(x[0], x[1] + this.$tab.width() / 2)
     .attr(y[0], y[1] + this.$tab.height() / 2);
-  console.log(x, y);
-  console.log(this.$el.find('line')[0])
 };
 
 Line.prototype.resize = function()
@@ -874,7 +872,6 @@ Line.prototype.resize = function()
 
 function Draggable(id, taskId, $el)
 {
-  console.log('draggable', taskId);
   var self = this;
   this.id = id;
   this.$el = $el;
@@ -884,7 +881,8 @@ function Draggable(id, taskId, $el)
     stack: '.ui-draggable'
   });
   this.$el.mouseover( self.raiseEl.bind(self) )
-          .mouseout( self.lowerEl.bind(self) );
+          .mouseout( self.lowerEl.bind(self) )
+          .attr('data-id', this.id);
 }
 
 Draggable.prototype.raiseEl = function()
@@ -920,15 +918,12 @@ Draggable.prototype.lowerEl = function()
 
 function DropZone(id, taskId)
 {
+  var self = this;
   this.id = id;
   this.$task = $(store.testId + ' .task_' + taskId);
   this.$el = this.$task.find('.slot-container .tab-slot').eq(id);
   this.$el.droppable({});
 }
-// Tab.prototype.highlight = function($slot, color)
-// {
-//   $slot.next().velocity({ borderLeftColor: color }, { duration: 100 });
-// }
 
 // Tab.prototype.handleSlotResize = function(slot)
 // {
@@ -955,7 +950,7 @@ function Tab (config)
   Draggable.call(this,
     config.id,
     config.taskId,
-    $('<div class="match-tab tab' + config.id + '"></div>')
+    $('<div class="match-tab"></div>')
   );
   this.info = config.info;
   // this.$popover = config.$popover;
@@ -1141,10 +1136,63 @@ function Slot(config)
     config.id,
     config.taskId
   );
+  this.match = config.match;
+  this.covering = false;
+  this.$el
+    .on('drop', this.handleDrop.bind(this))
+    .on('dropout', this.handleOut.bind(this))
+    .on('dropover', this.handleOver.bind(this, '#0FF'));
 }
 
 Slot.prototype = Object.create(DropZone.prototype);
 Slot.prototype.constructor = Slot;
+
+Slot.prototype.handleDrop = function(ev, ui)
+{
+  console.log('outside', this.covering);
+  if (!this.covering) {
+    console.log(this.covering);
+    var left = this.$el.offset().left - this.$task.offset().left + 5,
+        top = this.$el.offset().top - this.$task.offset().top + 5;
+
+      this.covering = this.match.tabs[$(ui.draggable).attr('data-id')];
+
+      this.covering.line.set(['x2', left], ['y2', top]);
+
+      $(ui.draggable).css({ top: top, left: left })
+                     .draggable('option', 'revert', false);
+
+      this.$el.next().velocity('reverse', { duration: 100 });
+  }
+};
+
+Slot.prototype.handleOut = function(ev, ui)
+{
+  console.log('draggable moved off');
+  console.log('outside', this.covering);
+
+  if (this.covering && $(ui.draggable).attr('data-id') === this.covering.$el.attr('data-id'))
+  {
+    $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
+    this.covering = false;
+    console.log(this.covering);
+  }
+  else if (!this.covering)
+  {
+    this.$el.next().velocity('reverse', { duration: 100 });
+  }
+
+};
+
+Slot.prototype.handleOver = function(color, ev, ui)
+{
+  console.log('draggable hovering over');
+
+  if (!this.covering)
+  {
+    this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
+  }
+};
 
 ////  MATCH TASK OBJECT
 ////-------------------
@@ -1224,13 +1272,14 @@ Match.prototype.componentsInit = function()
           info: a.info,
           id: a.id,
           taskId: this.taskId,
-          match: this.storeTask.obj,
+          match: this,
           $popover: a.$popover
         });
 
     this.slots[i] = new Slot({
       id: i,
-      taskId: this.taskId
+      taskId: this.taskId,
+      match: this
     });
 
     return tab;
@@ -1445,7 +1494,6 @@ function Sorting(storeTask, taskId)
 
 Sorting.prototype.init = function()
 {
-  console.log(this.storeTask);
   var $task = $( '<div class="task task_' + this.taskId + '">'),
       $header = $(  '<div class="col-xs-12">'
                   + '<h4 class="question">'

@@ -1,4 +1,4 @@
-
+  
 /************************************************************************************************************************
 STORE OBJECT
 *************************************************************************************************************************/
@@ -18,14 +18,14 @@ var store = {
     randomTest: {
       page: './html/randomTest.html',
       json: [
-        ['jsonRandomTest', './json/JsonRandomTest.json'],
+        ['feed', './json/JsonRandomTest.json'],
         ['langData', './json/langData.json']
       ]
     },
     taskMaler: {
       page: './html/taskMaler.html',
       json: [
-        ["jsonRandomTest", "./json/JsonTaskMaler.json"],
+        ["feed", "./json/JsonTaskMaler.json"],
         ["langData", "./json/langData.json"]
       ]
     }
@@ -382,6 +382,7 @@ createTask = function (taskNum)
       task.obj = new Sorting( task, taskNum ); break;
     case 7 :
       task.obj = new Standard( task, taskNum ); break;
+    default: break;
   }
 
   var $task = task.obj.init();
@@ -649,53 +650,116 @@ addTaskDots = function()
 
     if (!store.$testPage) { store.$testPage = $(store.testId).html(); }
 
-    store.stats = {
-      testTitle: store.jsonRandomTest.testInfo,
-      passRequirement: store.jsonRandomTest.PassRequirement,
-      numTasks: store.jsonRandomTest.NoOfTasks,
-      durationTime: store.jsonRandomTest.DurationTime,
-      alertTime: store.jsonRandomTest.AlertTime,
-      completedTasks: 0,
-      totalCorrect: 0
-    };
-
-    store.tasks = store.jsonRandomTest.TestThemes[0].AThemes[0].Tasks.map( function( task )
-    {
-      switch (buildOrder) {
-        case 'randomTest':
+    switch (buildOrder) {
+      case 'randomTest':
+        store.stats = {
+          testTitle: store.feed.testInfo,
+          passRequirement: store.feed.PassRequirement,
+          numTasks: store.feed.NoOfTasks,
+          durationTime: store.feed.DurationTime,
+          alertTime: store.feed.AlertTime,
+          completedTasks: 0,
+          totalCorrect: 0
+        };
+        store.tasks = store.feed.TestThemes[0].AThemes[0].Tasks.map( function( task ) {
           return {
             id: task.task_id,
             question: task.Questions[0].q_text,
             type: task.Questions[0].qt_id,
             hint: task.task_hint,
             isCompleted: false,
-            answers: task.Questions[0].Answers.map( function( answer, i )
-                {
-                  return {
-                    id: i,
-                    isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
-                    isSelected: false,
-                    pos: answer.qa_position,
-                    text: answer.qa_text
-                  };
-                })
-          }
-        case 'taskMaler':
-          return {
-            id: task.task_id,
-            type: task.Questions[0].qt_id,
-            hint: task.task_hint,
-            isCompleted: false,
-            options: task.Questions.map( function(q) {
+            answers: task.Questions[0].Answers.map( function( answer, i ) {
               return {
-                title: q.q_title,
-                text: q.q_text,
-                attachments: q.Attachments
-              }
+                id: i,
+                isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
+                isSelected: false,
+                pos: answer.qa_position,
+                text: answer.qa_text
+              };
             })
-          }
-      };
-    });
+          };
+        });
+        break;
+      case 'taskMaler':
+        store.tasks = store.feed.TestThemes[0].AThemes[0].Tasks.map( function( task ) {
+          return {
+            title: task.Title,
+            type: task.PresentationTemplates[0].presentationtemplate_id,
+            isCompleted: false,
+            testquestion: (task.Questions && task.Questions[0].testquestion) ? task.Questions[0].testquestion : null,
+            testposition: (task.Questions && task.Questions[0].position) ? task.Questions[0].position : null,
+            answers: (function() {
+              switch(task.PresentationTemplates[0].presentationtemplate_id) {
+                case 4:
+                //explore
+                  return task.Questions.map(function(q) {
+                    return {
+                      text: q.Answers[0].testanswer,
+                      img: q.Attachments[0] ? q.Attachments[0].att_url : null,
+                      label: q.testquestion
+                    };
+                  });
+                case 7:
+                //text and picture
+                  return {
+                    text: task.PText,
+                    img: task.PageAttachments[0] ? task.PageAttachments[0].att_url : null
+                  };
+                case 5:
+                //slideshow
+                  return {
+                    text: task.PText,
+                    slides: task.Questions[0].Attachments.map(function(a) {
+                      return {
+                        img: a.url,
+                        dims: a.dims,
+                        alt: a.alt
+                      }
+                    })
+                  }
+                case 1:
+                //multichoice
+                  return task.Questions[0].Answers.map(function(a) {
+                    return {
+                      text: a.testanswer,
+                      pos: a.position,
+                    }
+                  });
+                case 3:
+                //match
+                  return task.Questions.map(function(q) {
+                    return {
+                      text: q.Answers[0].testanswer,
+                      img: q.Attachments[0] ? q.Attachments[0].att_url : null
+                    }
+                  })
+                case 6:
+                //sorting
+                  return {
+                    img: task.PageAttachments.att_url,
+                    bins: task.Questions.map(function(q, i) {
+                      return {
+                        binId: i,
+                        sortables: q.Answers.map(function(a) {
+                          return {
+                            label: a.testanswer,
+                            bin: a.position
+                          }
+                        }),
+                        binImg: q.Attachments[0] ? q.Attachments[0].att_url : null,
+                        binLabel: q.testquestion
+                      }
+                    })
+                  }
+                default: break;
+              }
+            })()
+          };
+        });
+        break;
+    }
+
+    console.log(store.tasks);
 
     store.reset = false;
 
@@ -921,30 +985,6 @@ Draggable.prototype.lowerEl = function()
 // };
 
 /************************************************************************************************************************
-  TASK COMPONENT: DROP ZONE
-*************************************************************************************************************************/
-
-function DropZone(id, taskId)
-{
-  var self = this;
-  this.id = id;
-  this.$task = $(store.testId + ' .task_' + taskId);
-  this.$el = this.$task.find('.slot-container .tab-slot').eq(id);
-  this.$el.droppable({});
-}
-
-// Tab.prototype.handleSlotResize = function(slot)
-// {
-//   slot.$popover.css({
-//     left: slot.$row.offset().left - this.$task.offset().left,
-//     top: slot.$row.offset().top - this.$task.offset().top,
-//     width: slot.$row.width() + 20,
-//     height: slot.$row.parent().height()
-//   });
-//   this.match.getDims(slot);
-// };
-
-/************************************************************************************************************************
   TASK: MATCH
 *************************************************************************************************************************/
 
@@ -964,7 +1004,6 @@ function Tab (config)
   // this.$popover = config.$popover;
   this.$task = $(store.testId + ' .task_' + config.taskId);
   this.$row = this.$task.find('.match-label').eq(config.id);
-  this.match = config.match;
   this.line = new Line({
     $tab: this.$el,
     $task: this.$task,
@@ -1040,20 +1079,16 @@ Tab.prototype.init = function()
 
 function Slot(config)
 {
-  DropZone.call(this,
-    config.id,
-    config.taskId
-  );
-  this.match = config.match;
-  this.covering = false;
+  this.id = config.id;
+  this.$task = $(store.testId + ' .task_' + config.taskId);
+  this.$el = this.$task.find('.slot-container .tab-slot').eq(config.idid);
+  this.$el.droppable({});
+  this.parentObj = config.parentObj;
   this.$el
     .on('drop', this.handleDrop.bind(this))
     .on('dropout', this.handleOut.bind(this))
     .on('dropover', this.handleOver.bind(this, '#0FF'));
 }
-
-Slot.prototype = Object.create(DropZone.prototype);
-Slot.prototype.constructor = Slot;
 
 Slot.prototype.handleDrop = function(ev, ui)
 {
@@ -1062,7 +1097,7 @@ Slot.prototype.handleDrop = function(ev, ui)
     var left = this.$el.offset().left - this.$task.offset().left + 5,
         top = this.$el.offset().top - this.$task.offset().top + 5;
 
-      this.covering = this.match.tabs[$(ui.draggable).attr('data-id')];
+      this.covering = this.parentObj.tabs[$(ui.draggable).attr('data-id')];
 
       this.covering.line.set(['x2', left], ['y2', top]);
 
@@ -1174,14 +1209,13 @@ Match.prototype.componentsInit = function()
           info: a.info,
           id: a.id,
           taskId: this.taskId,
-          match: this,
           $popover: a.$popover
         });
 
     this.slots[i] = new Slot({
       id: i,
       taskId: this.taskId,
-      match: this
+      parentObj: this
     });
 
     return tab;
@@ -1203,28 +1237,18 @@ function Standard(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
-  this.img = {
-    alt: 'A Picture',
-    w: 350,
-    h: 350
-  };
-  this.text = this.storeTask.options[0].text;
+  this.img = this.storeTask.answers.img;
+  this.text = this.storeTask.answers.text;
 }
 
 Standard.prototype.init = function()
 {
-  var $task = $('<div class="task task_' + this.taskId + ' standard"></div>'),
-      $header = 
-      $content = $;
+  var $task = $('<div class="task task_' + this.taskId + ' standard"></div>');
 
   return $task.append(
-    $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
+    $('<h4 class="title sub-header">' + this.storeTask.title + '</h4>'),
     $('<div class="content">'
-        + ' <img'
-          + ' src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
-          + ' width="' + this.img.w + '"'
-          + ' height="' + this.img.h + '"'
-          + ' alt="' + this.img.alt + '" />'
+        + '<img src="' + this.img + '"/>'
         + '<p>' + ( typeof this.text === 'string' ? this.text : this.text.map(function(t) {return t + '<br /><br />'} ))
         + '</p></div></div>'
       )
@@ -1256,7 +1280,7 @@ Explore.prototype.buildOption = function(o, i)
   var self = this,
       modalId = 'exploreTask_' + this.taskId +'_Opt_' + i;
   return {
-    $li: $('<li class="option"><span class="dot empty"></span>' + o.title + '</li>')
+    $li: $('<li class="option"><span class="dot empty"></span>' + o.label + '</li>')
            .click(function() {
               var $li = self.getParent().find('.menu li');
               self.getParent().find('.content').html('')
@@ -1265,39 +1289,15 @@ Explore.prototype.buildOption = function(o, i)
               $li.eq(i).find('.dot').addClass('filled');
            }),
     $content: $('<h4 class="title sub-header">' + o.title + '</h4>'
-      + '<img src="http://placehold.it/' + this.img.w + 'x' + this.img.h + '"'
-          + ' width="' + this.img.w + '" height="' + this.img.h + '" alt="' + this.img.alt + '"'
-          + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
-      + '<p>' + (typeof o.text === 'string' ? o.text : o.text.map(function(t) {return t + '<br /><br />'} )) + '</p>'),
-    $modal: $('<div id="' + modalId + '"'
-         + ' role="dialog"'
-         + ' tabindex="-1"'
-         + ' class="modal fade"'
-         + ' aria-labelledby="' + modalId + 'Label">'
-      + '<div class="modal-dialog modal-lg">'
-      + '<div class="modal-content">'
-        + '<div class="modal-header">'
-          + '<button type="button"'
-                 + ' class="close"'
-                 + 'data-dismiss="modal"'
-                 + 'aria-hidden="true"><i class="fa fa-close fa-lg"></i></button>'
-          + '<h2 class="modal-title" id="' + modalId + 'Label">' + (this.img.alt + '_' + i) + '</h2>'
-          + '</div>'
-        + '<div class="modal-body">'
-          + '<img src="http://placehold.it/' + (this.img.w * 5) + 'x' + (this.img.h * 5) + '"'
-              + ' width="100%" height="100%" alt="' + this.img.alt + '"'
-              + ' data-target="#' + modalId + '" data-toggle="modal" tabindex="0"/>'
-        + '</div>'
-        + '<div class="modal-footer">'
-          + '<button type="button"'
-                 + ' class="btn btn-default btn-close-modal"'
-                 + ' data-dismiss="modal">'
-            + ' <span class="btn-text">Close</span>'
-          + ' </button>'
-          + '</div>'
-        + '</div>'
-      + '</div>'
-    + '</div>')
+      + '<img src="http://placehold.it/' + this.img.w * 3 + 'x' + this.img.h * 2 + '"'
+          + ' width="150px"'
+          + ' alt="' + this.img.alt + '"'
+          + ' data-target="#imageModal"'
+          + ' data-src="http://placehold.it/' + this.img.w * 3 + 'x' + this.img.h * 2 + '"'
+          + ' data-title="' + this.img.alt + '"'
+          + ' data-toggle="modal"'
+          + ' tabindex="0"/>'
+      + '<p>' + (typeof o.text === 'string' ? o.text : o.text.map(function(t) {return t + '<br /><br />'} )) + '</p>')
   };
 };
 
@@ -1307,12 +1307,19 @@ Explore.prototype.init = function()
       $left = $('<div class="col-sm-3 col-xs-12"><ul class="menu"></ul></div>'),
       $right = $('<div class="col-sm-9 col-xs-12"><div class="content"></div></div>');
 
-  this.options = this.storeTask.options.map(function(o, i) {
+  $('#imageModal').on('show.bs.modal', function(e) {
+    var $img = $(e.relatedTarget).clone(),
+        title = $img.data('title'),
+        src = $img.data('src');
+    $img.attr('width', '100%').attr('height', 'auto');
+    $(this).find('.modal-title').text(title);
+    $(this).find('.modal-body').html('').append($img);
+  });
+
+  this.options = this.storeTask.answers.map(function(o, i) {
     var opt = this.buildOption(o, i);
     $left.find('.menu').append(opt.$li);
     opt.$content.find('img').css({'width': this.img.w + 'px', 'height': this.img.h + 'px'});
-    opt.$modal.find('img').css({'width': 100 + '%', 'height': 100 + '%'});
-    $(store.testId).append(opt.$modal);
     return opt;
   }.bind(this));
 
@@ -1332,7 +1339,7 @@ function Slideshow(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
-  this.slides = storeTask.options[0].attachments;
+  this.slides = storeTask.answers.slides;
   this.currentSlide = 0;
   this.carouselId = 'carousel_task_' + taskId;
 }
@@ -1352,17 +1359,17 @@ Slideshow.prototype.buildCarousel = function() {
   + '</div>');
 }
 
-Slideshow.prototype.makeSlide = function(img, i)
+Slideshow.prototype.makeSlide = function(s, i)
 {
   var isActive = i === 0 ? 'active' : '',
-      $img = $('<img src="' + img.url + '" alt="' + img.alt + '">')
+      $img = $('<img src="' + s.img + '">')
         .css({
           position: 'relative',
           margin: 'auto',
           width: 'auto',
           maxHeight: '425px'
         }),
-      $caption = $('<div class="carousel-caption"><p>' + img.alt + '</p></div>');
+      $caption = $('<div class="carousel-caption"><p>' + s.alt + '</p></div>');
   return {
     $item: $('<div class="item" style="width: 100%;"></div>').addClass(isActive).append($img, $caption),
     $indicator: $('<li data-target="#' + this.carouselId + '" data-slide-to="' + i + '"></li>').addClass(isActive)
@@ -1372,11 +1379,11 @@ Slideshow.prototype.makeSlide = function(img, i)
 Slideshow.prototype.init = function()
 {
   var $task = $('<div class="task task_' + this.taskId + ' slideshow">'),
-      $header = $('<h4 class="title sub-header">' + this.storeTask.options[0].title + '</h4>'),
+      $header = $('<h4 class="title sub-header">' + this.storeTask.title + '</h4>'),
       $carousel = this.buildCarousel();
   
-  this.slides.forEach( function(img, i) {
-    var slide = this.makeSlide(img, i);
+  this.slides.forEach( function(s, i) {
+    var slide = this.makeSlide(s, i);
     $carousel.find('.carousel-inner').append(slide.$item);
     $carousel.find('.carousel-indicators').append(slide.$indicator);
   }.bind(this));
@@ -1388,25 +1395,138 @@ Slideshow.prototype.init = function()
 TASK: SORTING
 *************************************************************************************************************************/
 
+/************************************************************************************************************************
+TASK: TASK UTILITY::SORTABLE
+*************************************************************************************************************************/
+
+function Sortable (config)
+{
+  var self = this;
+  Draggable.call(this,
+    config.id,
+    config.taskId,
+    $('<div class="match-tab"></div>')
+  );
+  // this.$popover = config.$popover;
+  this.$task = $(store.testId + ' .task_' + config.taskId);
+  // this.$el.draggable('option', 'revert', function() {this.springBack(); return false;}.bind(this))
+};
+
+Sortable.prototype = Object.create(Draggable.prototype);
+Sortable.prototype.constructor = Sortable;
+
+Sortable.prototype.springBack = function()
+{ 
+  var self = this;
+  this.$el.velocity({
+    left: self.origin.x + 'px',
+    top: self.origin.y + 'px',
+  }, {
+    duration: 1000,
+    easing: [150, 15]
+  });
+};
+
+/************************************************************************************************************************
+TASK: TASK UTILITY::BIN
+*************************************************************************************************************************/
+
+function Bin(config)
+{
+  this.id = config.id;
+  this.$task = $(store.testId + ' .task_' + config.taskId);
+  this.$el = this.$task.find('.slot-container .tab-slot').eq(config.id);
+  this.$el.droppable({});
+  this.parentObj = config.parentObj;
+  this.inventory = [];
+  this.$el
+    .on('drop', this.handleDrop.bind(this))
+    .on('dropout', this.handleOut.bind(this));
+    // .on('dropover', this.handleOver.bind(this, '#0FF'));
+}
+
+Bin.prototype.handleDrop = function(ev, ui)
+{
+  var left = this.$el.offset().left - this.$task.offset().left + 5,
+      top = this.$el.offset().top - this.$task.offset().top + 5;
+
+  this.inventory.push(this.parentObj.sortables[$(ui.draggable).attr('data-id')]);
+
+  // snap to somewhere within the bin
+
+  // $(ui.draggable).css({ top: top, left: left })
+  //                .draggable('option', 'revert', false);
+};
+
+Bin.prototype.handleOut = function(ev, ui)
+{
+  if (this.inventory.length)
+  {
+    this.inventory.forEach(function(s, i){
+      if (s.id === $(ui.draggable).attr('data-id'))
+      {
+        $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
+      }
+    });
+  }
+};
+
+// Bin.prototype.handleOver = function(color, ev, ui)
+// {
+//   if (!this.covering)
+//   {
+//     this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
+//   }
+// };
+
+/************************************************************************************************************************
+TASK: SORTING OBJECT
+*************************************************************************************************************************/
+
 function Sorting(storeTask, taskId)
 {
   this.storeTask = storeTask;
   this.taskId = taskId;
+  this.bins = this.storeTask.answers.bins;
+  this.sortables = (function() {
+    var twoD = this.bins.map(function(b) {
+      return b.sortables
+    });
+    return [].concat.apply([], twoD);
+  }.bind(this))();
 }
 
 Sorting.prototype.init = function()
 {
-  var $task = $( '<div class="task task_' + this.taskId + '">'),
-      $header = $(  '<div class="col-xs-12">'
-                  + '<h4 class="question">'
-                  + this.storeTask.question + '</h4>'
-                  + '</div>'),
-      $body = $(  '<div class="col-xs-10 col-xs-offset-1">'
-                + '<div class="body"><div class="row">'
-                + '<div class="options col-xs-12 col-lg-7"></div>'
-                + '<img class="task-image col-xs-12 col-lg-5" src="http://placehold.it/750x450" />'
-                + '</div></div></div>');
-  return $task.append(store.$row().append($header, $body));
+  console.log(this.bins, this.sortables)
+  var $task = $('<div class="task task_' + this.taskId + '">'),
+      $header = $('<h4>' + this.storeTask.question + '</h4>'),
+      $body = $('<div class="body"><div class="row"></div></div>');
+  //     $left = $('<div class="col-xs-8"><div class="sortable-container"></div></div>'),
+  //     $right = $('<div class="col-xs-4"><div class="bin-container"></div></div>');
+
+  // this.sortables = this.sortables.map(function(s, i) {
+  //   var sortable = new Sortable({
+  //     id: i,
+  //     taskId: this.taskId,
+  //     $popover: a.$popover
+  //   });
+  //   $left.find('.sortable-container').append( sortable.$el );
+  //   return sortable;
+  // }.bind(this));
+
+  // this.bins = this.bins.map(function(b, i) {
+  //   var bin = new Bin({
+  //     id: i,
+  //     taskId: this.taskId,
+  //     parentObj: this
+  //   });
+  //   $right.find('.bin-container').append( bin.$el );
+  //   return bin;
+  // }.bind(this));
+
+  // $body.find('.row').append($left, $right);
+  return $task.append(store.$row(1).append($header), store.$row(1).append($body));
 };
 
 /************************************************************************************************************************
@@ -1533,12 +1653,12 @@ $('document').ready( function() {
       store.build[buildOrder].json,
       function(i, data) { store[store.build[buildOrder].json[i][0]] = JSON.parse(data); },
       function() {
-        store.testId = '#randomTest_' + store.jsonRandomTest.Id;
+        store.testId = '#randomTest_' + store.feed.Id;
         $("#random_test").attr('id', store.testId.slice(1));
         $(store.testId + '.random-test-main-content').load(store.build[buildOrder].page, initStore.bind(null, buildOrder));
       }
     );
-  })('randomTest');
+  })('taskMaler');
 });
 
 

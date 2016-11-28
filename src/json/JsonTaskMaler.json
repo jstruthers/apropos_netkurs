@@ -33,156 +33,452 @@
 					"a_id":1063,
 					"Tasks":
 					[
-						{	
-							"task_id":2788,
-							"task_instruction":"",
-							"task_title":"AstroOpg16",
+						{
+							"Id": 467,
+							"PassRequirement":  "50",
+							"TestTypeId": 1,
+							"Instructions": null,
+							"TestName": "_Flash_171_605_OKM test utforsk",
+							"Freetext": null,
+							"TestDescription": "Testen er automatisk opprettet for bruk i Flashmaler.",
+							"Wakeup": null,
+							"PageAttachments": {},
+							"Id": 605,
+							"Exercise": "<NULL>",
+							"PText": "",
+							"Title": "OKM test utforsk",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 4,
+									"template_description": "Flashmal med utforsk. Midtstillt bilde, halvpart av plass til bilde og halvpart av plass til tekst.",
+									"template_name": "Flash utforsk 3"
+								}
+							],
 							"Questions":
 							[
 								{
-									"q_id":3124,
-									"qt_id":4,
-									"q_title": "Explore Task1",
-									"q_text": [
-										"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has.",
-										"Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur."
+									"Answers":
+									[
+										{
+											"testanswer": "Beskrivelse av første alternativ",
+											"testanswers_id": 26895,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 633,
+											"position": 1
+										}
 									],
 									"Attachments":
 									[
 										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"att_typeid":1
+											"att_scale": 0,
+											"att_id": 1720,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
 										}
-									]
+									],
+									"test_id": 467,
+									"position": 1,
+									"testquestion": "Førstealternativ",
+									"testquestions_id": 633
 								},
 								{
-									"q_id":3124,
-									"qt_id":4,
-									"q_title": "Explore Task2",
-									"q_text":[
-										"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has.",
-										"Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
-										"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has."
+									"Answers":
+									[
+										{
+											"testanswer": "Beskrivelse av andre alternativ",
+											"testanswers_id": 26896,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 634,
+											"position": 1
+										}
 									],
 									"Attachments":
 									[
 										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"att_typeid":1
+											"att_scale": 0,
+											"att_id": 1478,
+											"att_typeid": 8,
+											"att_url": "http://placehold.it/400x300"
 										}
-									]
+									],
+									"test_id": 467,
+									"position": 2,
+									"testquestion": "Andrealternativ",
+									"testquestions_id": 634
 								},
 								{
-									"q_id":3124,
-									"qt_id":4,
-									"q_title": "Explore Task3",
-									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel.",
-									"Attachments":
+									"Answers":
 									[
 										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"att_typeid":1
+											"testanswer": "Beskrivelse av tredje alternativ.",
+											"testanswers_id": 26897,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 635,
+											"position": 1
 										}
-									]
+									],
+									"Attachments": {},
+									"test_id": 467,
+									"position": 3,
+									"testquestion": "Tredjealternativ",
+									"testquestions_id": 635
 								}
 							]
 						},
 						{
-							"task_id":2788,
-							"task_instruction":"",
-							"task_title":"AstroOpg16",
-							"Questions":
+							"Id": 290,
+							"Exercise": "<NULL>",
+							"PText": "Vanlig skrift",
+							"Title": "Tekst og bilde",
+							"Wakeup": null,
+							"PresentationTemplates":
 							[
 								{
-									"q_id":3124,
-									"qt_id":7,
-									"q_title":"Standard Task",
-									"q_text":"Lorem ipsum dolor sit amet, aliquando urbanitas cu pro, no oportere pericula eum, id regione ceteros probatus sed. Suavitate interesset ullamcorper vim ad, cu illud consulatu mel. Vidit laboramus vel cu, ut sit mollis maiorum detraxit, in est ullum salutandi. An menandri maiestatis per. Nobis admodum instructior no has. Pro no erat bonorum lobortis. Et mea eirmod insolens, accusam explicari no sed, in pro malis homero. Mei no tota fugit, vis admodum epicuri efficiendi ei, nullam propriae constituto mel cu. Id sea tempor deterruisset, habemus perpetua scriptorem eam te. Sit petentium rationibus honestatis ut.  Te quo salutandi gloriatur.",
-									"Attachments":
-									[
-										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"att_typeid":1
-										}
-									]
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 7,
+									"template_description": "Noe Informasjon med en bilde",
+									"template_name": "Text og Bilde"
+								}
+							],
+							"PageAttachments":
+							[
+								{
+									"att_scale": 0,
+									"att_id": 1725,
+									"att_typeid": 1,
+									"att_url": "http://placehold.it/400x300"
 								}
 							]
 						},
 						{
-							"task_id":2788,
+							"Id":2788,
 							"task_instruction":"",
-							"task_title":"AstroOpg16",
+							"Title":"Slideshow",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 5,
+									"template_description": "Vise flere bilde",
+									"template_name": "Slideshow"
+								}
+							],
 							"Questions":
 							[
 								{
-									"q_id":3124,
-									"qt_id":5,
-									"q_text": "Click through to view the different tasks",
-									"q_title":"Slideshow Task",
 									"Attachments":
 									[
 										{
 											"id":1331,
 											"url": "http://placehold.it/400x300",
 											"dims": [400, 300],
-											"alt":"Lorem ipsum",
-											"typeid":1
+											"alt":"Lorem ipsum"
 										},
 										{
 											"id":1332,
 											"url": "http://placehold.it/600x550",
 											"dims": [600, 550],
-											"alt":"Lorem ipsum",
-											"typeid":1
+											"alt":"Lorem ipsum"
 										},
 										{
 											"id":1333,
 											"url": "http://placehold.it/400x500",
 											"dims": [400, 500],
-											"alt":"Lorem ipsum",
-											"typeid":1
+											"alt":"Lorem ipsum"
 										}
 									]
 								}
 							]
 						},
 						{
-							"task_id":2788,
-							"task_instruction":"",
-							"task_title":"AstroOpg16",
+							"Title": "Flervalg 2",
+							"Id": 4677,
+							"TestTypeId": 1,
+							"Instructions": null,
+							"TestName": "_Flash_171_3024_Flervalg 2",
+							"Freetext": null,
+							"TestDescription": "Testen er automatisk opprettet for bruk i Flashmaler.",
+							"PassRequirement": "50",
+							"Wakeup": null,
+							"PageAttachments": {},
+							"Id": 3024,
+							"Exercise": "<NULL>",
+							"PText": "",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 1,
+									"template_description": "Flashmal med visning av multiple choice (flervalg) øvelse. Større plass til tekst.",
+									"template_name": "Flash flervalg 2"
+								}
+							],
+							"Questions": 
+							[
+								{
+									"Answers": 
+									[
+										{
+											"testanswer": "København",
+											"testanswers_id": 26898,
+											"comment": "",
+											"correct": 0,
+											"testquestions_id": 5970,
+											"position": 1
+										},
+										{
+											"testanswer": "Paris",
+											"testanswers_id": 26899,
+											"comment": "",
+											"correct": 0,
+											"testquestions_id": 5970,
+											"position": 2
+										},
+										{
+											"testanswer": "Madrid",
+											"testanswers_id": 26900,
+											"comment": "",
+											"correct": 0,
+											"testquestions_id": 5970,
+											"position": 3
+										}
+									],
+									"Attachments": {},
+									"test_id": 4677,
+									"position": 1,
+									"testquestion": "Hva heter hovedstaden i Spania?",
+									"testquestions_id": 5970
+								}
+							]
+						},
+						{
+							"Title": "Kobling OKM",
+							"PassRequirement": "50",
+							"Wakeup": null,
+							"PageAttachments": {},
+							"Id": 606,
+							"Exercise": "<NULL>",
+							"PText": "",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 3,
+									"template_description": "Flashmal med visning av kobling (flervalg) øvelse",
+									"template_name": "Flash kobling"
+								}
+							],
 							"Questions":
 							[
 								{
-									"q_id":3124,
-									"qt_id":6,
-									"q_text": "Sorting",
+									"Answers":
+									[
+										{
+											"testanswer": "to",
+											"testanswers_id": 3945,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 637,
+											"position": 1
+										}
+									],
+									"Attachments": {},
+									"test_id": 468,
+									"position": 2,
+									"testquestion": "to",
+									"testquestions_id": 637
+								},
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "en",
+											"testanswers_id": 3944,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 636,
+											"position": 1
+										}
+									],
 									"Attachments":
 									[
 										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"sub":"Lorem ipsum",
-											"att_typeid":1
-										},
-										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"sub":"Lorem ipsum",
-											"att_typeid":1
-										},
-										{
-											"att_id":1333,
-											"att_url":"8047ac7e-b832-4c70-a1ea-20946559e37a.jpg",
-											"sub":"Lorem ipsum",
-											"att_typeid":1
+											"att_scale": 0,
+											"att_id": 250,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
 										}
-									]
+									],
+									"test_id": 468,
+									"position": 1,
+									"testquestion": "en",
+									"testquestions_id": 636
 								}
-							]
+							],
+							"Id": 468,
+							"TestTypeId": 1,
+							"Instructions": "InsrtruksjonOKM",
+							"TestName": "_Flash_171_606_Kobling OKM",
+							"Freetext": null,
+							"TestDescription": "Testen er automatisk opprettet for bruk i Flashmaler."
+						},
+						{
+							"Wakeup": null,
+							"PassRequirement": "50",
+							"PageAttachments":
+							[
+								{
+									"att_scale": 1,
+									"att_id": 29,
+									"att_typeid": 1,
+									"att_url": "http://placehold.it/400x300"
+								}
+							],
+							"Id": 300,
+							"Exercise": "<NULL>",
+							"PText": "",
+							"Title": "Sortering",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 6,
+									"template_description": "Flashmal med visning av sortering (drag and drop) øvelse",
+									"template_name": "Flash sortering"
+								}
+							],
+							"Questions":
+							[
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Alternativ 1.3",
+											"testanswers_id": 3947,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 199,
+											"position": 2
+										},
+										{
+											"testanswer": "Alternativ 1.2",
+											"testanswers_id": 3946,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 199,
+											"position": 1
+										}
+									],
+									"Attachments":
+									[
+										{
+											"att_scale": 0,
+											"att_id": 252,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
+										}
+									],
+									"test_id": 260,
+									"position": 1,
+									"testquestion": "Spørsmål",
+									"testquestions_id": 199
+								},
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Alternativ 2.1",
+											"testanswers_id": 3948,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 200,
+											"position": 1
+										},
+										{
+											"testanswer": "Alternativ 2.2",
+											"testanswers_id": 3949,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 200,
+											"position": 2
+										},
+										{
+											"testanswer": "Alternativ 2.3",
+											"testanswers_id": 3950,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 200,
+											"position": 3
+										}
+									],
+									"Attachments":
+									[
+										{
+											"att_scale": 0,
+											"att_id": 250,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
+										}
+									],
+									"test_id": 260,
+									"position": 2,
+									"testquestion": "Spørsmål 2",
+									"testquestions_id": 200
+								},
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Alternativ3.1",
+											"testanswers_id": 3951,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 201,
+											"position": 1
+										},
+										{
+											"testanswer": "Alternativ 3.2",
+											"testanswers_id": 3952,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 201,
+											"position": 2
+										},
+										{
+											"testanswer": "Alternativ 3.3",
+											"testanswers_id": 3953,
+											"comment": "",
+											"correct": 1,
+											"testquestions_id": 201,
+											"position": 3
+										}
+									],
+									"Attachments":
+									[
+										{
+											"att_scale": 0,
+											"att_id": 253,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
+										}
+									],
+									"test_id": 260,
+									"position": 3,
+									"testquestion": "Spørsmål 3",
+									"testquestions_id": 201
+								}
+							],
+							"Id": 260,
+							"TestTypeId": 1,
+							"Instructions": "Dette er beskrivelsen til testen.",
+							"TestName": "Test flashmaler",
+							"Freetext": null,
+							"TestDescription": null
 						}
 					]
 				}

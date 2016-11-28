@@ -24,7 +24,13 @@ gulp.task("libs", ["clean"], function (){
 		.pipe(gulp.dest("dist/libs"));
 });
 
-gulp.task("copy-html", ["libs"], function () {
+gulp.task("fonts", ["libs"], function (){
+    return gulp.src('src/libs/fonts/**')
+        .pipe(plumber())
+        .pipe(gulp.dest("dist/fonts"));
+});
+
+gulp.task("copy-html", ["fonts"], function () {
     return gulp.src('./src/html/*.html')
     	.pipe(plumber())
     	.pipe(flatten())

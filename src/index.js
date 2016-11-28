@@ -70,6 +70,15 @@ animateClick = function($el)
   }).velocity('reverse');
 },
 
+findWithAttr = function(array, attr, value) {
+    for(var i = 0; i < array.length; i += 1) {
+        if(array[i][attr] === value) {
+            return i;
+        }
+    }
+    return -1;
+},
+
 /************************************************************************************************************************
 INFO PANEL
 *************************************************************************************************************************/
@@ -390,7 +399,7 @@ createTask = function (taskNum)
   /***   RAISE FIRST TASK TO TOP   ***/
   if ( taskNum === 0 ) { $task.css('z-index', 0) }
   $(store.testId + ' .task-container').append( $task );
-  if ( task.type === 3 ) {
+  if ( task.type === 3 || task.type === 6) {
     task.obj.componentsInit();
   }
 },
@@ -736,10 +745,10 @@ addTaskDots = function()
                 case 6:
                 //sorting
                   return {
-                    img: task.PageAttachments.att_url,
+                    img: task.PageAttachments[0].att_url,
                     bins: task.Questions.map(function(q, i) {
                       return {
-                        binId: i,
+                        binId: i + 1,
                         sortables: q.Answers.map(function(a) {
                           return {
                             label: a.testanswer,
@@ -957,7 +966,7 @@ function Draggable(id, taskId, $el)
           .attr('data-id', this.id);
 }
 
-Draggable.prototype.raiseEl = function()
+Draggable.prototype.raiseEl = function(event)
 {
   this.$el.addClass('grab').velocity({
     scale: 1.2,
@@ -967,7 +976,7 @@ Draggable.prototype.raiseEl = function()
   });   
 };
 
-Draggable.prototype.lowerEl = function()
+Draggable.prototype.lowerEl = function(event)
 { 
   this.$el.velocity({
     scale: 1,
@@ -1405,26 +1414,58 @@ function Sortable (config)
   Draggable.call(this,
     config.id,
     config.taskId,
-    $('<div class="match-tab"></div>')
+    config.$el
   );
   // this.$popover = config.$popover;
-  this.$task = $(store.testId + ' .task_' + config.taskId);
-  // this.$el.draggable('option', 'revert', function() {this.springBack(); return false;}.bind(this))
+  this.$task = store.testId + ' .task_' + config.taskId;
+  this.binMatch = config.binMatch;
+  this.returning = false;
+  this.sorted = false;
+  config.$el.on('dragstop', this.handleDrop.bind(this))
+            .on('dragstart', this.handleDrag.bind(this));
 };
 
 Sortable.prototype = Object.create(Draggable.prototype);
 Sortable.prototype.constructor = Sortable;
 
-Sortable.prototype.springBack = function()
-{ 
-  var self = this;
-  this.$el.velocity({
-    left: self.origin.x + 'px',
-    top: self.origin.y + 'px',
-  }, {
-    duration: 1000,
-    easing: [150, 15]
-  });
+Sortable.prototype.handleDrag = function(event, ui)
+{
+  this.grabbedAt = {
+    x: event.clientX - ui.offset.left - 10,
+    y: event.clientY - ui.offset.top + $(window).scrollTop() - 5
+  };
+};
+
+Sortable.prototype.handleDrop = function(event, ui)
+{
+  if (this.returning)
+  {
+    var $parent = $(this.$task).find('.body');
+
+    this.origin.x = event.clientX - $parent.offset().left - this.grabbedAt.x;
+    this.origin.y = event.clientY - $parent.offset().top + $(window).scrollTop() - this.grabbedAt.y;
+
+    $parent.append(
+      this.$el.css({
+        position: 'absolute',
+        left: this.origin.x,
+        top: this.origin.y
+      }).detach()
+    );
+    this.returning = false;
+  }
+};
+
+Sortable.prototype.init = function() {
+  // some random point within parent
+  var margin = 20,
+      xMax = this.$el.parent().width() * 0.5 - margin,
+      yMax = this.$el.parent().height() - margin,
+      left = Math.floor(Math.random() * (xMax - margin)) + margin,
+      top = Math.floor(Math.random() * (yMax - margin)) + margin
+
+  this.$el.css({ left: left, top: top, position: 'absolute' });
+  this.origin = {x: left, y: top};
 };
 
 /************************************************************************************************************************
@@ -1434,50 +1475,50 @@ TASK: TASK UTILITY::BIN
 function Bin(config)
 {
   this.id = config.id;
-  this.$task = $(store.testId + ' .task_' + config.taskId);
-  this.$el = this.$task.find('.slot-container .tab-slot').eq(config.id);
+  this.img = config.img;
+  this.$task = store.testId + ' .task_' + config.taskId;
+  this.$el = config.$el;
   this.$el.droppable({});
   this.parentObj = config.parentObj;
   this.inventory = [];
   this.$el
     .on('drop', this.handleDrop.bind(this))
-    .on('dropout', this.handleOut.bind(this));
-    // .on('dropover', this.handleOver.bind(this, '#0FF'));
+    .on('dropout', this.handleOut.bind(this))
+    .on('dropover', this.handleOver.bind(this, '#0FF'));
 }
 
 Bin.prototype.handleDrop = function(ev, ui)
 {
-  var left = this.$el.offset().left - this.$task.offset().left + 5,
-      top = this.$el.offset().top - this.$task.offset().top + 5;
+  var $draggable = $(ui.draggable).detach().css({
+        position: 'relative',
+        top: 0,
+        left: 0,
+      });
 
-  this.inventory.push(this.parentObj.sortables[$(ui.draggable).attr('data-id')]);
-
-  // snap to somewhere within the bin
-
-  // $(ui.draggable).css({ top: top, left: left })
-  //                .draggable('option', 'revert', false);
+  this.inventory.push($(ui.draggable).attr('data-id'));
+  this.parentObj.sortables[$(ui.draggable).attr('data-id')].sorted = true;
+    
+  this.$el.append($draggable)
+          .velocity('reverse');
 };
 
 Bin.prototype.handleOut = function(ev, ui)
 {
-  if (this.inventory.length)
-  {
-    this.inventory.forEach(function(s, i){
-      if (s.id === $(ui.draggable).attr('data-id'))
-      {
-        $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
-      }
-    });
+  var index = $(ui.draggable).attr('data-id'),
+      check = this.inventory.indexOf(index);
+
+  if (check >= 0) {
+    this.inventory.splice(check, 1);
+    this.parentObj.sortables[index].returning = true;
+    this.parentObj.sortables[index].sorted = false;
   }
+  this.$el.velocity('reverse');
 };
 
-// Bin.prototype.handleOver = function(color, ev, ui)
-// {
-//   if (!this.covering)
-//   {
-//     this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
-//   }
-// };
+Bin.prototype.handleOver = function(color, ev, ui)
+{
+  this.$el.velocity({borderColor: color }, { duration: 300 });
+};
 
 /************************************************************************************************************************
 TASK: SORTING OBJECT
@@ -1489,44 +1530,60 @@ function Sorting(storeTask, taskId)
   this.taskId = taskId;
   this.bins = this.storeTask.answers.bins;
   this.sortables = (function() {
-    var twoD = this.bins.map(function(b) {
+    var flattenedArr = this.bins.map(function(b) {
       return b.sortables
     });
-    return [].concat.apply([], twoD);
+    return [].concat.apply([], flattenedArr);
   }.bind(this))();
 }
 
 Sorting.prototype.init = function()
 {
-  console.log(this.bins, this.sortables)
-  var $task = $('<div class="task task_' + this.taskId + '">'),
-      $header = $('<h4>' + this.storeTask.question + '</h4>'),
-      $body = $('<div class="body"><div class="row"></div></div>');
-  //     $left = $('<div class="col-xs-8"><div class="sortable-container"></div></div>'),
-  //     $right = $('<div class="col-xs-4"><div class="bin-container"></div></div>');
+  var $task = $('<div class="task task_' + this.taskId + ' sorting">'),
+      $header = $('<div class="sub-header" <h4>' + this.storeTask.title + '</div></h4>'),
+      $body = $('<div class="body"></div>'),
+      $bins = $('<table class="bin-container"></table>');
 
-  // this.sortables = this.sortables.map(function(s, i) {
-  //   var sortable = new Sortable({
-  //     id: i,
-  //     taskId: this.taskId,
-  //     $popover: a.$popover
-  //   });
-  //   $left.find('.sortable-container').append( sortable.$el );
-  //   return sortable;
-  // }.bind(this));
+  this.sortables = this.sortables.map(function(s, i) {
+    var sortable = new Sortable({
+      id: i,
+      taskId: this.taskId,
+      binMatch: s.bin,
+      $el: $('<span class="sortable sortable_' + i + '">' + s.label + '</span>')
+    });
+    $body.append( sortable.$el );
+    return sortable;
+  }.bind(this));
 
-  // this.bins = this.bins.map(function(b, i) {
-  //   var bin = new Bin({
-  //     id: i,
-  //     taskId: this.taskId,
-  //     parentObj: this
-  //   });
-  //   $right.find('.bin-container').append( bin.$el );
-  //   return bin;
-  // }.bind(this));
+  this.bins = this.bins.map(function(b, i) {
+    var bin = new Bin({
+      id: b.binId,
+      taskId: this.taskId,
+      parentObj: this,
+      img: b.binImg,
+      $el: $('<div class="bin bin' + b.binId + '"></div>')
+    });
+    $bins.append(
+      $('<tr></tr>').append(
+        $('<td></td>').append(
+          bin.$el.append(
+            $('<span class="bin-label">' + b.binLabel + '</span>')
+          )
+        )
+      )
+    );
+    return bin;
+  }.bind(this));
 
-  // $body.find('.row').append($left, $right);
-  return $task.append(store.$row(1).append($header), store.$row(1).append($body));
+  $body.append($bins);
+  return $task.append(
+    store.$row(1).append($header),
+    store.$row(1).append($body));
+};
+
+Sorting.prototype.componentsInit = function()
+{
+  this.sortables.forEach( function(s, i) { s.init() });
 };
 
 /************************************************************************************************************************

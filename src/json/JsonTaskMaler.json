@@ -358,7 +358,7 @@
 									"Answers":
 									[
 										{
-											"testanswer": "Alternativ 1.3",
+											"testanswer": "Alternativ 1.3 Alternativ 1.3 Alternativ 1.3 Alternativ 1.3 Alternativ 1.3 Alternativ 1.3",
 											"testanswers_id": 3947,
 											"comment": "",
 											"correct": 1,
@@ -481,6 +481,13 @@
 							"TestDescription": null
 						}
 					]
+				},
+				{
+					"at_id":57,
+					"at_title":"Grønnsaker",
+					"at_description":"Opprettet automatisk av Smartlearn",
+					"a_id":1064,
+					"Tasks": []
 				}
 			]
 		}

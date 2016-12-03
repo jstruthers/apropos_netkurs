@@ -70,15 +70,6 @@ animateClick = function($el)
   }).velocity('reverse');
 },
 
-findWithAttr = function(array, attr, value) {
-    for(var i = 0; i < array.length; i += 1) {
-        if(array[i][attr] === value) {
-            return i;
-        }
-    }
-    return -1;
-},
-
 /************************************************************************************************************************
 INFO PANEL
 *************************************************************************************************************************/
@@ -372,9 +363,9 @@ initScorepage = function()
  * @param {number} theme number,
           {number} task number
  */
-createTask = function (taskNum)
+createTask = function (themeNum, taskNum)
 {
-  var task = store.tasks[taskNum];
+  var task = store.themes[themeNum].tasks[taskNum];
 
   switch( task.type ) {
     case 1 :
@@ -473,13 +464,49 @@ checkCompleted = function( answerIndex, task, matchAnswer )
          Attach event handler to window for toggle popovers
  * @param {number} theme number
  */
-appendTasks = function()
+buildThemePanel = function(themeTitle, accordionTitle)
+{
+  return $('<div class="panel panel-default theme-panel">'
+    + '<div class="panel-heading theme-panel-heading" data-toggle="collapse" data-parent="' + accordionTitle + '" href="#' + themeTitle + '">'
+    +    themeTitle
+    + '</div>'
+    + '<div id="' + themeTitle + '" class="panel-collapse collapse">'
+    +   '<div class="task-mark-container"> </div>'
+    + '</div></div>');
+},
+
+addTaskDots = function( themeIndex, numTasks, themeTitle)
+{
+  var $taskMark = $('<div class="dot-group">'
+    + '<button class="task-mark unfinished"></button>'
+    + '<div class="fa fa-long-arrow-right"></div>'
+    + '</div>');
+
+  for (var i = 0; i < numTasks; i += 1)
+  {
+    var $newMark = $taskMark.clone();
+    
+    $newMark.find('button').addClass('task-mark_' + i)
+            .attr('data-taskNum', themeIndex + '-' + i)
+            .attr('tabindex', 0)
+            .click( function(e) {
+                gotoTask( $(this).attr('data-taskNum') );
+            });
+
+    if (i === 0) { $newMark.children('button').addClass('selected'); }
+    else if (i === numTasks - 1) { $newMark.children('.fa').remove(); }
+
+    $(store.testId + ' .theme-list #' + themeTitle + ' .task-mark-container').append( $newMark );
+  }
+},
+
+appendTasks = function(themeNum)
 { 
   $(store.testId + ' .task').remove();
 
-  for (var i = store.tasks.length - 1; i >= 0; i -= 1)
+  for (var i = store.themes[themeNum].tasks.length - 1; i >= 0; i -= 1)
   {
-    createTask(i, this);
+    createTask(themeNum, i, this);
   }
 
   $( window ).resize( function()
@@ -497,10 +524,15 @@ appendTasks = function()
           {boolean} Whether to run the task change animation
                     (Shouldn't animate on theme change)
  */
-gotoTask = function( nextTaskNum )
+gotoTask = function( taskPos )
 {
-  var nextTaskNum = parseInt(nextTaskNum),
-      totalTasks = store.tasks.length - 1,
+  console.log(store.themes,
+    taskPos,
+    parseInt(taskPos.slice(taskPos.indexOf('-') + 1)),
+    parseInt(taskPos.slice(0, taskPos.indexOf('-'))));
+  var nextTaskNum = parseInt(taskPos.slice(taskPos.indexOf('-') + 1)),
+      nextThemeNum = parseInt(taskPos.slice(0, taskPos.indexOf('-'))),
+      totalTasks = store.themes[nextThemeNum].tasks.length - 1,
 
       dir = (nextTaskNum - store.currentTask) > 0 ? 1 : -1,
       offset = ( $(store.testId + ' .task-container').width() / 2 ) * dir + 'px',
@@ -554,6 +586,7 @@ gotoTask = function( nextTaskNum )
       { duration: 200, easing: 'easeOut' });
 
     store.currentTask = nextTaskNum;
+    store.currentTHeme = nextThemeNum;
 
     if (store.currentTask > 0) {
       $('.btn-prev').attr('disabled', false);
@@ -571,32 +604,8 @@ gotoTask = function( nextTaskNum )
     $target.find('.custom-btn').attr('tabindex', 0);
 
     $(store.testId + ' .task-mark.selected').removeClass('selected');
-    $(store.testId + ' .task-mark_' + nextTaskNum ).addClass('selected');
-  }
-},
-
-addTaskDots = function()
-{
-  var $taskMark = $('<div class="dot-group">'
-    + '<button class="task-mark unfinished"></button>'
-    + '<div class="fa fa-long-arrow-right"></div>'
-    + '</div>');
-
-  for (var i = 0; i < store.tasks.length; i += 1)
-  {
-    var $newMark = $taskMark.clone();
-    
-    $newMark.find('button').addClass('task-mark_' + i)
-            .attr('data-taskNum', i)
-            .attr('tabindex', 0)
-            .click( function(e) {
-                gotoTask( $(this).attr('data-taskNum') );
-            });
-
-    if (i === 0) { $newMark.children('button').addClass('selected'); }
-    else if (i === store.tasks.length - 1) { $newMark.children('.fa').remove(); }
-
-    $(store.testId + ' .theme-list .mark-container').append( $newMark );
+    $(store.testId + ' #' + store.themes[nextThemeNum].title + ' .task-mark_' + nextTaskNum ).addClass('selected');
+    console.log($(store.testId + ' #' + store.themes[nextThemeNum].title + ' .task-mark_' + nextTaskNum ));
   }
 },
 
@@ -610,11 +619,9 @@ addTaskDots = function()
 
   buildRandomTest = function()
   {
-    addTaskDots();
-
     infoPanel();
 
-    appendTasks();
+    appendTasks(0);
 
     randomTestNav();
 
@@ -634,9 +641,7 @@ addTaskDots = function()
 
   buildTaskMaler = function()
   {
-    addTaskDots();
-
-    appendTasks();
+    appendTasks(0);
 
     taskMalerNav();
 // add in hotSpot popover
@@ -659,116 +664,131 @@ addTaskDots = function()
 
     if (!store.$testPage) { store.$testPage = $(store.testId).html(); }
 
-    switch (buildOrder) {
-      case 'randomTest':
-        store.stats = {
-          testTitle: store.feed.testInfo,
-          passRequirement: store.feed.PassRequirement,
-          numTasks: store.feed.NoOfTasks,
-          durationTime: store.feed.DurationTime,
-          alertTime: store.feed.AlertTime,
-          completedTasks: 0,
-          totalCorrect: 0
-        };
-        store.tasks = store.feed.TestThemes[0].AThemes[0].Tasks.map( function( task ) {
-          return {
-            id: task.task_id,
-            question: task.Questions[0].q_text,
-            type: task.Questions[0].qt_id,
-            hint: task.task_hint,
-            isCompleted: false,
-            answers: task.Questions[0].Answers.map( function( answer, i ) {
-              return {
-                id: i,
-                isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
-                isSelected: false,
-                pos: answer.qa_position,
-                text: answer.qa_text
-              };
-            })
-          };
-        });
-        break;
-      case 'taskMaler':
-        store.tasks = store.feed.TestThemes[0].AThemes[0].Tasks.map( function( task ) {
-          return {
-            title: task.Title,
-            type: task.PresentationTemplates[0].presentationtemplate_id,
-            isCompleted: false,
-            testquestion: (task.Questions && task.Questions[0].testquestion) ? task.Questions[0].testquestion : null,
-            testposition: (task.Questions && task.Questions[0].position) ? task.Questions[0].position : null,
-            answers: (function() {
-              switch(task.PresentationTemplates[0].presentationtemplate_id) {
-                case 4:
-                //explore
-                  return task.Questions.map(function(q) {
-                    return {
-                      text: q.Answers[0].testanswer,
-                      img: q.Attachments[0] ? q.Attachments[0].att_url : null,
-                      label: q.testquestion
-                    };
-                  });
-                case 7:
-                //text and picture
-                  return {
-                    text: task.PText,
-                    img: task.PageAttachments[0] ? task.PageAttachments[0].att_url : null
-                  };
-                case 5:
-                //slideshow
-                  return {
-                    text: task.PText,
-                    slides: task.Questions[0].Attachments.map(function(a) {
-                      return {
-                        img: a.url,
-                        dims: a.dims,
-                        alt: a.alt
-                      }
-                    })
-                  }
-                case 1:
-                //multichoice
-                  return task.Questions[0].Answers.map(function(a) {
-                    return {
-                      text: a.testanswer,
-                      pos: a.position,
-                    }
-                  });
-                case 3:
-                //match
-                  return task.Questions.map(function(q) {
-                    return {
-                      text: q.Answers[0].testanswer,
-                      img: q.Attachments[0] ? q.Attachments[0].att_url : null
-                    }
-                  })
-                case 6:
-                //sorting
-                  return {
-                    img: task.PageAttachments[0].att_url,
-                    bins: task.Questions.map(function(q, i) {
-                      return {
-                        binId: i + 1,
-                        sortables: q.Answers.map(function(a) {
-                          return {
-                            label: a.testanswer,
-                            bin: a.position
-                          }
-                        }),
-                        binImg: q.Attachments[0] ? q.Attachments[0].att_url : null,
-                        binLabel: q.testquestion
-                      }
-                    })
-                  }
-                default: break;
-              }
-            })()
-          };
-        });
-        break;
+    var accordionId = store.testId + '_theme_accordion';
+
+    $(store.testId + ' .theme-list').append(
+      $('<div class="panel-group theme-accordion" id="' + accordionId.slice(1) + '"></div>'));
+
+    if (buildOrder === 'randomTest')
+    {
+      store.stats = {
+        testTitle: store.feed.testInfo,
+        passRequirement: store.feed.PassRequirement,
+        numTasks: store.feed.NoOfTasks,
+        durationTime: store.feed.DurationTime,
+        alertTime: store.feed.AlertTime,
+        completedTasks: 0,
+        totalCorrect: 0
+      };
     }
 
-    console.log(store.tasks);
+    store.themes = store.feed.TestThemes[0].AThemes.map( function(theme, i) {
+      $(store.testId + ' .panel-group').append(
+        buildThemePanel(theme.at_title, accordionId));
+      addTaskDots( i, theme.Tasks.length, theme.at_title );
+      return {
+        title: theme.at_title,
+        tasks: theme.Tasks.map( function(task, i) {
+          switch (buildOrder) {
+            case 'randomTest':
+              return {
+                id: task.task_id,
+                question: task.Questions[0].q_text,
+                type: task.Questions[0].qt_id,
+                hint: task.task_hint,
+                isCompleted: false,
+                answers: task.Questions[0].Answers.map( function( answer, i ) {
+                  return {
+                    id: i,
+                    isCorrect: answer.match ? answer.match : (answer.qa_score > 0 ? true : false),
+                    isSelected: false,
+                    pos: answer.qa_position,
+                    text: answer.qa_text
+                  };
+                })
+              };
+            case 'taskMaler':
+              return {
+                title: task.Title,
+                type: task.PresentationTemplates[0].presentationtemplate_id,
+                isCompleted: false,
+                testquestion: (task.Questions && task.Questions[0].testquestion) ? task.Questions[0].testquestion : null,
+                testposition: (task.Questions && task.Questions[0].position) ? task.Questions[0].position : null,
+                answers: (function() {
+                  switch(task.PresentationTemplates[0].presentationtemplate_id) {
+                    case 4:
+                    //explore
+                      return task.Questions.map(function(q) {
+                        return {
+                          text: q.Answers[0].testanswer,
+                          img: q.Attachments[0] ? q.Attachments[0].att_url : null,
+                          label: q.testquestion
+                        };
+                      });
+                    case 7:
+                    //text and picture
+                      return {
+                        text: task.PText,
+                        img: task.PageAttachments[0] ? task.PageAttachments[0].att_url : null
+                      };
+                    case 5:
+                    //slideshow
+                      return {
+                        text: task.PText,
+                        slides: task.Questions[0].Attachments.map(function(a) {
+                          return {
+                            img: a.url,
+                            dims: a.dims,
+                            alt: a.alt
+                          }
+                        })
+                      }
+                    case 1:
+                    //multichoice
+                      return task.Questions[0].Answers.map(function(a) {
+                        return {
+                          text: a.testanswer,
+                          pos: a.position,
+                        }
+                      });
+                    case 3:
+                    //match
+                      return task.Questions.map(function(q) {
+                        return {
+                          text: q.Answers[0].testanswer,
+                          matchText: q.testquestion,
+                          img: q.Attachments[0] ? q.Attachments[0].att_url : null
+                        }
+                      })
+                    case 6:
+                    //sorting
+                      return {
+                        img: task.PageAttachments[0].att_url,
+                        bins: task.Questions.map(function(q, i) {
+                          return {
+                            binId: i + 1,
+                            sortables: q.Answers.map(function(a) {
+                              return {
+                                label: a.testanswer,
+                                bin: a.position
+                              }
+                            }),
+                            binImg: q.Attachments[0] ? q.Attachments[0].att_url : null,
+                            binLabel: q.testquestion
+                          }
+                        })
+                      }
+                    default: break;
+                  }
+                })()
+              };
+            default: break;
+          };
+        })
+      };
+    });
+
+    console.log(store.themes);
 
     store.reset = false;
 
@@ -824,7 +844,7 @@ MultiChoice.prototype.init = function()
   var $task = $('<div class="task task_' + this.taskId + ' ' + this.type + '">'),
       $header = $(  '<div class="col-xs-12">'
                   + '<h4 class="question">'
-                  + this.storeTask.question + '</h4>'
+                  + this.storeTask.title + '</h4>'
                   + '</div>'),
       $body = $(  '<div class="col-xs-10 col-xs-offset-1">'
                 + '<div class="body"><div class="row">'
@@ -970,9 +990,10 @@ Draggable.prototype.raiseEl = function(event)
 {
   this.$el.addClass('grab').velocity({
     scale: 1.2,
-    boxShadowY:'5px'
+    boxShadowY: '5px'
   }, {
-    duration: 100
+    duration: 100,
+    begin: function(el) { $(el).css('cursor', 'move'); }
   });   
 };
 
@@ -982,7 +1003,8 @@ Draggable.prototype.lowerEl = function(event)
     scale: 1,
     boxShadowY: 0
   }, {
-    duration: 100
+    duration: 100,
+    begin: function(el) { $(el).css('cursor', 'default'); }
   }).removeClass('grab');
 };
 
@@ -1017,13 +1039,8 @@ function Tab (config)
     $tab: this.$el,
     $task: this.$task,
   });
-  this.$el.draggable('option', 'revert', function() {this.springBack(); return false;}.bind(this))
-          .on('drag', function(e, ui) {
-            this.line.set(
-              ['x2', parseFloat(e.target.style.left)],
-              ['y2', parseFloat(e.target.style.top)]
-            );
-          }.bind(this));
+  // this.$el.draggable('option', 'revert', function() {this.springBack(); return false;}.bind(this))
+  //         .on('drag', this.handleDrag.bind(this));
 };
 
 Tab.prototype = Object.create(Draggable.prototype);
@@ -1046,8 +1063,17 @@ Tab.prototype.setOrigin = function()
   // });
 };
 
+Tab.prototype.handleDrag = function(e, ui)
+{
+    this.line.set(
+      ['x2', parseFloat(e.target.style.left)],
+      ['y2', parseFloat(e.target.style.top)]
+    );
+};
+
 Tab.prototype.springBack = function()
 { 
+  console.log('spring back');
   var self = this;
   this.$el.velocity({
     left: self.origin.x + 'px',
@@ -1093,32 +1119,35 @@ function Slot(config)
   this.$el = this.$task.find('.slot-container .tab-slot').eq(config.idid);
   this.$el.droppable({});
   this.parentObj = config.parentObj;
-  this.$el
-    .on('drop', this.handleDrop.bind(this))
-    .on('dropout', this.handleOut.bind(this))
-    .on('dropover', this.handleOver.bind(this, '#0FF'));
+  // this.$el
+  //   .on('drop', this.handleDrop.bind(this))
+  //   .on('dropout', this.handleOut.bind(this))
+  //   .on('dropover', this.handleOver.bind(this, '#0FF'));
 }
 
 Slot.prototype.handleDrop = function(ev, ui)
 {
+
+  console.log('dropping on drop');
   if (!this.covering)
   {
     var left = this.$el.offset().left - this.$task.offset().left + 5,
         top = this.$el.offset().top - this.$task.offset().top + 5;
 
-      this.covering = this.parentObj.tabs[$(ui.draggable).attr('data-id')];
+    this.covering = this.parentObj.tabs[$(ui.draggable).attr('data-id')];
 
-      this.covering.line.set(['x2', left], ['y2', top]);
+    this.covering.line.set(['x2', left], ['y2', top]);
 
-      $(ui.draggable).css({ top: top, left: left })
-                     .draggable('option', 'revert', false);
+    $(ui.draggable).css({ top: top, left: left })
+                   .draggable('option', 'revert', false);
 
-      this.$el.next().velocity('reverse', { duration: 100 });
+    this.$el.next().velocity('reverse', { duration: 100 });
   }
 };
 
 Slot.prototype.handleOut = function(ev, ui)
 {
+  console.log('handle Out on drop');
   if (this.covering && $(ui.draggable).attr('data-id') === this.covering.$el.attr('data-id'))
   {
     $(ui.draggable).draggable('option', 'revert', this.covering.springBack.bind(this.covering));
@@ -1133,6 +1162,7 @@ Slot.prototype.handleOut = function(ev, ui)
 
 Slot.prototype.handleOver = function(color, ev, ui)
 {
+  console.log('hovering on drop')
   if (!this.covering)
   {
     this.$el.next().velocity({ borderLeftColor: color }, { duration: 100 });
@@ -1147,11 +1177,12 @@ function Match( storeTask, taskId ) {
   this.taskId = taskId;
   this.storeTask = storeTask;
   this.answers = storeTask.answers.map( function( a, i ) { return {text: a.text, info: a, id: i} });
-  this.slots = storeTask.answers.map( function( a ) { return {text: a.isCorrect} });
+  this.slots = storeTask.answers.map( function( a ) { return {text: a.matchText} });
 }
 
 Match.prototype.handleResize = function()
 {
+  console.log('handleResize')
   var self = this;
   this.tabs.forEach( function(t, i) {
     t.setOrigin();
@@ -1200,7 +1231,7 @@ Match.prototype.init = function()
       $('<div class="match-container"></div>').append(
         store.$row().append(
           $('<div class="col-xs-12"></div>').append(
-            $('<h4>' + this.storeTask.question + '</h4>'))),
+            $('<h4>' + this.storeTask.title + '</h4>'))),
         store.$row().append(
           $aContainer, $('<div class="col-sm-1 col-xs-0"></div>'), $sContainer))));
   
@@ -1226,7 +1257,6 @@ Match.prototype.componentsInit = function()
       taskId: this.taskId,
       parentObj: this
     });
-
     return tab;
   }.bind(this));
   
@@ -1286,6 +1316,7 @@ Explore.prototype.getParent = function()
 
 Explore.prototype.buildOption = function(o, i)
 {
+  console.log(o);
   var self = this,
       modalId = 'exploreTask_' + this.taskId +'_Opt_' + i;
   return {
@@ -1297,7 +1328,7 @@ Explore.prototype.buildOption = function(o, i)
               $li.find('.dot').removeClass('filled');
               $li.eq(i).find('.dot').addClass('filled');
            }),
-    $content: $('<h4 class="title sub-header">' + o.title + '</h4>'
+    $content: $('<h4 class="title sub-header">' + o.label + '</h4>'
       + '<img src="http://placehold.it/' + this.img.w * 3 + 'x' + this.img.h * 2 + '"'
           + ' width="150px"'
           + ' alt="' + this.img.alt + '"'
@@ -1458,7 +1489,7 @@ Sortable.prototype.handleDrop = function(event, ui)
 
 Sortable.prototype.init = function() {
   // some random point within parent
-  var margin = 20,
+  var margin = 50,
       xMax = this.$el.parent().width() * 0.5 - margin,
       yMax = this.$el.parent().height() - margin,
       left = Math.floor(Math.random() * (xMax - margin)) + margin,

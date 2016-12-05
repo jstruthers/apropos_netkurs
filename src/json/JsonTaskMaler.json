@@ -257,77 +257,6 @@
 							]
 						},
 						{
-							"Title": "Kobling OKM",
-							"PassRequirement": "50",
-							"Wakeup": null,
-							"PageAttachments": {},
-							"Id": 606,
-							"Exercise": "<NULL>",
-							"PText": "",
-							"PresentationTemplates":
-							[
-								{
-									"template_url": "connector.swf",
-									"presentationtemplate_id": 3,
-									"template_description": "Flashmal med visning av kobling (flervalg) øvelse",
-									"template_name": "Flash kobling"
-								}
-							],
-							"Questions":
-							[
-								{
-									"Answers":
-									[
-										{
-											"testanswer": "to",
-											"testanswers_id": 3945,
-											"comment": "",
-											"correct": 1,
-											"testquestions_id": 637,
-											"position": 1
-										}
-									],
-									"Attachments": {},
-									"test_id": 468,
-									"position": 2,
-									"testquestion": "to",
-									"testquestions_id": 637
-								},
-								{
-									"Answers":
-									[
-										{
-											"testanswer": "en",
-											"testanswers_id": 3944,
-											"comment": "",
-											"correct": 1,
-											"testquestions_id": 636,
-											"position": 1
-										}
-									],
-									"Attachments":
-									[
-										{
-											"att_scale": 0,
-											"att_id": 250,
-											"att_typeid": 1,
-											"att_url": "http://placehold.it/400x300"
-										}
-									],
-									"test_id": 468,
-									"position": 1,
-									"testquestion": "en",
-									"testquestions_id": 636
-								}
-							],
-							"Id": 468,
-							"TestTypeId": 1,
-							"Instructions": "InsrtruksjonOKM",
-							"TestName": "_Flash_171_606_Kobling OKM",
-							"Freetext": null,
-							"TestDescription": "Testen er automatisk opprettet for bruk i Flashmaler."
-						},
-						{
 							"Wakeup": null,
 							"PassRequirement": "50",
 							"PageAttachments":
@@ -487,7 +416,130 @@
 					"at_title":"Grønnsaker",
 					"at_description":"Opprettet automatisk av Smartlearn",
 					"a_id":1064,
-					"Tasks": []
+					"Tasks": [
+						{
+							"Id": 467,
+							"PassRequirement":  "50",
+							"TestTypeId": 1,
+							"Instructions": null,
+							"TestName": "_Flash_171_605_OKM test utforsk",
+							"Freetext": null,
+							"TestDescription": "Testen er automatisk opprettet for bruk i Flashmaler.",
+							"Wakeup": null,
+							"PageAttachments": {},
+							"Id": 605,
+							"Exercise": "<NULL>",
+							"PText": "",
+							"Title": "OKM test utforsk",
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 4,
+									"template_description": "Flashmal med utforsk. Midtstillt bilde, halvpart av plass til bilde og halvpart av plass til tekst.",
+									"template_name": "Flash utforsk 3"
+								}
+							],
+							"Questions":
+							[
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Beskrivelse av første alternativ",
+											"testanswers_id": 26895,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 633,
+											"position": 1
+										}
+									],
+									"Attachments":
+									[
+										{
+											"att_scale": 0,
+											"att_id": 1720,
+											"att_typeid": 1,
+											"att_url": "http://placehold.it/400x300"
+										}
+									],
+									"test_id": 467,
+									"position": 1,
+									"testquestion": "Førstealternativ",
+									"testquestions_id": 633
+								},
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Beskrivelse av andre alternativ",
+											"testanswers_id": 26896,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 634,
+											"position": 1
+										}
+									],
+									"Attachments":
+									[
+										{
+											"att_scale": 0,
+											"att_id": 1478,
+											"att_typeid": 8,
+											"att_url": "http://placehold.it/400x300"
+										}
+									],
+									"test_id": 467,
+									"position": 2,
+									"testquestion": "Andrealternativ",
+									"testquestions_id": 634
+								},
+								{
+									"Answers":
+									[
+										{
+											"testanswer": "Beskrivelse av tredje alternativ.",
+											"testanswers_id": 26897,
+											"comment": null,
+											"correct": 1,
+											"testquestions_id": 635,
+											"position": 1
+										}
+									],
+									"Attachments": {},
+									"test_id": 467,
+									"position": 3,
+									"testquestion": "Tredjealternativ",
+									"testquestions_id": 635
+								}
+							]
+						},
+						{
+							"Id": 290,
+							"Exercise": "<NULL>",
+							"PText": "Vanlig skrift",
+							"Title": "Tekst og bilde",
+							"Wakeup": null,
+							"PresentationTemplates":
+							[
+								{
+									"template_url": "connector.swf",
+									"presentationtemplate_id": 7,
+									"template_description": "Noe Informasjon med en bilde",
+									"template_name": "Text og Bilde"
+								}
+							],
+							"PageAttachments":
+							[
+								{
+									"att_scale": 0,
+									"att_id": 1725,
+									"att_typeid": 1,
+									"att_url": "http://placehold.it/400x300"
+								}
+							]
+						}
+					]
 				}
 			]
 		}

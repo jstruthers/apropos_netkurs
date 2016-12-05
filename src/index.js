@@ -388,11 +388,14 @@ createTask = function (themeNum, taskNum)
   var $task = task.obj.init();
 
   /***   RAISE FIRST TASK TO TOP   ***/
-  if ( taskNum === 0 ) { $task.css('z-index', 0) }
-  $(store.testId + ' .task-container').append( $task );
-  if ( task.type === 3 || task.type === 6) {
+  if ( taskNum === 0 ) {
+    $task.css('z-index', 0)
+  }
+  else if ( task.type === 3 || task.type === 6) {
     task.obj.componentsInit();
   }
+
+  return $task;
 },
  /*
  * @function togglePopover
@@ -464,15 +467,39 @@ checkCompleted = function( answerIndex, task, matchAnswer )
          Attach event handler to window for toggle popovers
  * @param {number} theme number
  */
-buildThemePanel = function(themeTitle, accordionTitle)
+buildThemePanel = function(themeNum, themeTitle, accordionTitle)
 {
   return $('<div class="panel panel-default theme-panel">'
-    + '<div class="panel-heading theme-panel-heading" data-toggle="collapse" data-parent="' + accordionTitle + '" href="#' + themeTitle + '">'
+    + '<div class="panel-heading theme-panel-heading"'
+    + ' data-toggle="collapse"'
+    + ' data-parent="' + accordionTitle + '"'
+    + ' href="#' + themeTitle + '">'
     +    themeTitle
     + '</div>'
-    + '<div id="' + themeTitle + '" class="panel-collapse collapse">'
+    + '<div id="' + themeTitle + '" class="panel-collapse collapse ' + (themeNum === 0 ? 'in' : '') + '">'
     +   '<div class="task-mark-container"> </div>'
-    + '</div></div>');
+    + '</div>'
+    + '</div>').on('show.bs.collapse', function() {
+        if (store.currentTheme !== themeNum) {
+          store.currentTheme = themeNum;
+          gotoTask(0);
+          $(store.testId + ' .theme-container').hide()
+            .velocity({
+              opacity: 0
+            },
+            {
+              duration: 0
+            });
+          $(store.testId + ' .theme-container').eq(themeNum).show()
+            .velocity({
+                opacity: 1
+              },
+              {
+                delay: 500,
+                duration: 300
+              });
+        }
+    });
 },
 
 addTaskDots = function( themeIndex, numTasks, themeTitle)
@@ -480,18 +507,16 @@ addTaskDots = function( themeIndex, numTasks, themeTitle)
   var $taskMark = $('<div class="dot-group">'
     + '<button class="task-mark unfinished"></button>'
     + '<div class="fa fa-long-arrow-right"></div>'
-    + '</div>');
+    + '</div>'),
+      handleClick = function(taskNum, e) { gotoTask( taskNum ); };
 
   for (var i = 0; i < numTasks; i += 1)
   {
     var $newMark = $taskMark.clone();
     
     $newMark.find('button').addClass('task-mark_' + i)
-            .attr('data-taskNum', themeIndex + '-' + i)
             .attr('tabindex', 0)
-            .click( function(e) {
-                gotoTask( $(this).attr('data-taskNum') );
-            });
+            .click( handleClick.bind(null, i) );
 
     if (i === 0) { $newMark.children('button').addClass('selected'); }
     else if (i === numTasks - 1) { $newMark.children('.fa').remove(); }
@@ -500,13 +525,17 @@ addTaskDots = function( themeIndex, numTasks, themeTitle)
   }
 },
 
-appendTasks = function(themeNum)
-{ 
-  $(store.testId + ' .task').remove();
-
-  for (var i = store.themes[themeNum].tasks.length - 1; i >= 0; i -= 1)
+appendTasks = function()
+{
+  for (var i = 0; i <= store.themes.length - 1; i += 1)
   {
-    createTask(themeNum, i, this);
+    var $themeContainer = $('<div class="theme-container"></div');
+    for (var j = store.themes[i].tasks.length - 1; j >= 0; j -= 1)
+    {
+      $themeContainer.append( createTask(i, j, this) );
+    }
+    i === 0 ? $themeContainer.css('opacity', 1) : $themeContainer.css('opacity', 0).hide();
+    $(store.testId + ' .task-container').append( $themeContainer );
   }
 
   $( window ).resize( function()
@@ -524,15 +553,9 @@ appendTasks = function(themeNum)
           {boolean} Whether to run the task change animation
                     (Shouldn't animate on theme change)
  */
-gotoTask = function( taskPos )
+gotoTask = function( nextTaskNum )
 {
-  console.log(store.themes,
-    taskPos,
-    parseInt(taskPos.slice(taskPos.indexOf('-') + 1)),
-    parseInt(taskPos.slice(0, taskPos.indexOf('-'))));
-  var nextTaskNum = parseInt(taskPos.slice(taskPos.indexOf('-') + 1)),
-      nextThemeNum = parseInt(taskPos.slice(0, taskPos.indexOf('-'))),
-      totalTasks = store.themes[nextThemeNum].tasks.length - 1,
+  var totalTasks = store.themes[store.currentTheme].tasks.length - 1,
 
       dir = (nextTaskNum - store.currentTask) > 0 ? 1 : -1,
       offset = ( $(store.testId + ' .task-container').width() / 2 ) * dir + 'px',
@@ -580,13 +603,12 @@ gotoTask = function( taskPos )
       duration: 750,
       easing: 'easeInQuad'
     });
-    setTimeout( function() { $prev.find('.fade-screen').remove(); }, 1000);
+    setTimeout( function() { $prev.find('.fade-screen').remove(); }, 500);
     $('.hint-text').velocity(
       { width: 0, opacity: 0 },
       { duration: 200, easing: 'easeOut' });
 
     store.currentTask = nextTaskNum;
-    store.currentTHeme = nextThemeNum;
 
     if (store.currentTask > 0) {
       $('.btn-prev').attr('disabled', false);
@@ -604,8 +626,7 @@ gotoTask = function( taskPos )
     $target.find('.custom-btn').attr('tabindex', 0);
 
     $(store.testId + ' .task-mark.selected').removeClass('selected');
-    $(store.testId + ' #' + store.themes[nextThemeNum].title + ' .task-mark_' + nextTaskNum ).addClass('selected');
-    console.log($(store.testId + ' #' + store.themes[nextThemeNum].title + ' .task-mark_' + nextTaskNum ));
+    $(store.testId + ' #' + store.themes[store.currentTheme].title + ' .task-mark_' + nextTaskNum ).addClass('selected');
   }
 },
 
@@ -621,7 +642,7 @@ gotoTask = function( taskPos )
   {
     infoPanel();
 
-    appendTasks(0);
+    appendTasks();
 
     randomTestNav();
 
@@ -635,13 +656,15 @@ gotoTask = function( taskPos )
       animateClick($(this));
     });
 
+    $(store.testId + ' .theme-panel').eq(0).collapse('show');
+
     store.timer = new Timer();
     store.timer.start();
   },
 
   buildTaskMaler = function()
   {
-    appendTasks(0);
+    appendTasks();
 
     taskMalerNav();
 // add in hotSpot popover
@@ -684,7 +707,7 @@ gotoTask = function( taskPos )
 
     store.themes = store.feed.TestThemes[0].AThemes.map( function(theme, i) {
       $(store.testId + ' .panel-group').append(
-        buildThemePanel(theme.at_title, accordionId));
+        buildThemePanel(i, theme.at_title, accordionId));
       addTaskDots( i, theme.Tasks.length, theme.at_title );
       return {
         title: theme.at_title,
@@ -787,8 +810,6 @@ gotoTask = function( taskPos )
         })
       };
     });
-
-    console.log(store.themes);
 
     store.reset = false;
 
@@ -976,7 +997,6 @@ function Draggable(id, taskId, $el)
   var self = this;
   this.id = id;
   this.$el = $el;
-  this.$task = $(store.testId + ' .task_' + taskId);
   this.$el.draggable({
     containment: 'parent',
     stack: '.ui-draggable'
@@ -1033,8 +1053,7 @@ function Tab (config)
   );
   this.info = config.info;
   // this.$popover = config.$popover;
-  this.$task = $(store.testId + ' .task_' + config.taskId);
-  this.$row = this.$task.find('.match-label').eq(config.id);
+  this.$task = $(store.testId + ' .task-container');
   this.line = new Line({
     $tab: this.$el,
     $task: this.$task,
@@ -1115,7 +1134,7 @@ Tab.prototype.init = function()
 function Slot(config)
 {
   this.id = config.id;
-  this.$task = $(store.testId + ' .task_' + config.taskId);
+  this.$task = $(store.testId + ' .task-container');
   this.$el = this.$task.find('.slot-container .tab-slot').eq(config.idid);
   this.$el.droppable({});
   this.parentObj = config.parentObj;
@@ -1316,7 +1335,6 @@ Explore.prototype.getParent = function()
 
 Explore.prototype.buildOption = function(o, i)
 {
-  console.log(o);
   var self = this,
       modalId = 'exploreTask_' + this.taskId +'_Opt_' + i;
   return {
@@ -1448,7 +1466,7 @@ function Sortable (config)
     config.$el
   );
   // this.$popover = config.$popover;
-  this.$task = store.testId + ' .task_' + config.taskId;
+  this.$task = store.testId + ' .task-container';
   this.binMatch = config.binMatch;
   this.returning = false;
   this.sorted = false;
@@ -1487,13 +1505,13 @@ Sortable.prototype.handleDrop = function(event, ui)
   }
 };
 
-Sortable.prototype.init = function() {
-  // some random point within parent
+Sortable.prototype.init = function()
+{
   var margin = 50,
-      xMax = this.$el.parent().width() * 0.5 - margin,
-      yMax = this.$el.parent().height() - margin,
+      xMax = $(store.testId + ' .task-container').width() * 0.5 - margin,
+      yMax = $(store.testId + ' .task-container').height() - margin,
       left = Math.floor(Math.random() * (xMax - margin)) + margin,
-      top = Math.floor(Math.random() * (yMax - margin)) + margin
+      top = Math.floor(Math.random() * (yMax - margin)) + margin;
 
   this.$el.css({ left: left, top: top, position: 'absolute' });
   this.origin = {x: left, y: top};
@@ -1507,7 +1525,7 @@ function Bin(config)
 {
   this.id = config.id;
   this.img = config.img;
-  this.$task = store.testId + ' .task_' + config.taskId;
+  this.$task = store.testId + ' .task-container';
   this.$el = config.$el;
   this.$el.droppable({});
   this.parentObj = config.parentObj;
